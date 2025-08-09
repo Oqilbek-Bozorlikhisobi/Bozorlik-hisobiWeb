@@ -703,7 +703,7 @@ export default function ShoppingPlatform() {
                               className="bg-blue-600 hover:bg-blue-700"
                             >
                               <Edit3 className="h-3 w-3 mr-1" />
-                              Sotib olindi deb belgilash
+                              Olinmadi
                             </Button>
                           )}
                           <Button size="sm" variant="outline" onClick={() => handleRemoveItem(item.id)}>

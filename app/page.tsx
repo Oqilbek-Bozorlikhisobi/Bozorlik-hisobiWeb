@@ -27,9 +27,16 @@ interface Product {
   unit: string
 }
 
+interface ExtraProduct {
+  id: string
+  name: string
+  price: number
+  isExtra: true
+}
+
 interface ShoppingItem {
   id: string
-  product: Product
+  product: Product | ExtraProduct
   quantity: number
   purchased: boolean
   actualPrice?: number
@@ -192,6 +199,43 @@ const products: Product[] = [
     image: "/images/margarin.png",
     unit: "paket",
   },
+
+  // Boshqalar (Others)
+  {
+    id: "b1",
+    name: "Tuz",
+    category: "boshqalar",
+    image: "/images/tuz.png",
+    unit: "paket",
+  },
+  {
+    id: "b2",
+    name: "Shakar",
+    category: "boshqalar",
+    image: "/images/shakar.png",
+    unit: "kg",
+  },
+  {
+    id: "b3",
+    name: "Sabun",
+    category: "boshqalar",
+    image: "/images/sabun.png",
+    unit: "dona",
+  },
+  {
+    id: "b4",
+    name: "Shampun",
+    category: "boshqalar",
+    image: "/images/shampun.png",
+    unit: "shisha",
+  },
+  {
+    id: "b5",
+    name: "Tish cho'tkasi",
+    category: "boshqalar",
+    image: "/images/tish-chotkasi.png",
+    unit: "dona",
+  },
 ]
 
 const categories = [
@@ -199,6 +243,7 @@ const categories = [
   { id: "mevalar", name: "Mevalar", icon: "🍎", description: "Shirin va foydali mevalar" },
   { id: "ichimliklar", name: "Ichimliklar", icon: "🥤", description: "Ichimliklar va tetiklantiruvchi mahsulotlar" },
   { id: "yog-mahsulotlari", name: "Yog' mahsulotlari", icon: "🫒", description: "Pishirish uchun yog'lar va sariyog'" },
+  { id: "boshqalar", name: "Boshqalar", icon: "➕", description: "Qo'shimcha mahsulot qo'shish" },
 ]
 
 const banners = [
@@ -262,6 +307,9 @@ export default function ShoppingPlatform() {
   const [showShareDialog, setShowShareDialog] = useState(false)
   const [sharePhoneNumber, setSharePhoneNumber] = useState("")
   const [foundUsers, setFoundUsers] = useState<Array<{ id: string; name: string; phone: string }>>([])
+  const [showExtraProductDialog, setShowExtraProductDialog] = useState(false)
+  const [extraProductName, setExtraProductName] = useState("")
+  const [extraProductPrice, setExtraProductPrice] = useState("")
 
   // Auto-rotate banner carousel
   useEffect(() => {
@@ -285,11 +333,18 @@ export default function ShoppingPlatform() {
       setShowStartDialog(false)
       setListName("")
 
-      // If there was a pending category selection, go to products
+      // If there was a pending category selection, handle it
       if (pendingCategory) {
-        setSelectedCategory(pendingCategory)
-        setCurrentView("products")
-        setPendingCategory("")
+        if (pendingCategory === "boshqalar") {
+          // Open extra product dialog for "Other" category
+          setShowExtraProductDialog(true)
+          setPendingCategory("")
+        } else {
+          // Go to products for other categories
+          setSelectedCategory(pendingCategory)
+          setCurrentView("products")
+          setPendingCategory("")
+        }
       } else {
         setCurrentView("categories")
       }
@@ -297,6 +352,18 @@ export default function ShoppingPlatform() {
   }
 
   const handleCategorySelect = (categoryId: string) => {
+    // Special handling for "Other" category - open add extra product dialog
+    if (categoryId === "boshqalar") {
+      if (!shoppingList) {
+        setPendingCategory(categoryId)
+        setShowStartDialog(true)
+        return
+      }
+      // Open the extra product dialog directly
+      setShowExtraProductDialog(true)
+      return
+    }
+
     // If no active shopping list, prompt user to create one first
     if (!shoppingList) {
       setPendingCategory(categoryId)
@@ -424,6 +491,34 @@ export default function ShoppingPlatform() {
     setShowShareDialog(false)
     setSharePhoneNumber("")
     setFoundUsers([])
+  }
+
+  const handleAddExtraProduct = () => {
+    if (extraProductName.trim() && extraProductPrice && shoppingList) {
+      const extraProduct: ExtraProduct = {
+        id: `extra_${Date.now()}`,
+        name: extraProductName.trim(),
+        price: Number.parseFloat(extraProductPrice),
+        isExtra: true,
+      }
+
+      const newItem: ShoppingItem = {
+        id: Date.now().toString(),
+        product: extraProduct,
+        quantity: 1,
+        purchased: false,
+        actualPrice: extraProduct.price,
+      }
+
+      setShoppingList({
+        ...shoppingList,
+        items: [...shoppingList.items, newItem],
+      })
+
+      setShowExtraProductDialog(false)
+      setExtraProductName("")
+      setExtraProductPrice("")
+    }
   }
 
   return (
@@ -582,7 +677,7 @@ export default function ShoppingPlatform() {
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Turkum tanlang</h2>
               <p className="text-gray-600">Ro'yxatingizga mahsulot qo'shish uchun turkumni tanlang</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {categories.map((category) => (
                 <Card
                   key={category.id}
@@ -669,19 +764,27 @@ export default function ShoppingPlatform() {
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
-                          <Image
-                            src={item.product.image || "/placeholder.svg"}
-                            alt={item.product.name}
-                            width={60}
-                            height={60}
-                            className="rounded-md"
-                          />
+                          {"isExtra" in item.product ? (
+                            <div className="w-15 h-15 bg-gray-200 rounded-md flex items-center justify-center">
+                              <span className="text-2xl">📦</span>
+                            </div>
+                          ) : (
+                            <Image
+                              src={item.product.image || "/placeholder.svg"}
+                              alt={item.product.name}
+                              width={60}
+                              height={60}
+                              className="rounded-md"
+                            />
+                          )}
                           <div>
                             <h3 className={`font-semibold ${item.purchased ? "line-through text-green-700" : ""}`}>
                               {item.product.name}
                             </h3>
                             <p className="text-sm text-gray-600">
-                              {item.quantity} {item.product.unit}
+                              {"isExtra" in item.product
+                                ? `${item.product.price.toFixed(2)} so'm`
+                                : `${item.quantity} ${item.product.unit}`}
                             </p>
                             {item.purchased && item.actualPrice && (
                               <p className="text-sm font-semibold text-green-700">
@@ -703,7 +806,7 @@ export default function ShoppingPlatform() {
                               className="bg-blue-600 hover:bg-blue-700"
                             >
                               <Edit3 className="h-3 w-3 mr-1" />
-                              Olinmadi
+                              Sotib olindi deb belgilash
                             </Button>
                           )}
                           <Button size="sm" variant="outline" onClick={() => handleRemoveItem(item.id)}>
@@ -714,6 +817,16 @@ export default function ShoppingPlatform() {
                     </CardContent>
                   </Card>
                 ))}
+
+                <div className="mt-4 mb-4">
+                  <Button
+                    onClick={() => setShowExtraProductDialog(true)}
+                    variant="outline"
+                    className="w-full py-3 text-lg border-2 border-green-500 text-green-600 hover:bg-green-50 bg-transparent"
+                  >
+                    ➕ Qo'shimcha mahsulot qo'shish
+                  </Button>
+                </div>
 
                 <div className="mt-4 mb-4">
                   <Button
@@ -825,17 +938,25 @@ export default function ShoppingPlatform() {
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {list.items.map((item) => (
                           <div key={item.id} className="flex items-center space-x-3 bg-white p-3 rounded-lg">
-                            <Image
-                              src={item.product.image || "/placeholder.svg"}
-                              alt={item.product.name}
-                              width={40}
-                              height={40}
-                              className="rounded"
-                            />
+                            {"isExtra" in item.product ? (
+                              <div className="w-10 h-10 bg-gray-200 rounded-md flex items-center justify-center">
+                                <span className="text-xl">📦</span>
+                              </div>
+                            ) : (
+                              <Image
+                                src={item.product.image || "/placeholder.svg"}
+                                alt={item.product.name}
+                                width={40}
+                                height={40}
+                                className="rounded"
+                              />
+                            )}
                             <div className="flex-1">
                               <p className="font-medium text-sm">{item.product.name}</p>
                               <p className="text-xs text-gray-600">
-                                {item.quantity} {item.product.unit} - {item.actualPrice?.toFixed(2)} so'm
+                                {"isExtra" in item.product
+                                  ? `${item.product.price.toFixed(2)} so'm`
+                                  : `${item.quantity} ${item.product.unit} - ${item.actualPrice?.toFixed(2)} so'm`}
                               </p>
                             </div>
                             <Check className="h-4 w-4 text-green-600" />
@@ -858,7 +979,7 @@ export default function ShoppingPlatform() {
             <DialogTitle>{selectedProduct?.name}ni savatga qo'shish</DialogTitle>
             <DialogDescription>Sotib olmoqchi bo'lgan miqdorni kiriting</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex items-center space-x-4">
               {selectedProduct && (
                 <Image
@@ -874,7 +995,7 @@ export default function ShoppingPlatform() {
                 <p className="text-sm text-gray-600">har {selectedProduct?.unit}</p>
               </div>
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="quantity">Miqdor ({selectedProduct?.unit})</Label>
               <Input
                 id="quantity"
@@ -902,7 +1023,7 @@ export default function ShoppingPlatform() {
             <DialogTitle>Sotib olindi deb belgilash</DialogTitle>
             <DialogDescription>Bu mahsulot uchun to'lagan haqiqiy narxni kiriting</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex items-center space-x-4">
               {selectedItem && (
                 <Image
@@ -920,7 +1041,7 @@ export default function ShoppingPlatform() {
                 </p>
               </div>
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="price">To'langan narx (so'm)</Label>
               <Input
                 id="price"
@@ -947,8 +1068,8 @@ export default function ShoppingPlatform() {
             <DialogTitle>Bozorlik ro'yxatingizni yarating</DialogTitle>
             <DialogDescription>Boshlash uchun bozorlik ro'yxatingizga nom bering</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div>
+          <div className="space-y-6">
+            <div className="space-y-2">
               <Label htmlFor="listName">Bozorlik ro'yxati nomi</Label>
               <Input
                 id="listName"
@@ -973,8 +1094,8 @@ export default function ShoppingPlatform() {
             <DialogTitle>Ro'yxatni ulashish</DialogTitle>
             <DialogDescription>Ro'yxatni yubormoqchi bo'lgan odamning telefon raqamini kiriting</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div>
+          <div className="space-y-6">
+            <div className="space-y-2">
               <Label htmlFor="sharePhone">Telefon raqami</Label>
               <Input
                 id="sharePhone"
@@ -1021,6 +1142,47 @@ export default function ShoppingPlatform() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowShareDialog(false)}>
               Bekor qilish
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Extra Product Dialog */}
+      <Dialog open={showExtraProductDialog} onOpenChange={setShowExtraProductDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Qo'shimcha mahsulot qo'shish</DialogTitle>
+            <DialogDescription>Ro'yxatda yo'q mahsulot nomi va narxini kiriting</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="extraProductName">Mahsulot nomi</Label>
+              <Input
+                id="extraProductName"
+                value={extraProductName}
+                onChange={(e) => setExtraProductName(e.target.value)}
+                placeholder="masalan, Tuz, Shakar, Sabun..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="extraProductPrice">Narxi (so'm)</Label>
+              <Input
+                id="extraProductPrice"
+                type="number"
+                step="0.01"
+                min="0"
+                value={extraProductPrice}
+                onChange={(e) => setExtraProductPrice(e.target.value)}
+                placeholder="masalan, 5000"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowExtraProductDialog(false)}>
+              Bekor qilish
+            </Button>
+            <Button onClick={handleAddExtraProduct} disabled={!extraProductName.trim() || !extraProductPrice}>
+              Qo'shish
             </Button>
           </DialogFooter>
         </DialogContent>

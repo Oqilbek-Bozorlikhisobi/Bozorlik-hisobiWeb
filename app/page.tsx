@@ -573,12 +573,12 @@ export default function ShoppingPlatform() {
                     <p className="text-sm text-gray-500">
                       {shoppingList
                         ? `${getPurchasedCount()} dan ${shoppingList.items.length} ta mahsulot sotib olindi`
-                        : "Faol bozorlik ro'yxati yo'q"}
+                        : "Yangi ro‘yxat yaratish"}
                     </p>
                   </div>
                 </div>
                 <Button onClick={() => setShowStartDialog(true)} className="bg-green-600 hover:bg-green-700 text-white">
-                  🛒 Bozorlik
+                Yangi ro‘yxat
                 </Button>
               </div>
             </div>
@@ -744,7 +744,7 @@ export default function ShoppingPlatform() {
                 <p className="text-gray-600">Bozorlik jarayoni va xarajatlaringizni kuzatib boring</p>
               </div>
               <Button variant="outline" onClick={() => setCurrentView("categories")}>
-                Ko'proq mahsulot qo'shish
+                Mahsulot qo'shish 
               </Button>
             </div>
 
@@ -806,7 +806,7 @@ export default function ShoppingPlatform() {
                               className="bg-blue-600 hover:bg-blue-700"
                             >
                               <Edit3 className="h-3 w-3 mr-1" />
-                              Sotib olindi deb belgilash
+                              Sotib olindi 
                             </Button>
                           )}
                           <Button size="sm" variant="outline" onClick={() => handleRemoveItem(item.id)}>
@@ -1020,7 +1020,7 @@ export default function ShoppingPlatform() {
       <Dialog open={showPriceDialog} onOpenChange={setShowPriceDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Sotib olindi deb belgilash</DialogTitle>
+            <DialogTitle>Sotib olindi</DialogTitle>
             <DialogDescription>Bu mahsulot uchun to'lagan haqiqiy narxni kiriting</DialogDescription>
           </DialogHeader>
           <div className="space-y-6">
@@ -1056,7 +1056,7 @@ export default function ShoppingPlatform() {
           </div>
           <DialogFooter>
             <Button onClick={handleSavePrice} disabled={!price}>
-              Sotib olindi deb belgilash
+              Sotib olindi
             </Button>
           </DialogFooter>
         </DialogContent>

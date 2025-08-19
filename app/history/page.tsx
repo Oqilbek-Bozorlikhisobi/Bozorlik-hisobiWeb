@@ -34,7 +34,7 @@ const Page = () => {
   const router = useRouter()
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto p-7">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -55,7 +55,8 @@ const Page = () => {
               Hali tarix yo'q
             </h3>
             <p className="text-gray-600 mb-4">Birinchi bozorlikni yakunlang</p>
-            <Button onClick={() => router.push("/")}>
+            <Button className="bg-[#09bcbf]"
+            onClick={() => router.push("/")}>
               Bozorlik boshlash
             </Button>
           </CardContent>

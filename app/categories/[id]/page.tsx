@@ -123,7 +123,7 @@
     }
 
     return (
-      <div>
+      <div className="max-w-7xl mx-auto p-7">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">

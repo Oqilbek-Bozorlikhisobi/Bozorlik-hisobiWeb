@@ -75,22 +75,7 @@ const banners = [
     bgColor: "from-orange-500 via-red-500 to-pink-500",
     image: "/placeholder.svg?height=120&width=120&text=Summer+Sale",
   },
-  {
-    id: 3,
-    title: "Yangi mahsulotlar",
-    discount: "10",
-    subtitle: "Birinchi xaridingizda",
-    bgColor: "from-green-500 via-blue-500 to-purple-500",
-    image: "/placeholder.svg?height=120&width=120&text=New+Products",
-  },
-  {
-    id: 4,
-    title: "Hafta soni takliflar",
-    discount: "30",
-    subtitle: "Tanlangan mahsulotlarda",
-    bgColor: "from-blue-600 via-indigo-500 to-purple-600",
-    image: "/placeholder.svg?height=120&width=120&text=Weekly+Deal",
-  },
+  
 ]
 
 // Mock registered users for demonstration
@@ -224,7 +209,7 @@ export default function ShoppingPlatform() {
     <>
     <div className="min-h-screen bg-gray-50">
       {/* Header with User Info */}
-      <header className="bg-white shadow-sm border-b">
+      {/* <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
@@ -257,7 +242,7 @@ export default function ShoppingPlatform() {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Categories View */}
@@ -272,12 +257,12 @@ export default function ShoppingPlatform() {
                     <p className="text-sm text-gray-500">
                       {shoppingList
                         ? `${getPurchasedCount()} dan ${shoppingList.items.length} ta mahsulot sotib olindi`
-                        : "Faol bozorlik ro'yxati yo'q"}
+                        : "Bozorlik ro‘yxatini yarating"}
                     </p>
                   </div>
                 </div>
-                <Button onClick={() => setShowStartDialog(true)} className="bg-green-600 hover:bg-green-700 text-white">
-                  🛒 Bozorlik
+                <Button onClick={() => setShowStartDialog(true)} className="bg-[#dd993e] hover:bg-[#09bcbf] text-white">
+                  Ro‘yxat yaratish
                 </Button>
               </div>
             </div>

@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Providers } from "./Providers";
+import HeaderWrapper from "./header/HeaderProps"; 
 
 export const metadata: Metadata = {
   title: "v0 App",
@@ -27,7 +28,10 @@ export default function RootLayout({
         `}</style>
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <HeaderWrapper />
+          {children}
+        </Providers>
       </body>
     </html>
   );

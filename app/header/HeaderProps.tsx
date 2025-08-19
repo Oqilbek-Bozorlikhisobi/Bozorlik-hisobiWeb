@@ -1,0 +1,53 @@
+"use client"
+
+import { ShoppingCart, User } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { useRouter } from "next/navigation"
+import { ShoppingList } from "@/types" // agar ShoppingList tipini boshqa faylda saqlasang
+
+interface HeaderProps {
+  shoppingList: ShoppingList | null
+}
+
+export default function Header({ shoppingList }: HeaderProps) {
+  const router = useRouter()
+
+  const handleBasketClick = () => {
+    router.push(`/basket`) // Savat sahifasiga yo‘naltirish
+  }
+
+  const handleHistoryClick = () => {
+    router.push(`/history`) // Tarix sahifasiga yo‘naltirish
+  }
+
+  return (
+    <header className="bg-white shadow-sm border-b">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center space-x-4">
+            <User className="h-8 w-8 text-blue-600" />
+            <div>
+              <h1 className="text-xl font-semibold text-gray-900">Tog'ga</h1>
+              <p className="text-sm text-gray-500">Xush kelibsiz!</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Button onClick={handleBasketClick} className="bg-[#09bcbf] relative">
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Savat
+              {shoppingList && shoppingList.items.length > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                  {shoppingList.items.length}
+                </Badge>
+              )}
+            </Button>
+            <Button 
+            className="bg-[#09bcbf]"
+            onClick={handleHistoryClick}>Tarix</Button>
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+}

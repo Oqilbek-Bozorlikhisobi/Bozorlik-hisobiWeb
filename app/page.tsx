@@ -14,9 +14,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { ShoppingCart, Check, Edit3, Trash2, User } from "lucide-react"
-import Image from "next/image"
+import { ShoppingCart, User } from "lucide-react"
+import { useRouter } from "next/navigation";
+import { useShoppingStore } from "@/store/shoppingStore"
 
 // Types
 interface Product {
@@ -49,194 +49,6 @@ interface ShoppingList {
   createdAt: Date
   completedAt?: Date
 }
-
-// Sample products data in Uzbek
-const products: Product[] = [
-  // Sabzavotlar (Vegetables)
-  {
-    id: "v1",
-    name: "Pomidor",
-    category: "sabzavotlar",
-    image: "/images/pomidor.png",
-    unit: "kg",
-  },
-  {
-    id: "v2",
-    name: "Sabzi",
-    category: "sabzavotlar",
-    image: "/images/sabzi.png",
-    unit: "kg",
-  },
-  {
-    id: "v3",
-    name: "Piyoz",
-    category: "sabzavotlar",
-    image: "/images/piyoz.png",
-    unit: "kg",
-  },
-  {
-    id: "v4",
-    name: "Kartoshka",
-    category: "sabzavotlar",
-    image: "/images/kartoshka.png",
-    unit: "kg",
-  },
-  {
-    id: "v5",
-    name: "Bodring",
-    category: "sabzavotlar",
-    image: "/images/bodring.png",
-    unit: "kg",
-  },
-  {
-    id: "v6",
-    name: "Qalampir",
-    category: "sabzavotlar",
-    image: "/images/qalampir.png",
-    unit: "kg",
-  },
-
-  // Mevalar (Fruits)
-  {
-    id: "f1",
-    name: "Olma",
-    category: "mevalar",
-    image: "/images/olma.png",
-    unit: "kg",
-  },
-  {
-    id: "f2",
-    name: "Banan",
-    category: "mevalar",
-    image: "/images/banan.png",
-    unit: "kg",
-  },
-  {
-    id: "f3",
-    name: "Apelsin",
-    category: "mevalar",
-    image: "/images/apelsin.png",
-    unit: "kg",
-  },
-  {
-    id: "f4",
-    name: "Uzum",
-    category: "mevalar",
-    image: "/images/uzum.png",
-    unit: "kg",
-  },
-  {
-    id: "f5",
-    name: "Qulupnay",
-    category: "mevalar",
-    image: "/images/qulupnay.png",
-    unit: "kg",
-  },
-
-  // Ichimliklar (Drinks)
-  {
-    id: "d1",
-    name: "Suv",
-    category: "ichimliklar",
-    image: "/images/suv.png",
-    unit: "shisha",
-  },
-  {
-    id: "d2",
-    name: "Apelsin sharbati",
-    category: "ichimliklar",
-    image: "/images/apelsin-sharbati.png",
-    unit: "shisha",
-  },
-  {
-    id: "d3",
-    name: "Sut",
-    category: "ichimliklar",
-    image: "/images/sut.png",
-    unit: "litr",
-  },
-  {
-    id: "d4",
-    name: "Qahva",
-    category: "ichimliklar",
-    image: "/images/qahva.png",
-    unit: "paket",
-  },
-  {
-    id: "d5",
-    name: "Choy",
-    category: "ichimliklar",
-    image: "/images/choy.png",
-    unit: "paket",
-  },
-
-  // Yog' mahsulotlari (Oil Products)
-  {
-    id: "o1",
-    name: "Zaytun yog'i",
-    category: "yog-mahsulotlari",
-    image: "/images/zaytun-yogi.png",
-    unit: "shisha",
-  },
-  {
-    id: "o2",
-    name: "Kungaboqar yog'i",
-    category: "yog-mahsulotlari",
-    image: "/images/kungaboqar-yogi.png",
-    unit: "shisha",
-  },
-  {
-    id: "o3",
-    name: "Sariyog'",
-    category: "yog-mahsulotlari",
-    image: "/images/sariyog.png",
-    unit: "paket",
-  },
-  {
-    id: "o4",
-    name: "Margarin",
-    category: "yog-mahsulotlari",
-    image: "/images/margarin.png",
-    unit: "paket",
-  },
-
-  // Boshqalar (Others)
-  {
-    id: "b1",
-    name: "Tuz",
-    category: "boshqalar",
-    image: "/images/tuz.png",
-    unit: "paket",
-  },
-  {
-    id: "b2",
-    name: "Shakar",
-    category: "boshqalar",
-    image: "/images/shakar.png",
-    unit: "kg",
-  },
-  {
-    id: "b3",
-    name: "Sabun",
-    category: "boshqalar",
-    image: "/images/sabun.png",
-    unit: "dona",
-  },
-  {
-    id: "b4",
-    name: "Shampun",
-    category: "boshqalar",
-    image: "/images/shampun.png",
-    unit: "shisha",
-  },
-  {
-    id: "b5",
-    name: "Tish cho'tkasi",
-    category: "boshqalar",
-    image: "/images/tish-chotkasi.png",
-    unit: "dona",
-  },
-]
 
 const categories = [
   { id: "sabzavotlar", name: "Sabzavotlar", icon: "🥕", description: "Sog'lom ovqatlar uchun yangi sabzavotlar" },
@@ -290,16 +102,13 @@ const registeredUsers = [
 ]
 
 export default function ShoppingPlatform() {
-  const [currentView, setCurrentView] = useState<"categories" | "products" | "basket" | "history">("categories")
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<string>("")
   const [shoppingList, setShoppingList] = useState<ShoppingList | null>(null)
   const [listName, setListName] = useState("")
   const [showStartDialog, setShowStartDialog] = useState(false)
-  const [showQuantityDialog, setShowQuantityDialog] = useState(false)
   const [showPriceDialog, setShowPriceDialog] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [selectedItem, setSelectedItem] = useState<ShoppingItem | null>(null)
-  const [quantity, setQuantity] = useState("")
   const [price, setPrice] = useState("")
   const [shoppingHistory, setShoppingHistory] = useState<ShoppingList[]>([])
   const [pendingCategory, setPendingCategory] = useState<string>("")
@@ -307,11 +116,24 @@ export default function ShoppingPlatform() {
   const [showShareDialog, setShowShareDialog] = useState(false)
   const [sharePhoneNumber, setSharePhoneNumber] = useState("")
   const [foundUsers, setFoundUsers] = useState<Array<{ id: string; name: string; phone: string }>>([])
-  const [showExtraProductDialog, setShowExtraProductDialog] = useState(false)
   const [extraProductName, setExtraProductName] = useState("")
   const [extraProductQuantity, setExtraProductQuantity] = useState("") // New state variable for extra product quantity
   const [extraProductType, setExtraProductType] = useState("") // New state variable for extra product type
-  const [productType, setProductType] = useState("") // New state variable for product type
+  const {showExtraProductDialog, setShowExtraProductDialog} = useShoppingStore()
+
+  console.log(router);
+  
+
+  const handleCategoryClick = (id: string) => {
+    router.push(`/categories/${id}`); // Sahifaga yo‘naltiramiz
+  };
+  const handleHistoryClick = () => {
+    router.push(`/history`); // Sahifaga yo‘naltiramiz
+  };
+
+  const handleBasketClick = () => {
+    router.push(`/basket`); // Sahifaga yo‘naltiramiz
+  };
 
   // Auto-rotate banner carousel
   useEffect(() => {
@@ -344,153 +166,23 @@ export default function ShoppingPlatform() {
         } else {
           // Go to products for other categories
           setSelectedCategory(pendingCategory)
-          setCurrentView("products")
           setPendingCategory("")
         }
-      } else {
-        setCurrentView("categories")
-      }
+      } 
     }
   }
 
-  const handleCategorySelect = (categoryId: string) => {
-    // Special handling for "Other" category - open add extra product dialog
-    if (categoryId === "boshqalar") {
-      if (!shoppingList) {
-        setPendingCategory(categoryId)
-        setShowStartDialog(true)
-        return
-      }
-      // Open the extra product dialog directly
-      setShowExtraProductDialog(true)
-      return
-    }
+ 
 
-    // If no active shopping list, prompt user to create one first
-    if (!shoppingList) {
-      setPendingCategory(categoryId)
-      setShowStartDialog(true)
-      return
-    }
-
-    // If shopping list exists, proceed normally
-    setSelectedCategory(categoryId)
-    setCurrentView("products")
-  }
-
-  const handleProductSelect = (product: Product) => {
-    setSelectedProduct(product)
-    setQuantity("")
-    setProductType("") // Reset product type
-    setShowQuantityDialog(true)
-  }
-
-  const handleAddToBasket = () => {
-    if (selectedProduct && quantity && shoppingList) {
-      const newItem: ShoppingItem = {
-        id: Date.now().toString(),
-        product: {
-          ...selectedProduct,
-          name: productType ? `${selectedProduct.name} (${productType})` : selectedProduct.name,
-        },
-        quantity: Number.parseFloat(quantity),
-        purchased: false,
-      }
-
-      setShoppingList({
-        ...shoppingList,
-        items: [...shoppingList.items, newItem],
-      })
-
-      setShowQuantityDialog(false)
-      setSelectedProduct(null)
-      setQuantity("")
-      setProductType("") // Reset product type
-    }
-  }
-
-  const handleMarkAsPurchased = (item: ShoppingItem) => {
-    setSelectedItem(item)
-    setPrice("")
-    setShowPriceDialog(true)
-  }
-
-  const handleSavePrice = () => {
-    if (selectedItem && price && shoppingList) {
-      const updatedItems = shoppingList.items.map((item) =>
-        item.id === selectedItem.id ? { ...item, purchased: true, actualPrice: Number.parseFloat(price) } : item,
-      )
-
-      setShoppingList({
-        ...shoppingList,
-        items: updatedItems,
-      })
-
-      setShowPriceDialog(false)
-      setSelectedItem(null)
-      setPrice("")
-    }
-  }
-
-  const handleRemoveItem = (itemId: string) => {
-    if (shoppingList) {
-      setShoppingList({
-        ...shoppingList,
-        items: shoppingList.items.filter((item) => item.id !== itemId),
-      })
-    }
-  }
-
-  const handleCompleteShopping = () => {
-    if (shoppingList && isShoppingComplete()) {
-      const completedList = {
-        ...shoppingList,
-        completedAt: new Date(),
-      }
-
-      setShoppingHistory((prev) => [completedList, ...prev])
-
-      // Reset shopping list to null (clear the header)
-      setShoppingList(null)
-      setCurrentView("categories")
-    }
-  }
-
-  const isShoppingComplete = () => {
-    if (!shoppingList || shoppingList.items.length === 0) return false
-    return shoppingList.items.every((item) => item.purchased)
-  }
-
-  const getTotalExpense = () => {
-    if (!shoppingList) return 0
-    return shoppingList.items
-      .filter((item) => item.purchased && item.actualPrice)
-      .reduce((total, item) => total + (item.actualPrice || 0), 0)
-  }
-
+  
   const getPurchasedCount = () => {
     if (!shoppingList) return 0
     return shoppingList.items.filter((item) => item.purchased).length
   }
 
-  const handleShareList = () => {
-    setShowShareDialog(true)
-    setSharePhoneNumber("")
-    setFoundUsers([])
-  }
+  
 
-  const handlePhoneNumberChange = (phone: string) => {
-    setSharePhoneNumber(phone)
-    if (phone.length >= 8) {
-      // Search for users with matching phone numbers
-      const matches = registeredUsers.filter(
-        (user) => user.phone.includes(phone) || user.phone.replace(/\D/g, "").includes(phone.replace(/\D/g, "")),
-      )
-      setFoundUsers(matches)
-    } else {
-      setFoundUsers([])
-    }
-  }
+  
 
   const handleSendToUser = (user: { id: string; name: string; phone: string }) => {
     // Simulate sending the list
@@ -529,6 +221,7 @@ export default function ShoppingPlatform() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-gray-50">
       {/* Header with User Info */}
       <header className="bg-white shadow-sm border-b">
@@ -543,8 +236,8 @@ export default function ShoppingPlatform() {
             </div>
             <div className="flex items-center space-x-4">
               <Button
-                variant={currentView === "basket" ? "default" : "outline"}
-                onClick={() => setCurrentView("basket")}
+                // variant={currentView === "basket" ? "default" : "outline"}
+                onClick={handleBasketClick}
                 className="relative"
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
@@ -556,8 +249,8 @@ export default function ShoppingPlatform() {
                 )}
               </Button>
               <Button
-                variant={currentView === "history" ? "default" : "outline"}
-                onClick={() => setCurrentView("history")}
+                // variant={currentView === "history" ? "default" : "outline"}
+                onClick={handleHistoryClick}
               >
                 Tarix
               </Button>
@@ -568,7 +261,6 @@ export default function ShoppingPlatform() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Categories View */}
-        {currentView === "categories" && (
           <div>
             {/* Shopping List Info Section */}
             <div className="mb-6">
@@ -689,7 +381,7 @@ export default function ShoppingPlatform() {
                 <Card
                   key={category.id}
                   className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
-                  onClick={() => handleCategorySelect(category.id)}
+                  onClick={() => handleCategoryClick(category.id)}
                 >
                   <CardContent className="p-6 text-center">
                     <div className="text-4xl mb-4">{category.icon}</div>
@@ -700,375 +392,12 @@ export default function ShoppingPlatform() {
               ))}
             </div>
           </div>
-        )}
-
-        {/* Products View */}
-        {currentView === "products" && (
-          <div>
-            <div className="mb-8 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  {categories.find((c) => c.id === selectedCategory)?.name}
-                </h2>
-                <p className="text-gray-600">Bozorlik ro'yxatingizga qo'shish uchun mahsulotni bosing</p>
-              </div>
-              <Button variant="outline" onClick={() => setCurrentView("categories")}>
-                Turkumlarga qaytish
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {products
-                .filter((product) => product.category === selectedCategory)
-                .map((product) => (
-                  <Card
-                    key={product.id}
-                    className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
-                    onClick={() => handleProductSelect(product)}
-                  >
-                    <CardContent className="p-4">
-                      <Image
-                        src={product.image || "/placeholder.svg"}
-                        alt={product.name}
-                        width={150}
-                        height={150}
-                        className="w-full h-32 object-cover rounded-md mb-3"
-                      />
-                      <h3 className="font-semibold text-center">{product.name}</h3>
-                      <p className="text-sm text-gray-500 text-center">har {product.unit}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-            </div>
-          </div>
-        )}
-
-        {/* Basket View */}
-        {currentView === "basket" && (
-          <div>
-            <div className="mb-8 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Bozorlik savati</h2>
-                <p className="text-gray-600">Bozorlik jarayoni va xarajatlaringizni kuzatib boring</p>
-              </div>
-              <Button variant="outline" onClick={() => setCurrentView("categories")}>
-                Ko'proq mahsulot qo'shish
-              </Button>
-            </div>
-
-            {!shoppingList || shoppingList.items.length === 0 ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <ShoppingCart className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Savatingiz bo'sh</h3>
-                  <p className="text-gray-600 mb-4">Bozorlik ro'yxatingizga mahsulot qo'shishni boshlang</p>
-                  <Button onClick={() => setCurrentView("categories")}>Turkumlarni ko'rish</Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {shoppingList.items.map((item) => (
-                  <Card key={item.id} className={item.purchased ? "bg-green-50 border-green-200" : ""}>
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          {"isExtra" in item.product ? (
-                            <div className="w-15 h-15 bg-gray-200 rounded-md flex items-center justify-center">
-                              <span className="text-2xl">📦</span>
-                            </div>
-                          ) : (
-                            <Image
-                              src={item.product.image || "/placeholder.svg"}
-                              alt={item.product.name}
-                              width={60}
-                              height={60}
-                              className="rounded-md"
-                            />
-                          )}
-                          <div>
-                            <h3 className={`font-semibold ${item.purchased ? "line-through text-green-700" : ""}`}>
-                              {item.product.name}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              {"isExtra" in item.product
-                                ? `${item.quantity} dona`
-                                : `${item.quantity} ${item.product.unit}`}
-                            </p>
-                            {item.purchased && item.actualPrice && (
-                              <p className="text-sm font-semibold text-green-700">
-                                To'landi: {item.actualPrice.toFixed(2)} so'm
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          {item.purchased ? (
-                            <Badge className="bg-green-100 text-green-800">
-                              <Check className="h-3 w-3 mr-1" />
-                              Sotib olindi
-                            </Badge>
-                          ) : (
-                            <Button
-                              size="sm"
-                              onClick={() => handleMarkAsPurchased(item)}
-                              className="bg-blue-600 hover:bg-blue-700"
-                            >
-                              <Edit3 className="h-3 w-3 mr-1" />
-                              Sotib olindi deb belgilash
-                            </Button>
-                          )}
-                          <Button size="sm" variant="outline" onClick={() => handleRemoveItem(item.id)}>
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-                <div className="mt-4 mb-4">
-                  <Button
-                    onClick={() => setShowExtraProductDialog(true)}
-                    className="w-full py-3 text-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 border-0"
-                  >
-                    ➕ Qo'shimcha mahsulot qo'shish
-                  </Button>
-                </div>
-                <div className="mt-4 mb-4">
-                  <Button
-                    onClick={handleShareList}
-                    className="w-full py-3 text-lg bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 border-0"
-                  >
-                    📤 Ro'yxatni ulashish
-                  </Button>
-                </div>
-                <Separator />
-                <Card className="bg-blue-50 border-blue-200">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="text-lg font-semibold text-blue-900">Bozorlik xulosasi</h3>
-                        <p className="text-sm text-blue-700">
-                          {getPurchasedCount()} dan {shoppingList.items.length} ta mahsulot sotib olindi
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-blue-900">{getTotalExpense().toFixed(2)} so'm</p>
-                        <p className="text-sm text-blue-700">Jami sarflangan</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-            {shoppingList?.items.length > 0 && (
-              <Card className="mt-4">
-                <CardContent className="p-4 text-center">
-                  <Button
-                    onClick={handleCompleteShopping}
-                    disabled={!isShoppingComplete()}
-                    className={`w-full py-3 text-lg ${
-                      isShoppingComplete() ? "bg-green-600 hover:bg-green-700" : "bg-gray-300 cursor-not-allowed"
-                    }`}
-                    size="lg"
-                  >
-                    {isShoppingComplete() ? "🎉 Bozorlik yakunlandi" : "Barcha mahsulotlarni sotib oling"}
-                  </Button>
-                  {!isShoppingComplete() && (
-                    <p className="text-sm text-gray-500 mt-2">
-                      {shoppingList.items.length - getPurchasedCount()} ta mahsulot qoldi
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        )}
-
-        {/* History View */}
-        {currentView === "history" && (
-          <div>
-            <div className="mb-8 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Bozorlik tarixi</h2>
-                <p className="text-gray-600">Yakunlangan bozorlik ro'yxatlari</p>
-              </div>
-              <Button variant="outline" onClick={() => setCurrentView("categories")}>
-                Yangi bozorlik
-              </Button>
-            </div>
-            {shoppingHistory.length === 0 ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <div className="text-4xl mb-4">📋</div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Hali tarix yo'q</h3>
-                  <p className="text-gray-600 mb-4">Birinchi bozorlikni yakunlang</p>
-                  <Button onClick={() => setCurrentView("categories")}>Bozorlik boshlash</Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-6">
-                {shoppingHistory.map((list) => (
-                  <Card key={list.id} className="bg-green-50 border-green-200">
-                    <CardContent className="p-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h3 className="text-xl font-semibold text-green-900">{list.name}</h3>
-                          <p className="text-sm text-green-700">
-                            Yakunlangan:{" "}
-                            {list.completedAt?.toLocaleDateString("uz-UZ", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-green-900">
-                            {list.items
-                              .filter((item) => item.purchased && item.actualPrice)
-                              .reduce((total, item) => total + (item.actualPrice || 0), 0)
-                              .toFixed(2)}{" "}
-                            so'm
-                          </p>
-                          <p className="text-sm text-green-700">{list.items.length} ta mahsulot</p>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {list.items.map((item) => (
-                          <div key={item.id} className="flex items-center space-x-3 bg-white p-3 rounded-lg">
-                            {"isExtra" in item.product ? (
-                              <div className="w-10 h-10 bg-gray-200 rounded-md flex items-center justify-center">
-                                <span className="text-xl">📦</span>
-                              </div>
-                            ) : (
-                              <Image
-                                src={item.product.image || "/placeholder.svg"}
-                                alt={item.product.name}
-                                width={40}
-                                height={40}
-                                className="rounded"
-                              />
-                            )}
-                            <div className="flex-1">
-                              <p className="font-medium text-sm">{item.product.name}</p>
-                              <p className="text-xs text-gray-600">
-                                {"isExtra" in item.product
-                                  ? `${item.quantity} dona - ${item.actualPrice?.toFixed(2)} so'm`
-                                  : `${item.quantity} ${item.product.unit} - ${item.actualPrice?.toFixed(2)} so'm`}
-                              </p>
-                            </div>
-                            <Check className="h-4 w-4 text-green-600" />
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </main>
 
-      {/* Quantity Dialog */}
-      <Dialog open={showQuantityDialog} onOpenChange={setShowQuantityDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{selectedProduct?.name}ni savatga qo'shish</DialogTitle>
-            <DialogDescription>Sotib olmoqchi bo'lgan miqdorni kiriting</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-6">
-            <div className="flex items-center space-x-4">
-              {selectedProduct && (
-                <Image
-                  src={selectedProduct.image || "/placeholder.svg"}
-                  alt={selectedProduct.name}
-                  width={80}
-                  height={80}
-                  className="rounded-md"
-                />
-              )}
-              <div>
-                <h3 className="font-semibold">{selectedProduct?.name}</h3>
-                <p className="text-sm text-gray-600">har {selectedProduct?.unit}</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="productType">Mahsulot turi/navi (ixtiyoriy)</Label>
-              <Input
-                id="productType"
-                value={productType}
-                onChange={(e) => setProductType(e.target.value)}
-                placeholder="masalan, Premium, Organik, 1L, 500ml..."
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="quantity">Miqdor ({selectedProduct?.unit})</Label>
-              <Input
-                id="quantity"
-                type="number"
-                step="0.1"
-                min="0.1"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                placeholder="masalan, 2.5"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleAddToBasket} disabled={!quantity}>
-              Savatga qo'shish
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      
 
       {/* Price Dialog */}
-      <Dialog open={showPriceDialog} onOpenChange={setShowPriceDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Sotib olindi deb belgilash</DialogTitle>
-            <DialogDescription>Bu mahsulot uchun to'lagan haqiqiy narxni kiriting</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-6">
-            <div className="flex items-center space-x-4">
-              {selectedItem && (
-                <Image
-                  src={selectedItem.product.image || "/placeholder.svg"}
-                  alt={selectedItem.product.name}
-                  width={80}
-                  height={80}
-                  className="rounded-md"
-                />
-              )}
-              <div>
-                <h3 className="font-semibold">{selectedItem?.product.name}</h3>
-                <p className="text-sm text-gray-600">
-                  {selectedItem?.quantity} {selectedItem?.product.unit}
-                </p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="price">To'langan narx (so'm)</Label>
-              <Input
-                id="price"
-                type="number"
-                step="0.01"
-                min="0"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="masalan, 15000"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button onClick={handleSavePrice} disabled={!price}>
-              Sotib olindi
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      
 
       <Dialog open={showStartDialog} onOpenChange={setShowStartDialog}>
         <DialogContent>
@@ -1096,62 +425,7 @@ export default function ShoppingPlatform() {
       </Dialog>
 
       {/* Share Dialog */}
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Ro'yxatni ulashish</DialogTitle>
-            <DialogDescription>Ro'yxatni yubormoqchi bo'lgan odamning telefon raqamini kiriting</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="sharePhone">Telefon raqami</Label>
-              <Input
-                id="sharePhone"
-                type="tel"
-                value={sharePhoneNumber}
-                onChange={(e) => handlePhoneNumberChange(e.target.value)}
-                placeholder="+998 90 123 45 67"
-                className="mt-1"
-              />
-            </div>
-            {foundUsers.length > 0 && (
-              <div className="space-y-2">
-                <Label>Topilgan foydalanuvchilar:</Label>
-                <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {foundUsers.map((user) => (
-                    <div
-                      key={user.id}
-                      onClick={() => handleSendToUser(user)}
-                      className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{user.name}</p>
-                        <p className="text-xs text-gray-500">{user.phone}</p>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        Yuborish
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {sharePhoneNumber.length >= 8 && foundUsers.length === 0 && (
-              <div className="text-center py-4 text-gray-500">
-                <p>Bu raqam bilan ro'yxatdan o'tgan foydalanuvchi topilmadi</p>
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowShareDialog(false)}>
-              Bekor qilish
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      
 
       {/* Extra Product Dialog */}
       <Dialog open={showExtraProductDialog} onOpenChange={setShowExtraProductDialog}>
@@ -1203,6 +477,7 @@ export default function ShoppingPlatform() {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   )
 }
 

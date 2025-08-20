@@ -1,0 +1,188 @@
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Loader2, User, Lock, Phone } from "lucide-react"
+
+interface LoginFormProps {
+  onLoginSuccess: (userData: any) => void
+  onShowRegister: () => void
+}
+
+export default function LoginForm({ onLoginSuccess, onShowRegister }: LoginFormProps) {
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("https://bozorlik.fayzullayevsh.uz/auth/login/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber,
+          password: password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // Login successful
+        localStorage.setItem("userToken", data.token || "")
+        localStorage.setItem("userData", JSON.stringify(data.user || data))
+        onLoginSuccess(data.user || data)
+      } else {
+        // Login failed
+        setError(data.message || "Login xatosi yuz berdi")
+      }
+    } catch (err) {
+      setError("Tarmoq xatosi. Iltimos qayta urinib ko'ring.")
+      console.error("Login error:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const formatPhoneNumber = (value: string) => {
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, "")
+
+    // Format as +998 XX XXX XX XX
+    if (digits.length <= 3) {
+      return `+${digits}`
+    } else if (digits.length <= 5) {
+      return `+${digits.slice(0, 3)} ${digits.slice(3)}`
+    } else if (digits.length <= 8) {
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5)}`
+    } else if (digits.length <= 10) {
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`
+    } else {
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8, 10)} ${digits.slice(10, 12)}`
+    }
+  }
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value)
+    setPhoneNumber(formatted)
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+            <User className="h-8 w-8 text-blue-600" />
+          </div>
+          <CardTitle className="text-2xl font-bold text-gray-900">Kirish</CardTitle>
+          <CardDescription className="text-gray-600">Bozorlik platformasiga xush kelibsiz</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <Alert className="border-red-200 bg-red-50">
+                <AlertDescription className="text-red-800">{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700">
+                Telefon raqami
+              </Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  id="phoneNumber"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={handlePhoneChange}
+                  placeholder="+998 90 123 45 67"
+                  className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                Parol
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Parolingizni kiriting"
+                  className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  required
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading || !phoneNumber || !password}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors duration-200"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Kirilmoqda...
+                </>
+              ) : (
+                "Kirish"
+              )}
+            </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-gray-50 text-gray-500">yoki</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onShowRegister}
+              className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50 hover:border-green-600 font-medium py-2.5 rounded-lg transition-all duration-200 bg-transparent"
+            >
+              Ro'yxatdan o'tish
+            </Button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-xs text-gray-500">
+              Platformaga kirib, siz{" "}
+              <a href="#" className="text-blue-600 hover:underline">
+                Foydalanish shartlari
+              </a>{" "}
+              va{" "}
+              <a href="#" className="text-blue-600 hover:underline">
+                Maxfiylik siyosati
+              </a>
+              ga rozilik bildirasiz.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

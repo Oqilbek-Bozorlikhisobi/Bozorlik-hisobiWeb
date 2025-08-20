@@ -17,7 +17,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+<<<<<<< HEAD
     <html lang="uz">
+=======
+    
+    <html lang="en">
+>>>>>>> fa8eefcfb0bc3376829ea13721d6afc9a01d5afc
       <head>
         <style>{`
           html {
@@ -30,8 +35,10 @@ export default function RootLayout({
       <body>
         <Providers>
           <HeaderWrapper />
+          
           {children}
         </Providers>
+        
       </body>
     </html>
   );

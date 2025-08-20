@@ -318,7 +318,7 @@ export default function ShoppingPlatform() {
 >
   <CardContent className="flex flex-col items-center justify-center p-6">
     <Plus className="h-10 w-10 text-gray-500 group-hover:text-[#09bcbf] transition-colors" />
-    <p className="mt-2 text-gray-600 font-medium">Bosfdhqalar</p>
+    <p className="mt-2 text-gray-600 font-medium">Boshqalar</p>
   </CardContent>
 </Card>
   {data?.items?.map((category) => (

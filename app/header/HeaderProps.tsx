@@ -4,13 +4,13 @@ import { ShoppingCart, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
-import { ShoppingList } from "@/types" // agar ShoppingList tipini boshqa faylda saqlasang
+// import { ShoppingList } from "@/types" // agar ShoppingList tipini boshqa faylda saqlasang
 
-interface HeaderProps {
-  shoppingList: ShoppingList | null
-}
+// interface HeaderProps {
+//   shoppingList: ShoppingList | null
+// }
 
-export default function Header({ shoppingList }: HeaderProps) {
+export default function Header({ shoppingList }: any) {
   const router = useRouter()
 
   const handleBasketClick = () => {

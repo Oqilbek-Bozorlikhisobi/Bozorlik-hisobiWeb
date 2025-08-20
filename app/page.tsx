@@ -13,10 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
 import { ShoppingCart, User } from "lucide-react"
 import { useRouter } from "next/navigation";
 import { useShoppingStore } from "@/store/shoppingStore"
+import { useFetch } from "@/hooks/useFetch"
 
 // Types
 interface Product {
@@ -79,12 +79,7 @@ const banners = [
 ]
 
 // Mock registered users for demonstration
-const registeredUsers = [
-  { id: "1", name: "Aziz Karimov", phone: "+998901234567" },
-  { id: "2", name: "Malika Tosheva", phone: "+998907654321" },
-  { id: "3", name: "Bobur Aliyev", phone: "+998909876543" },
-  { id: "4", name: "Nigora Rahimova", phone: "+998905555555" },
-]
+
 
 export default function ShoppingPlatform() {
   const router = useRouter();
@@ -92,32 +87,26 @@ export default function ShoppingPlatform() {
   const [shoppingList, setShoppingList] = useState<ShoppingList | null>(null)
   const [listName, setListName] = useState("")
   const [showStartDialog, setShowStartDialog] = useState(false)
-  const [showPriceDialog, setShowPriceDialog] = useState(false)
-  const [selectedItem, setSelectedItem] = useState<ShoppingItem | null>(null)
-  const [price, setPrice] = useState("")
-  const [shoppingHistory, setShoppingHistory] = useState<ShoppingList[]>([])
   const [pendingCategory, setPendingCategory] = useState<string>("")
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0)
-  const [showShareDialog, setShowShareDialog] = useState(false)
-  const [sharePhoneNumber, setSharePhoneNumber] = useState("")
-  const [foundUsers, setFoundUsers] = useState<Array<{ id: string; name: string; phone: string }>>([])
   const [extraProductName, setExtraProductName] = useState("")
   const [extraProductQuantity, setExtraProductQuantity] = useState("") // New state variable for extra product quantity
   const [extraProductType, setExtraProductType] = useState("") // New state variable for extra product type
   const {showExtraProductDialog, setShowExtraProductDialog} = useShoppingStore()
+  const [search, setSearch] = useState("")
 
-  console.log(router);
-  
+  const { data } = useFetch<any>({
+    key: ['category',  search],
+    url: '/category',
+    config: {
+      params: {
+        search: search || null
+      },
+    },
+  });
 
   const handleCategoryClick = (id: string) => {
     router.push(`/categories/${id}`); // Sahifaga yo‘naltiramiz
-  };
-  const handleHistoryClick = () => {
-    router.push(`/history`); // Sahifaga yo‘naltiramiz
-  };
-
-  const handleBasketClick = () => {
-    router.push(`/basket`); // Sahifaga yo‘naltiramiz
   };
 
   // Auto-rotate banner carousel
@@ -165,17 +154,7 @@ export default function ShoppingPlatform() {
     return shoppingList.items.filter((item) => item.purchased).length
   }
 
-  
 
-  
-
-  const handleSendToUser = (user: { id: string; name: string; phone: string }) => {
-    // Simulate sending the list
-    alert(`Ro'yxat ${user.name}ga yuborildi!`)
-    setShowShareDialog(false)
-    setSharePhoneNumber("")
-    setFoundUsers([])
-  }
 
   const handleAddExtraProduct = () => {
     if (extraProductName.trim() && extraProductQuantity && shoppingList) {
@@ -208,42 +187,6 @@ export default function ShoppingPlatform() {
   return (
     <>
     <div className="min-h-screen bg-gray-50">
-      {/* Header with User Info */}
-      {/* <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <User className="h-8 w-8 text-blue-600" />
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">Tog'ga</h1>
-                <p className="text-sm text-gray-500">Xush kelibsiz!</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button
-                // variant={currentView === "basket" ? "default" : "outline"}
-                onClick={handleBasketClick}
-                className="relative"
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Savat
-                {shoppingList && shoppingList.items.length > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                    {shoppingList.items.length}
-                  </Badge>
-                )}
-              </Button>
-              <Button
-                // variant={currentView === "history" ? "default" : "outline"}
-                onClick={handleHistoryClick}
-              >
-                Tarix
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header> */}
-
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Categories View */}
           <div>
@@ -284,6 +227,7 @@ export default function ShoppingPlatform() {
                   type="text"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Mahsulotlar va turkumlar izlash"
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
             </div>
@@ -362,18 +306,28 @@ export default function ShoppingPlatform() {
               <p className="text-gray-600">Ro'yxatingizga mahsulot qo'shish uchun turkumni tanlang</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              {categories.map((category) => (
+              {data?.items?.map((category) => (
                 <Card
-                  key={category.id}
-                  className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
-                  onClick={() => handleCategoryClick(category.id)}
-                >
-                  <CardContent className="p-6 text-center">
-                    <div className="text-4xl mb-4">{category.icon}</div>
-                    <h3 className="text-lg font-semibold mb-2">{category.name}</h3>
-                    <p className="text-sm text-gray-600">{category.description}</p>
-                  </CardContent>
-                </Card>
+                key={category.id}
+                className="group cursor-pointer border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-white"
+                onClick={() => handleCategoryClick(category.id)}
+              >
+                <CardContent className="p-0 text-center">
+                  <div className="relative w-full h-44 overflow-hidden">
+                    <img
+                      src={category.image}
+                      alt={category.titleUz}
+                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                  <h3 className="text-lg font-semibold px-4 py-3 group-hover:text-blue-600 transition-colors duration-300">
+                    {category.titleUz}
+                  </h3>
+                </CardContent>
+              </Card>
+              
+              
               ))}
             </div>
           </div>

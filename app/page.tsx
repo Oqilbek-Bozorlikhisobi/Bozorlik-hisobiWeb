@@ -18,7 +18,7 @@ import { ShoppingCart, User } from "lucide-react"
 import { useRouter } from "next/navigation";
 import { useShoppingStore } from "@/store/shoppingStore"
 import { useFetch } from "@/hooks/useFetch"
-
+import LoginForm from "./login and reg /login-form"
 // Types
 interface Product {
   id: string
@@ -192,6 +192,7 @@ export default function ShoppingPlatform() {
 
   return (
     <>
+   
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Categories View */}

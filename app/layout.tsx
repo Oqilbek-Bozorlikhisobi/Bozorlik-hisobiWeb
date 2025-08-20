@@ -17,6 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    
     <html lang="en">
       <head>
         <style>{`
@@ -30,8 +31,10 @@ export default function RootLayout({
       <body>
         <Providers>
           <HeaderWrapper />
+          
           {children}
         </Providers>
+        
       </body>
     </html>
   );

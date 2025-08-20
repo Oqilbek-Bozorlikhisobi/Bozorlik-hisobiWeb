@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -50,13 +51,6 @@ interface ShoppingList {
   completedAt?: Date
 }
 
-const categories = [
-  { id: "sabzavotlar", name: "Sabzavotlar", icon: "🥕", description: "Sog'lom ovqatlar uchun yangi sabzavotlar" },
-  { id: "mevalar", name: "Mevalar", icon: "🍎", description: "Shirin va foydali mevalar" },
-  { id: "ichimliklar", name: "Ichimliklar", icon: "🥤", description: "Ichimliklar va tetiklantiruvchi mahsulotlar" },
-  { id: "yog-mahsulotlari", name: "Yog' mahsulotlari", icon: "🫒", description: "Pishirish uchun yog'lar va sariyog'" },
-  { id: "boshqalar", name: "Boshqalar", icon: "➕", description: "Qo'shimcha mahsulot qo'shish" },
-]
 
 const banners = [
   {
@@ -77,6 +71,7 @@ const banners = [
   },
   
 ]
+
 
 // Mock registered users for demonstration
 
@@ -154,7 +149,18 @@ export default function ShoppingPlatform() {
     return shoppingList.items.filter((item) => item.purchased).length
   }
 
-
+  const [open, setOpen] = useState(false)
+  const [form, setForm] = useState({ name: "", type: "", quantity: "" })
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+  
+  const handleSubmit = () => {
+    console.log("Yangi mahsulot:", form)
+    setOpen(false)
+    setForm({ name: "", type: "", quantity: "" })
+  }
 
   const handleAddExtraProduct = () => {
     if (extraProductName.trim() && extraProductQuantity && shoppingList) {
@@ -306,30 +312,90 @@ export default function ShoppingPlatform() {
               <p className="text-gray-600">Ro'yxatingizga mahsulot qo'shish uchun turkumni tanlang</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-              {data?.items?.map((category) => (
-                <Card
-                key={category.id}
-                className="group cursor-pointer border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-white"
-                onClick={() => handleCategoryClick(category.id)}
-              >
-                <CardContent className="p-0 text-center">
-                  <div className="relative w-full h-44 overflow-hidden">
-                    <img
-                      src={category.image}
-                      alt={category.titleUz}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                  <h3 className="text-lg font-semibold px-4 py-3 group-hover:text-blue-600 transition-colors duration-300">
-                    {category.titleUz}
-                  </h3>
-                </CardContent>
-              </Card>
-              
-              
-              ))}
-            </div>
+            <Card
+  onClick={() => setOpen(true)}
+  className="group cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all duration-300"
+>
+  <CardContent className="flex flex-col items-center justify-center p-6">
+    <Plus className="h-10 w-10 text-gray-500 group-hover:text-[#09bcbf] transition-colors" />
+    <p className="mt-2 text-gray-600 font-medium">Bosfdhqalar</p>
+  </CardContent>
+</Card>
+  {data?.items?.map((category) => (
+    <Card
+      key={category.id}
+      className="group cursor-pointer rounded-2xl overflow-hidden border-2 border-transparent bg-gradient-to-r from-[#09bcbf] to-[#5ce1e6] p-[2px] shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.03]"
+      onClick={() => handleCategoryClick(category.id)}
+    >
+      <div className="bg-white rounded-2xl h-full flex flex-col">
+        <CardContent className="p-0 text-center flex-1 flex flex-col">
+          {/* Rasm qismi */}
+          <div className="relative w-full h-44 overflow-hidden rounded-t-2xl">
+            <img
+              src={category.image}
+              alt={category.titleUz}
+              className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+            />
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
+          {/* Text qismi */}
+          <h3 className="text-lg font-semibold px-4 py-3 text-gray-800 group-hover:text-[#09bcbf] transition-colors duration-300">
+            {category.titleUz}
+          </h3>
+        </CardContent>
+      </div>
+    </Card>
+  ))}
+  {/* Boshqalar cardi */}
+
+
+{/* Modal (Dialog) */}
+<Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent className="sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle>Olmoqchi bo'lgan maxsulotingni kiriting</DialogTitle>
+    </DialogHeader>
+    <div className="space-y-4 py-2">
+      <div className="space-y-2">
+        <Label>Mahsulot nomi</Label>
+        <Input
+          name="name"
+          placeholder="Masalan: Olma"
+          value={form.name}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Mahsulot turi</Label>
+        <Input
+          name="type"
+          placeholder="Masalan: Meva"
+          value={form.type}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Miqdor</Label>
+        <Input
+          name="quantity"
+          placeholder="Masalan: 2 kg"
+          value={form.quantity}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+    <DialogFooter>
+      <Button className="bg-[#09bcbf]" onClick={handleSubmit}>
+        Savatga qo‘shish
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+</div>
+
+
           </div>
       </main>
 

@@ -4,27 +4,32 @@ import { ShoppingCart, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
-// import { ShoppingList } from "@/types" // agar ShoppingList tipini boshqa faylda saqlasang
+import { useState } from "react"
 
-// interface HeaderProps {
-//   shoppingList: ShoppingList | null
-// }
+// Til variantlari
+const languages = [
+  { code: "uz", label: "O‘zbekcha", flag: "🇺🇿" },
+  { code: "ru", label: "Русский", flag: "🇷🇺" },
+  { code: "en", label: "English", flag: "🇬🇧" },
+]
 
 export default function Header({ shoppingList }: any) {
   const router = useRouter()
+  const [lang, setLang] = useState("uz") // default til
 
   const handleBasketClick = () => {
-    router.push(`/basket`) // Savat sahifasiga yo‘naltirish
+    router.push(`/basket`)
   }
 
   const handleHistoryClick = () => {
-    router.push(`/history`) // Tarix sahifasiga yo‘naltirish
+    router.push(`/history`)
   }
 
   return (
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          {/* Chap tomondagi user logosi */}
           <div className="flex items-center space-x-4">
             <User className="h-8 w-8 text-blue-600" />
             <div>
@@ -32,7 +37,23 @@ export default function Header({ shoppingList }: any) {
               <p className="text-sm text-gray-500">Xush kelibsiz!</p>
             </div>
           </div>
+
+          {/* O'ng tomondagi tugmalar */}
           <div className="flex items-center space-x-4">
+            {/* Til select */}
+            <select
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              className="border rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#09bcbf]"
+            >
+              {languages.map((lng) => (
+                <option key={lng.code} value={lng.code}>
+                  {lng.flag} {lng.label}
+                </option>
+              ))}
+            </select>
+
+            {/* Savat tugmasi */}
             <Button onClick={handleBasketClick} className="bg-[#09bcbf] relative">
               <ShoppingCart className="h-4 w-4 mr-2" />
               Savat
@@ -42,9 +63,11 @@ export default function Header({ shoppingList }: any) {
                 </Badge>
               )}
             </Button>
-            <Button 
-            className="bg-[#09bcbf]"
-            onClick={handleHistoryClick}>Tarix</Button>
+
+            {/* Tarix tugmasi */}
+            <Button className="bg-[#09bcbf]" onClick={handleHistoryClick}>
+              Tarix
+            </Button>
           </div>
         </div>
       </div>

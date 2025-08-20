@@ -226,7 +226,7 @@ export default function ShoppingPlatform() {
                 <input
                   type="text"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Mahsulotlar va turkumlar izlash"
+                  placeholder="Turkumlar izlash"
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>

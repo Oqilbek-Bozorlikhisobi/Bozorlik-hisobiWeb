@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useShoppingStore } from "@/store/shoppingStore";
 import { useFetch } from "@/hooks/useFetch";
+import api from "@/service/api";
+import { useTranslation } from "react-i18next";
 
 type Product = {
   id: string;
@@ -36,8 +38,24 @@ const CategoryPage = () => {
   const [productType, setProductType] = useState("");
   const [showQuantityDialog, setShowQuantityDialog] = useState(false);
   const [search, setSearch] = useState("");
-  const [categoryName, setCategoryName] = useState<string>("");
+  const [category, setCategory] = useState<any>(null);
   const { shoppingList, setShoppingList } = useShoppingStore();
+  const {i18n} = useTranslation()
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`category/${id}`);
+      setCategory(response.data.data)
+    } catch (error) {
+      console.error("Xatolik yuz berdi:", error);
+    }
+  };
+  
+  
+ useEffect(() => {
+  getData()
+ }, [id])
+  
 
   const { data } = useFetch<any>({
     key: ["products", search, id],
@@ -110,7 +128,7 @@ const CategoryPage = () => {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {categoryName}
+            {i18n?.language == "uz" ? category?.titleUz : i18n?.language == "ru" ? category?.titleRu : category?.titleEn }
           </h2>
           <p className="text-gray-600">
             Bozorlik ro'yxatingizga qo'shish uchun mahsulotni bosing
@@ -136,7 +154,7 @@ const CategoryPage = () => {
                 height={150}
                 className="w-full h-32 object-cover rounded-md mb-3"
               />
-              <h3 className="font-semibold text-center">{product.titleUz}</h3>
+              <h3 className="font-semibold text-center">{i18n?.language == "uz" ? product?.titleUz : i18n?.language == "ru" ? product?.titleRu : product?.titleEn }</h3>
               <p className="text-sm text-gray-500 text-center">
                 har {product.unit || "dona"}
               </p>

@@ -20,7 +20,7 @@ import { useShoppingStore } from "@/store/shoppingStore";
 import { useFetch } from "@/hooks/useFetch";
 import { useTranslation } from "react-i18next";
 
-import LoginForm from "./login and reg /login-form"
+
 // Types
 
 
@@ -56,12 +56,13 @@ export default function ShoppingPlatform() {
   const [pendingCategory, setPendingCategory] = useState<string>("");
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [extraProductName, setExtraProductName] = useState("");
+  
   const [extraProductQuantity, setExtraProductQuantity] = useState(""); // New state variable for extra product quantity
   const [extraProductType, setExtraProductType] = useState(""); // New state variable for extra product type
   const { showExtraProductDialog, setShowExtraProductDialog } =
     useShoppingStore();
   const [search, setSearch] = useState("");
-  const {i18n} = useTranslation()
+  const { t, i18n } = useTranslation("common")
 
   const { data } = useFetch<any>({
     key: ["category", search],
@@ -72,6 +73,13 @@ export default function ShoppingPlatform() {
       },
     },
   });
+
+  const { data: bunners } = useFetch<any>({
+    key: ["bunner",],
+    url: "/bunner",
+   });
+    
+    console.log(bunners)
 
   const handleCategoryClick = (id: string) => {
     router.push(`/categories/${id}`); // Sahifaga yo‘naltiramiz
@@ -170,30 +178,32 @@ export default function ShoppingPlatform() {
           <div>
             {/* Shopping List Info Section */}
             <div className="mb-6">
-              <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border">
-                <div className="flex items-center space-x-4">
-                  <ShoppingCart className="h-8 w-8 text-purple-600" />
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900">
-                      {shoppingList?.name || ""}
-                    </h2>
-                    <p className="text-sm text-gray-500">
-                      {shoppingList
-                        ? `${getPurchasedCount()} dan ${
-                            shoppingList.items.length
-                          } ta mahsulot sotib olindi`
-                        : "Bozorlik ro‘yxatini yarating"}
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => setShowStartDialog(true)}
-                  className="bg-[#dd993e] hover:bg-[#09bcbf] text-white"
-                >
-                  Ro‘yxat yaratish
-                </Button>
-              </div>
-            </div>
+  <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border">
+    <div className="flex items-center space-x-4">
+      <ShoppingCart className="h-8 w-8 text-purple-600" />
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900">
+          {shoppingList?.name || t("title")}
+        </h2>
+        <p className="text-sm text-gray-500">
+          {shoppingList
+            ? t("purchased", {
+                purchased: getPurchasedCount(),
+                total: shoppingList.items.length,
+              })
+            : t("emptyList")}
+        </p>
+      </div>
+    </div>
+    <Button
+      onClick={() => setShowStartDialog(true)}
+      className="bg-[#dd993e] hover:bg-[#09bcbf] text-white"
+    >
+      {t("createList")}
+    </Button>
+  </div>
+</div>
+
 
             {/* Search Input */}
             <div className="mb-6">
@@ -216,7 +226,7 @@ export default function ShoppingPlatform() {
                 <input
                   type="text"
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Turkumlar izlash"
+                  placeholder={t("searchCategories")}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
@@ -330,14 +340,16 @@ export default function ShoppingPlatform() {
               </div>
             </div>
 
+
+
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Turkum tanlang
-              </h2>
-              <p className="text-gray-600">
-                Ro'yxatingizga mahsulot qo'shish uchun turkumni tanlang
-              </p>
-            </div>
+  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+    {t("chooseCategory")}
+  </h2>
+  <p className="text-gray-600">
+    {t("chooseCategoryDesc")}
+  </p>
+</div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               <Card
                 onClick={() => setOpen(true)}
@@ -345,7 +357,7 @@ export default function ShoppingPlatform() {
               >
                 <CardContent className="flex flex-col items-center justify-center p-6">
                   <Plus className="h-10 w-10 text-gray-500 group-hover:text-[#09bcbf] transition-colors" />
-                  <p className="mt-2 text-gray-600 font-medium">Boshqalar</p>
+                  <p className="mt-2 text-gray-600 font-medium"> {t("others")}</p>
                 </CardContent>
               </Card>
               {data?.items?.map((category) => (
@@ -378,48 +390,47 @@ export default function ShoppingPlatform() {
 
               {/* Modal (Dialog) */}
               <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>
-                      Olmoqchi bo'lgan maxsulotingni kiriting
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4 py-2">
-                    <div className="space-y-2">
-                      <Label>Mahsulot nomi</Label>
-                      <Input
-                        name="name"
-                        placeholder="Masalan: Olma"
-                        value={form.name}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Mahsulot turi</Label>
-                      <Input
-                        name="type"
-                        placeholder="Masalan: Meva"
-                        value={form.type}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Miqdor</Label>
-                      <Input
-                        name="quantity"
-                        placeholder="Masalan: 2 kg"
-                        value={form.quantity}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button className="bg-[#09bcbf]" onClick={handleSubmit}>
-                      Savatga qo‘shish
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+  <DialogContent className="sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle>{t("dialogTitle")}</DialogTitle>
+    </DialogHeader>
+    <div className="space-y-4 py-2">
+      <div className="space-y-2">
+        <Label>{t("productName")}</Label>
+        <Input
+          name="name"
+          placeholder={t("productNamePlaceholder1")}
+          value={form.name}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>{t("productType1")}</Label>
+        <Input
+          name="type"
+          placeholder={t("productTypePlaceholder1")}
+          value={form.type}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>{t("quantity1")}</Label>
+        <Input
+          name="quantity"
+          placeholder={t("quantityPlaceholder1")}
+          value={form.quantity}
+          onChange={handleInputChange}
+        />
+      </div>
+    </div>
+    <DialogFooter>
+      <Button className="bg-[#09bcbf]" onClick={handleSubmit}>
+        {t("addToBasket")}
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
             </div>
           </div>
         </main>
@@ -427,31 +438,32 @@ export default function ShoppingPlatform() {
         {/* Price Dialog */}
 
         <Dialog open={showStartDialog} onOpenChange={setShowStartDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Bozorlik ro'yxatingizni yarating</DialogTitle>
-              <DialogDescription>
-                Boshlash uchun bozorlik ro'yxatingizga nom bering
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="listName">Bozorlik ro'yxati nomi</Label>
-                <Input
-                  id="listName"
-                  value={listName}
-                  onChange={(e) => setListName(e.target.value)}
-                  placeholder="masalan, Haftalik oziq-ovqat, Ziyofat uchun bozorlik..."
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button onClick={handleStartShopping} disabled={!listName.trim()}>
-                Ro'yxat yaratish
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>{t("createShoppingListTitle")}</DialogTitle>
+      <DialogDescription>
+        {t("createShoppingListDesc")}
+      </DialogDescription>
+    </DialogHeader>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="listName">{t("shoppingListNameLabel")}</Label>
+        <Input
+          id="listName"
+          value={listName}
+          onChange={(e) => setListName(e.target.value)}
+          placeholder={t("shoppingListNamePlaceholder")}
+        />
+      </div>
+    </div>
+    <DialogFooter>
+      <Button onClick={handleStartShopping} disabled={!listName.trim()}>
+        {t("createListBtn")}
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
 
         {/* Share Dialog */}
 
@@ -460,62 +472,61 @@ export default function ShoppingPlatform() {
           open={showExtraProductDialog}
           onOpenChange={setShowExtraProductDialog}
         >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Qo'shimcha mahsulot qo'shish</DialogTitle>
-              <DialogDescription>
-                Ro'yxatda yo'q mahsulot nomi va miqdorini kiriting
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="extraProductName">Mahsulot nomi</Label>
-                <Input
-                  id="extraProductName"
-                  value={extraProductName}
-                  onChange={(e) => setExtraProductName(e.target.value)}
-                  placeholder="masalan, Tuz, Shakar, Sabun..."
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="extraProductType">
-                  Mahsulot turi/navi (ixtiyoriy)
-                </Label>
-                <Input
-                  id="extraProductType"
-                  value={extraProductType}
-                  onChange={(e) => setExtraProductType(e.target.value)}
-                  placeholder="masalan, Premium, Katta, Kichik, 1kg..."
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="extraProductQuantity">Miqdor</Label>
-                <Input
-                  id="extraProductQuantity"
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  value={extraProductQuantity}
-                  onChange={(e) => setExtraProductQuantity(e.target.value)}
-                  placeholder="masalan, 2.5"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setShowExtraProductDialog(false)}
-              >
-                Bekor qilish
-              </Button>
-              <Button
-                onClick={handleAddExtraProduct}
-                disabled={!extraProductName.trim() || !extraProductQuantity}
-              >
-                Qo'shish
-              </Button>
-            </DialogFooter>
-          </DialogContent>
+         <DialogContent>
+  <DialogHeader>
+    <DialogTitle>{t("extraProductTitle")}</DialogTitle>
+    <DialogDescription>
+      {t("extraProductDesc")}
+    </DialogDescription>
+  </DialogHeader>
+  <div className="space-y-6">
+    <div className="space-y-2">
+      <Label htmlFor="extraProductName">{t("productName1")}</Label>
+      <Input
+        id="extraProductName"
+        value={extraProductName}
+        onChange={(e) => setExtraProductName(e.target.value)}
+        placeholder={t("productNamePlaceholder")}
+      />
+    </div>
+    <div className="space-y-2">
+      <Label htmlFor="extraProductType">{t("productType")}</Label>
+      <Input
+        id="extraProductType"
+        value={extraProductType}
+        onChange={(e) => setExtraProductType(e.target.value)}
+        placeholder={t("productTypePlaceholder")}
+      />
+    </div>
+    <div className="space-y-2">
+      <Label htmlFor="extraProductQuantity">{t("quantity")}</Label>
+      <Input
+        id="extraProductQuantity"
+        type="number"
+        step="0.1"
+        min="0.1"
+        value={extraProductQuantity}
+        onChange={(e) => setExtraProductQuantity(e.target.value)}
+        placeholder={t("quantityPlaceholder")}
+      />
+    </div>
+  </div>
+  <DialogFooter>
+    <Button
+      variant="outline"
+      onClick={() => setShowExtraProductDialog(false)}
+    >
+      {t("cancel")}
+    </Button>
+    <Button
+      onClick={handleAddExtraProduct}
+      disabled={!extraProductName.trim() || !extraProductQuantity}
+    >
+      {t("add")}
+    </Button>
+  </DialogFooter>
+</DialogContent>
+
         </Dialog>
       </div>
     </>

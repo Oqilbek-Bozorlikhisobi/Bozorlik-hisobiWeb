@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import useApiMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
 import { useStore } from "@/store/userStore";
+import { setCookie } from "cookies-next";
 
 export default function LoginForm() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -31,8 +32,11 @@ export default function LoginForm() {
     url: "/auth/login/user",
     method: "POST",
     onSuccess: (data) => {
+      setCookie("token", data.access_token); // cookie'ga yozamiz
       setUser(data?.access_token, data?.refresh_token, data?.user);
+      router.push("/");
       toast.success("Tizimga muvaffaqiyatli kirdingiz");
+      
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);

@@ -1,73 +1,83 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, User, Lock, Phone } from "lucide-react"
-import { useRouter } from "next/navigation"
-import useApiMutation from "@/hooks/useMutation"
-import { toast } from "react-toastify"
-
-
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, User, Lock, Phone } from "lucide-react";
+import { useRouter } from "next/navigation";
+import useApiMutation from "@/hooks/useMutation";
+import { toast } from "react-toastify";
+import { useStore } from "@/store/userStore";
 
 export default function LoginForm() {
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
+  const { setUser } = useStore();
 
   const { mutate, isLoading } = useApiMutation({
     url: "/auth/login/user",
     method: "POST",
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setUser(data?.access_token, data?.refresh_token, data?.user);
       toast.success("Tizimga muvaffaqiyatli kirdingiz");
-  
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message);      
+      toast.error(error.response?.data?.message);
     },
   });
 
-
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
+    e.preventDefault();
+    setError("");
 
     const data = {
       phoneNumber: phoneNumber.replace(/\s/g, ""),
       password: password,
-    }
-    mutate(data)
-    
-  }
+    };
+    mutate(data);
+  };
 
   const formatPhoneNumber = (value: string) => {
     // Remove all non-digits
-    const digits = value.replace(/\D/g, "")
+    const digits = value.replace(/\D/g, "");
 
     // Format as +998 XX XXX XX XX
     if (digits.length <= 3) {
-      return `+${digits}`
+      return `+${digits}`;
     } else if (digits.length <= 5) {
-      return `+${digits.slice(0, 3)} ${digits.slice(3)}`
+      return `+${digits.slice(0, 3)} ${digits.slice(3)}`;
     } else if (digits.length <= 8) {
-      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5)}`
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5)}`;
     } else if (digits.length <= 10) {
-      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(
+        5,
+        8
+      )} ${digits.slice(8)}`;
     } else {
-      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8, 10)} ${digits.slice(10, 12)}`
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(
+        5,
+        8
+      )} ${digits.slice(8, 10)} ${digits.slice(10, 12)}`;
     }
-  }
+  };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneNumber(e.target.value)
-    setPhoneNumber(formatted)
-  }
+    const formatted = formatPhoneNumber(e.target.value);
+    setPhoneNumber(formatted);
+  };
 
   return (
     <div className="min-h-screen py-10 flex items-center justify-center bg-gray-50 px-4">
@@ -76,19 +86,28 @@ export default function LoginForm() {
           <div className="mx-auto mb-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
             <User className="h-8 w-8 text-blue-600" />
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">Kirish</CardTitle>
-          <CardDescription className="text-gray-600">Bozorlik platformasiga xush kelibsiz</CardDescription>
+          <CardTitle className="text-2xl font-bold text-gray-900">
+            Kirish
+          </CardTitle>
+          <CardDescription className="text-gray-600">
+            Bozorlik platformasiga xush kelibsiz
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <Alert className="border-red-200 bg-red-50">
-                <AlertDescription className="text-red-800">{error}</AlertDescription>
+                <AlertDescription className="text-red-800">
+                  {error}
+                </AlertDescription>
               </Alert>
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="phoneNumber"
+                className="text-sm font-medium text-gray-700"
+              >
                 Telefon raqami
               </Label>
               <div className="relative">
@@ -106,7 +125,10 @@ export default function LoginForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-700"
+              >
                 Parol
               </Label>
               <div className="relative">
@@ -155,6 +177,15 @@ export default function LoginForm() {
             >
               Ro'yxatdan o'tish
             </Button>
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => router.push("/forgotPassword")}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                Parolni unutdingizmi?
+              </button>
+            </div>
           </form>
 
           <div className="mt-6 text-center">
@@ -173,5 +204,5 @@ export default function LoginForm() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

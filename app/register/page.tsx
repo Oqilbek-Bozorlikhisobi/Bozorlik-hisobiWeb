@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -60,7 +60,9 @@ export default function RegisterForm() {
   const [code, setCode] = useState(["", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [dataResponse, setDataResponse] = useState<any>(null);
- const {setUser} = useStore()
+  const [timeLeft, setTimeLeft] = useState(120); // 2 minut = 120 sekund
+  const [canResend, setCanResend] = useState(false);
+  const { setUser } = useStore();
 
   const { mutate, isLoading } = useApiMutation({
     url: "/auth/register/user",
@@ -80,18 +82,49 @@ export default function RegisterForm() {
     url: "/auth/verify/otp",
     method: "POST",
     onSuccess: (data) => {
-      console.log(data);
-      setUser(data?.access_token, data?.refresh_token, data?.user)
-      
+      setUser(data?.access_token, data?.refresh_token, data?.user);
+
       toast.success("Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi ✅");
       router.push("/");
       setCookie("token", data.access_token); // cookie'ga yozamiz
-      router.push("/")
     },
     onError: (error: any) => {
       toast.error(error.message || "Kod noto‘g‘ri");
     },
   });
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (verify && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      setCanResend(true);
+    }
+
+    return () => clearInterval(timer);
+  }, [verify, timeLeft]);
+
+  const { mutate: resendMutate, isLoading: resendLoading } = useApiMutation({
+    url: "/auth/sendotp/again",
+    method: "POST",
+    onSuccess: () => {
+      toast.success("Yangi kod yuborildi ✅");
+      setTimeLeft(120); // vaqtni qaytadan 2 minutga o‘rnatamiz
+      setCanResend(false);
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Xatolik yuz berdi");
+    },
+  });
+
+  const handleResend = () => {
+    resendMutate({
+      phoneNumber: formData.phoneNumber.replace(/\s/g, ""),
+    });
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -427,6 +460,26 @@ export default function RegisterForm() {
                 className="w-12 h-12 text-center text-lg font-bold border-gray-300 focus:border-green-500"
               />
             ))}
+          </div>
+          <div className="mt-4 text-center">
+            {!canResend ? (
+              <p className="text-sm text-gray-500">
+                Qolgan vaqt:{" "}
+                <span className="font-semibold text-gray-800">
+                  {Math.floor(timeLeft / 60)}:
+                  {(timeLeft % 60).toString().padStart(2, "0")}
+                </span>
+              </p>
+            ) : (
+              <Button
+                onClick={handleResend}
+                disabled={resendLoading}
+                variant="outline"
+                className="w-full border-blue-500 text-blue-600 hover:bg-blue-50"
+              >
+                {resendLoading ? "Yuborilmoqda..." : "Yangi kod yuborish"}
+              </Button>
+            )}
           </div>
 
           <Button

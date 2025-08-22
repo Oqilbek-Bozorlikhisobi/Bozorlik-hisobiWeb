@@ -44,7 +44,7 @@ api.interceptors.response.use(
       if (refreshToken) {
         originalRequest._retry = true;
         try {
-          const refreshResponse = await axios.post(`${REACT_APP_BASE_URL}/auth/refresh/admin`, {
+          const refreshResponse = await axios.post(`${REACT_APP_BASE_URL}/auth/refresh/user`, {
             refresh_token: refreshToken,
           });
           

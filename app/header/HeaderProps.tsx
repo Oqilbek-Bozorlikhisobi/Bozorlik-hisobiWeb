@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import { useTranslation } from "react-i18next"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { deleteCookie } from "cookies-next";
+import { useStore } from "@/store/userStore"
 
 const languages = [
   { code: "uz", label: "Uzb", flag: "🇺🇿" },
@@ -16,6 +24,7 @@ export default function Header({ shoppingList }: any) {
   const router = useRouter()
   const { t, i18n } = useTranslation("common")
   const currentLang = i18n.language || "uz"
+  const { clearUser } = useStore();
 
   const handleBasketClick = () => {
     router.push(`/basket`)
@@ -29,18 +38,40 @@ export default function Header({ shoppingList }: any) {
     i18n.changeLanguage(lng)
   }
 
+  const handleLogout = () => {
+    // logout logikasini shu yerga yozasan
+    deleteCookie("token");
+    router.push("/login")
+    clearUser()
+  }
+
   return (
-    
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Chap tomondagi user logosi */}
           <div className="flex items-center space-x-4">
-            <User className="h-8 w-8 text-blue-600" />
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">Tog'ga</h1>
-              <p className="text-sm text-gray-500">{t("welcome")}</p>
-            </div>
+            
+
+            {/* Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex items-center space-x-4">
+                <User className="h-8 w-8 text-blue-600" />
+                <button className="text-xl font-semibold text-gray-900 focus:outline-none">
+                  Tog'ga
+                </button>
+                </div>
+             
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-40">
+                <DropdownMenuItem onClick={handleLogout}>
+                  Profildan chiqish
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <p className="text-sm text-gray-500">{t("welcome")}</p>
           </div>
 
           {/* O'ng tomondagi tugmalar */}

@@ -10,7 +10,7 @@ export default function ClientLayout({
 }) {
   const pathname = usePathname();
 
-  const hideHeader = pathname === "/login" || pathname === "/register";
+  const hideHeader = pathname === "/login" || pathname === "/register" || pathname === "/forgotPassword";
 
   return (
     <>

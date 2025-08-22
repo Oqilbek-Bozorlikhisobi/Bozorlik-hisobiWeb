@@ -52,7 +52,6 @@ export default function ShoppingPlatform() {
   const [pendingCategory, setPendingCategory] = useState<string>("");
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [extraProductName, setExtraProductName] = useState("");
-
   const [extraProductQuantity, setExtraProductQuantity] = useState(""); // New state variable for extra product quantity
   const [extraProductType, setExtraProductType] = useState(""); // New state variable for extra product type
   const { showExtraProductDialog, setShowExtraProductDialog } =
@@ -74,8 +73,6 @@ export default function ShoppingPlatform() {
     key: ["bunner"],
     url: "/bunner",
   });
-
-  console.log(bunners);
 
   const handleCategoryClick = (id: string) => {
     router.push(`/categories/${id}`); // Sahifaga yo‘naltiramiz
@@ -236,15 +233,15 @@ export default function ShoppingPlatform() {
                     transform: `translateX(-${currentBannerIndex * 100}%)`,
                   }}
                 >
-                  {banners.map((banner, index) => (
+                  {bunners?.items.map((banner, index) => (
                     <div
                       key={banner.id}
-                      className={`w-full flex-shrink-0 bg-gradient-to-r ${banner.bgColor} p-6`}
+                      className={`w-full flex-shrink-0 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 p-6`}
                     >
                       <div className="relative z-10 flex items-center justify-between">
                         <div className="flex-1">
                           <h2 className="text-2xl font-bold text-white mb-2">
-                            {banner.title}
+                            {i18n?.language == "uz" ? banner.nameUz : i18n?.language == "en" ? banner.nameEn : banner.nameRu}
                           </h2>
                           <div className="flex items-center space-x-3 mb-3">
                             <span className="bg-white text-purple-600 text-2xl font-bold px-4 py-2 rounded-lg">
@@ -260,8 +257,8 @@ export default function ShoppingPlatform() {
                         </div>
                         <div className="flex-shrink-0 ml-6">
                           <img
-                            src={banner.image || "/placeholder.svg"}
-                            alt={banner.title}
+                            src={i18n?.language == "uz" ? banner.imageUz : i18n?.language == "en" ? banner.imageEn : banner.imageRu}
+                            alt={banner.imageEn}
                             className="h-24 w-24 object-cover rounded-lg"
                           />
                         </div>

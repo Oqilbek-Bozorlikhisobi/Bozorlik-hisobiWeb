@@ -9,52 +9,41 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Loader2, User, Lock, Phone } from "lucide-react"
+import { useRouter } from "next/navigation"
+import useApiMutation from "@/hooks/useMutation"
+import { toast } from "react-toastify"
 
-interface LoginFormProps {
-  onLoginSuccess: (userData: any) => void
-  onShowRegister: () => void
-}
 
-export default function LoginForm({ onLoginSuccess, onShowRegister }: LoginFormProps) {
+
+export default function LoginForm() {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
+  const router = useRouter();
+
+  const { mutate, isLoading } = useApiMutation({
+    url: "/auth/login/user",
+    method: "POST",
+    onSuccess: () => {
+      toast.success("Tizimga muvaffaqiyatli kirdingiz");
+  
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);      
+    },
+  });
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
-    setIsLoading(true)
 
-    try {
-      const response = await fetch("https://bozorlik.fayzullayevsh.uz/auth/login/user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phoneNumber: phoneNumber,
-          password: password,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        // Login successful
-        localStorage.setItem("userToken", data.token || "")
-        localStorage.setItem("userData", JSON.stringify(data.user || data))
-        onLoginSuccess(data.user || data)
-      } else {
-        // Login failed
-        setError(data.message || "Login xatosi yuz berdi")
-      }
-    } catch (err) {
-      setError("Tarmoq xatosi. Iltimos qayta urinib ko'ring.")
-      console.error("Login error:", err)
-    } finally {
-      setIsLoading(false)
+    const data = {
+      phoneNumber: phoneNumber.replace(/\s/g, ""),
+      password: password,
     }
+    mutate(data)
+    
   }
 
   const formatPhoneNumber = (value: string) => {
@@ -81,7 +70,7 @@ export default function LoginForm({ onLoginSuccess, onShowRegister }: LoginFormP
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen py-10 flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
@@ -161,7 +150,7 @@ export default function LoginForm({ onLoginSuccess, onShowRegister }: LoginFormP
             <Button
               type="button"
               variant="outline"
-              onClick={onShowRegister}
+              onClick={() => router.push("/register")}
               className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50 hover:border-green-600 font-medium py-2.5 rounded-lg transition-all duration-200 bg-transparent"
             >
               Ro'yxatdan o'tish

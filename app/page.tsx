@@ -20,7 +20,7 @@ import { useShoppingStore } from "@/store/shoppingStore";
 import { useFetch } from "@/hooks/useFetch";
 import { useTranslation } from "react-i18next";
 
-import LoginForm from "./login and reg /login-form"
+import LoginForm from "./login/page"
 // Types
 
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import Image from "next/image"
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,12 +14,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, User, Lock, Phone } from "lucide-react";
+import { Loader2, Lock, Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useApiMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
 import { useStore } from "@/store/userStore";
 import { setCookie } from "cookies-next";
+import Logo from "../../public/logo.png"
+import { useTranslation } from "react-i18next"
+
+
+const languages = [
+  { code: "uz", label: "Uzb", flag: "🇺🇿" },
+  { code: "ru", label: "Рус", flag: "🇷🇺" },
+  { code: "en", label: "Eng", flag: "🇬🇧" },
+]
+
 
 export default function LoginForm() {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -28,15 +38,21 @@ export default function LoginForm() {
   const router = useRouter();
   const { setUser } = useStore();
 
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language || "uz"
+
+  const handleLanguageChange = (lng: string) => {
+    i18n.changeLanguage(lng)
+  }
+
   const { mutate, isLoading } = useApiMutation({
     url: "/auth/login/user",
     method: "POST",
     onSuccess: (data) => {
-      setCookie("token", data.access_token); // cookie'ga yozamiz
+      setCookie("token", data.access_token);
       setUser(data?.access_token, data?.refresh_token, data?.user);
       router.push("/");
-      toast.success("Tizimga muvaffaqiyatli kirdingiz");
-      
+      toast.success(t("toast.loginSuccess"));
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -55,10 +71,7 @@ export default function LoginForm() {
   };
 
   const formatPhoneNumber = (value: string) => {
-    // Remove all non-digits
     const digits = value.replace(/\D/g, "");
-
-    // Format as +998 XX XXX XX XX
     if (digits.length <= 3) {
       return `+${digits}`;
     } else if (digits.length <= 5) {
@@ -87,14 +100,27 @@ export default function LoginForm() {
     <div className="min-h-screen py-10 flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-            <User className="h-8 w-8 text-blue-600" />
+
+          <select
+            value={currentLang}
+            onChange={(e) => handleLanguageChange(e.target.value)}
+            className="border w-23 rounded-lg px-2 py-[9px] text-sm focus:outline-none focus:ring-2 focus:ring-[#09bcbf]"
+          >
+            {languages.map((lng) => (
+              <option key={lng.code} value={lng.code}>
+                {lng.flag} {t(`languages.${lng.code}`)}
+              </option>
+            ))}
+          </select>
+
+          <div className="mx-auto mb-4 w-23 h-23 bg-green-100 rounded-full flex items-center justify-center">
+            <Image src={Logo} alt="Logo" className="w-23 h-23 " />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
-            Kirish
+            {t("login.title")}
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Bozorlik platformasiga xush kelibsiz
+            {t("login.welcome")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -112,7 +138,7 @@ export default function LoginForm() {
                 htmlFor="phoneNumber"
                 className="text-sm font-medium text-gray-700"
               >
-                Telefon raqami
+                {t("login.phoneLabel")}
               </Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -121,7 +147,7 @@ export default function LoginForm() {
                   type="tel"
                   value={phoneNumber}
                   onChange={handlePhoneChange}
-                  placeholder="+998 90 123 45 67"
+                  placeholder={t("login.phonePlaceholder") || ""}
                   className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -133,7 +159,7 @@ export default function LoginForm() {
                 htmlFor="password"
                 className="text-sm font-medium text-gray-700"
               >
-                Parol
+                {t("login.passwordLabel")}
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -142,7 +168,7 @@ export default function LoginForm() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Parolingizni kiriting"
+                  placeholder={t("login.passwordPlaceholder") || ""}
                   className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -157,10 +183,10 @@ export default function LoginForm() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Kirilmoqda...
+                  {t("login.loading")}
                 </>
               ) : (
-                "Kirish"
+                t("login.button")
               )}
             </Button>
 
@@ -169,7 +195,9 @@ export default function LoginForm() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-50 text-gray-500">yoki</span>
+                <span className="px-2 bg-gray-50 text-gray-500">
+                  {t("login.or")}
+                </span>
               </div>
             </div>
 
@@ -179,7 +207,7 @@ export default function LoginForm() {
               onClick={() => router.push("/register")}
               className="w-full border-2 border-green-500 text-green-600 hover:bg-green-50 hover:border-green-600 font-medium py-2.5 rounded-lg transition-all duration-200 bg-transparent"
             >
-              Ro'yxatdan o'tish
+              {t("login.register")}
             </Button>
             <div className="text-center">
               <button
@@ -187,22 +215,21 @@ export default function LoginForm() {
                 onClick={() => router.push("/forgotPassword")}
                 className="text-sm text-blue-600 hover:underline"
               >
-                Parolni unutdingizmi?
+                {t("login.forgotPassword")}
               </button>
             </div>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500">
-              Platformaga kirib, siz{" "}
+              {t("login.termsText")}{" "}
               <a href="#" className="text-blue-600 hover:underline">
-                Foydalanish shartlari
+                {t("login.terms")}
               </a>{" "}
-              va{" "}
+              {t("login.privacy")}{" "}
               <a href="#" className="text-blue-600 hover:underline">
-                Maxfiylik siyosati
+                {t("login.agree")}
               </a>
-              ga rozilik bildirasiz.
             </p>
           </div>
         </CardContent>

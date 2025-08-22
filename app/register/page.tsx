@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import Image from "next/image"
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, UserPlus, Lock, Phone, User } from "lucide-react";
+import { Loader2,  Lock, Phone, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import {
@@ -27,6 +27,9 @@ import {
 import useApiMutation from "@/hooks/useMutation";
 import { setCookie } from "cookies-next";
 import { useStore } from "@/store/userStore";
+import { useTranslation } from "react-i18next"
+import Logo from "../../public/logo.png"
+
 
 const regions = [
   "Toshkent V",
@@ -44,8 +47,22 @@ const regions = [
   "Jizzax",
   "Qoraqalpog‘iston",
 ];
+const languages = [
+  { code: "uz", label: "Uzb", flag: "🇺🇿" },
+  { code: "ru", label: "Рус", flag: "🇷🇺" },
+  { code: "en", label: "Eng", flag: "🇬🇧" },
+]
 
 export default function RegisterForm() {
+  const { t, i18n } = useTranslation("common")
+  const currentLang = i18n.language || "uz"
+
+  const handleLanguageChange = (lng: string) => {
+    i18n.changeLanguage(lng)
+  }
+
+  const [region, setRegion] = useState("")
+
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
@@ -68,7 +85,7 @@ export default function RegisterForm() {
     url: "/auth/register/user",
     method: "POST",
     onSuccess: (data) => {
-      toast.info("Telfon nomeringizga kelgan kodni kiriting");
+      toast.info(t("register.otpSent"));
       setVerify(true);
       setDataResponse(data);
     },
@@ -84,12 +101,12 @@ export default function RegisterForm() {
     onSuccess: (data) => {
       setUser(data?.access_token, data?.refresh_token, data?.user);
 
-      toast.success("Ro‘yxatdan o‘tish muvaffaqiyatli yakunlandi ✅");
+      toast.success(t("register.successRegister"));
       router.push("/");
       setCookie("token", data.access_token); // cookie'ga yozamiz
     },
     onError: (error: any) => {
-      toast.error(error.message || "Kod noto‘g‘ri");
+      toast.error(error.message || t("register.wrongCode"));
     },
   });
 
@@ -111,12 +128,12 @@ export default function RegisterForm() {
     url: "/auth/sendotp/again",
     method: "POST",
     onSuccess: () => {
-      toast.success("Yangi kod yuborildi ✅");
+      toast.success(t("register.newCodeSent"));
       setTimeLeft(120); // vaqtni qaytadan 2 minutga o‘rnatamiz
       setCanResend(false);
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Xatolik yuz berdi");
+      toast.error(error.response?.data?.message || t("register.errorOccurred"));
     },
   });
 
@@ -130,12 +147,12 @@ export default function RegisterForm() {
     setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Parollar mos kelmaydi");
+      setError(t("register.errorPasswordMismatch1"));
       return;
     }
 
     if (formData.password.length < 6) {
-      setError("Parol kamida 6 ta belgidan iborat bo'lishi kerak");
+      setError(t("register.errorPasswordShort1"));
       return;
     }
 
@@ -167,7 +184,7 @@ export default function RegisterForm() {
   const handleVerify = async () => {
     const enteredCode = code.join("");
     if (enteredCode.length !== 4) {
-      toast.error("4 xonali kodni kiriting");
+      toast.error(t("register.errorCodeLength1"));
       return;
     }
     const data = {
@@ -212,15 +229,28 @@ export default function RegisterForm() {
   return (
     <div className="min-h-screen py-10 flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
+        
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-            <UserPlus className="h-8 w-8 text-green-600" />
+        <select
+              value={currentLang}
+              onChange={(e) => handleLanguageChange(e.target.value)}
+              className="border rounded-lg px-2 py-[9px] w-25 text-sm focus:outline-none focus:ring-2 focus:ring-[#09bcbf]"
+            >
+              {languages.map((lng) => (
+                <option key={lng.code} value={lng.code}>
+                  {lng.flag} {lng.label}
+                </option>
+              ))}
+            </select>
+
+          <div className="mx-auto mb-4 w-23 h-23 bg-green-100 rounded-full flex items-center justify-center">
+          <Image src={Logo} alt="Logo" className="w-23 h-23 " />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
-            Ro'yxatdan o'tish
+          {t("register.title")}
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Yangi hisob yarating va bozorlik qilishni boshlang
+          {t("register.subtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -239,7 +269,7 @@ export default function RegisterForm() {
                 htmlFor="name"
                 className="text-sm font-medium text-gray-700"
               >
-                To'liq ism
+                {t("register.fullName")}
               </Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -248,7 +278,7 @@ export default function RegisterForm() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder="Ismingizni kiriting"
+                  placeholder={t("register.fullNamePlaceholder")}
                   className="pl-10 border-gray-300 focus:border-green-500 focus:ring-green-500"
                   required
                 />
@@ -261,7 +291,7 @@ export default function RegisterForm() {
                 htmlFor="phoneNumber"
                 className="text-sm font-medium text-gray-700"
               >
-                Telefon raqami
+                {t("register.phone")}
               </Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -270,12 +300,13 @@ export default function RegisterForm() {
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={handlePhoneChange}
-                  placeholder="+998 90 123 45 67"
+                  placeholder={t("register.phonePlaceholder")}
                   className="pl-10 border-gray-300 focus:border-green-500 focus:ring-green-500"
                   required
                 />
               </div>
             </div>
+
 
             {/* Viloyat tanlash */}
             <div className="space-y-2">
@@ -283,27 +314,37 @@ export default function RegisterForm() {
                 htmlFor="region"
                 className="text-sm font-medium text-gray-700"
               >
-                Viloyat
+                {t("register.region")}
               </Label>
               <div className="relative">
-                <select
-                  id="region"
-                  value={formData.region}
-                  onChange={(e) => handleInputChange("region", e.target.value)}
-                  className="w-full pl-3 pr-10 py-2 border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
-                  required
-                >
-                  <option value="" disabled>
-                    Viloyatni tanlang
-                  </option>
-                  {regions?.map((item: string, i: number) => (
-                    <option key={i} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
+              <select
+        id="region"
+        value={formData.region}
+         onChange={(e) => handleInputChange("region", e.target.value)}
+        className="border rounded-lg px-2 py-2 w-full"
+      >
+        <option value="" disabled>
+          {t("register.regionSelect")}
+        </option>
+        <option value="tashkent">{t("register.tashkent")}</option>
+        <option value="andijan">{t("register.andijan")}</option>
+        <option value="fergana">{t("register.fergana")}</option>
+        <option value="namangan">{t("register.namangan")}</option>
+        <option value="sirdaryo">{t("register.sirdaryo")}</option>
+        <option value="jizzakh">{t("register.jizzakh")}</option>
+        <option value="samarkand">{t("register.samarkand")}</option>
+        <option value="kashkadarya">{t("register.kashkadarya")}</option>
+        <option value="surkhandarya">{t("register.surkhandarya")}</option>
+        <option value="bukhara">{t("register.bukhara")}</option>
+        <option value="navoiy">{t("register.navoiy")}</option>
+        <option value="khorezm">{t("register.khorezm")}</option>
+        <option value="karakalpakstan">{t("register.karakalpakstan")}</option>
+      </select>
               </div>
             </div>
+
+
+
 
             {/* Jins tanlash */}
             <div className="space-y-2">
@@ -311,21 +352,21 @@ export default function RegisterForm() {
                 htmlFor="gender"
                 className="text-sm font-medium text-gray-700"
               >
-                Jins
+                {t("register.gender")}
               </Label>
               <div className="relative">
                 <select
                   id="gender"
                   value={formData.gender}
                   onChange={(e) => handleInputChange("gender", e.target.value)}
-                  className="w-full pl-3 pr-10 py-2 border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
+                  className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-green-500"
                   required
                 >
                   <option value="" disabled>
-                    Jinsni tanlang
+                  {t("register.genderSelect")}
                   </option>
-                  <option value="Erkak">Erkak</option>
-                  <option value="Ayol">Ayol</option>
+                  <option value="Erkak">{t("register.male")}</option>
+                  <option value="Ayol">{t("register.female")}</option>
                 </select>
               </div>
             </div>
@@ -336,7 +377,7 @@ export default function RegisterForm() {
                 htmlFor="password"
                 className="text-sm font-medium text-gray-700"
               >
-                Parol
+                {t("register.password")}
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -347,7 +388,7 @@ export default function RegisterForm() {
                   onChange={(e) =>
                     handleInputChange("password", e.target.value)
                   }
-                  placeholder="Kamida 6 ta belgi"
+                  placeholder={t("register.passwordPlaceholder")}
                   className="pl-10 border-gray-300 focus:border-green-500 focus:ring-green-500"
                   required
                 />
@@ -360,7 +401,7 @@ export default function RegisterForm() {
                 htmlFor="confirmPassword"
                 className="text-sm font-medium text-gray-700"
               >
-                Parolni tasdiqlang
+                {t("register.confirmPassword")}
               </Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -371,7 +412,7 @@ export default function RegisterForm() {
                   onChange={(e) =>
                     handleInputChange("confirmPassword", e.target.value)
                   }
-                  placeholder="Parolni qayta kiriting"
+                  placeholder={t("register.confirmPasswordPlaceholder")}
                   className="pl-10 border-gray-300 focus:border-green-500 focus:ring-green-500"
                   required
                 />
@@ -395,10 +436,10 @@ export default function RegisterForm() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Ro'yxatdan o'tilmoqda...
+                  {t("register.submitting")}
                 </>
               ) : (
-                "Ro'yxatdan o'tish"
+                t("register.submit")
               )}
             </Button>
 
@@ -407,7 +448,7 @@ export default function RegisterForm() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-50 text-gray-500">yoki</span>
+                <span className="px-2 bg-gray-50 text-gray-500">{t("register.or")}</span>
               </div>
             </div>
 
@@ -417,21 +458,16 @@ export default function RegisterForm() {
               onClick={() => router.push("/login")}
               className="w-full border-2 border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600 font-medium py-2.5 rounded-lg transition-all duration-200 bg-transparent"
             >
-              Tizimga kirish
+               {t("register.login")}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500">
-              Ro'yxatdan o'tib, siz{" "}
-              <a href="#" className="text-green-600 hover:underline">
-                Foydalanish shartlari
-              </a>{" "}
-              va{" "}
-              <a href="#" className="text-green-600 hover:underline">
-                Maxfiylik siyosati
-              </a>
-              ga rozilik bildirasiz.
+            {t("register.agreeText", {
+    terms: <a href="#" className="text-green-600 hover:underline">{t("register.terms")}</a>,
+    privacy: <a href="#" className="text-green-600 hover:underline">{t("register.privacy")}</a>,
+  })}
             </p>
           </div>
         </CardContent>
@@ -440,10 +476,10 @@ export default function RegisterForm() {
         <DialogContent className="fixed top-1/2 left-1/2 w-[90%] max-w-sm -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl p-6 shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-gray-800">
-              Telefon raqamni tasdiqlash
+            {t("register.verifyTitle")}
             </DialogTitle>
             <DialogDescription className="text-sm text-gray-500">
-              SMS orqali yuborilgan 4 xonali kodni kiriting
+            {t("register.verifyDescription")}
             </DialogDescription>
           </DialogHeader>
 
@@ -464,7 +500,7 @@ export default function RegisterForm() {
           <div className="mt-4 text-center">
             {!canResend ? (
               <p className="text-sm text-gray-500">
-                Qolgan vaqt:{" "}
+               {t("register.timeLeft")}:{" "}
                 <span className="font-semibold text-gray-800">
                   {Math.floor(timeLeft / 60)}:
                   {(timeLeft % 60).toString().padStart(2, "0")}
@@ -477,7 +513,7 @@ export default function RegisterForm() {
                 variant="outline"
                 className="w-full border-blue-500 text-blue-600 hover:bg-blue-50"
               >
-                {resendLoading ? "Yuborilmoqda..." : "Yangi kod yuborish"}
+                {resendLoading ? t("register.resending") : t("register.resend")}
               </Button>
             )}
           </div>
@@ -490,7 +526,7 @@ export default function RegisterForm() {
             {otpLoading ? (
               <Loader2 className="animate-spin h-4 w-4 mr-2" />
             ) : (
-              "Tasdiqlash"
+              t("register.verify")
             )}
           </Button>
         </DialogContent>

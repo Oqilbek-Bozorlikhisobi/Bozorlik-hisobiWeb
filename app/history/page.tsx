@@ -6,7 +6,7 @@ import { Check } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-
+import { useTranslation } from "react-i18next";
 type ShoppingItem = {
   id: string;
   product: {
@@ -32,35 +32,36 @@ const Page = () => {
   // mock state (siz Zustand yoki API dan olasiz)
   const [shoppingHistory, setShoppingHistory] = useState<ShoppingList[]>([]);
   const router = useRouter()
-
+  const { t, i18n } = useTranslation("common")
   return (
     <div className="max-w-7xl mx-auto p-7">
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Bozorlik tarixi
+          {t("shopping_history")}
           </h2>
-          <p className="text-gray-600">Yakunlangan bozorlik ro'yxatlari</p>
+          <p className="text-gray-600">{t("shopping_history_desc")}i</p>
         </div>
         <Button variant="outline" onClick={() => router.push("/")}>
-          Yangi bozorlik
+        {t("new_shopping")}
         </Button>
       </div>
 
       {shoppingHistory.length === 0 ? (
         <Card>
-          <CardContent className="p-8 text-center">
-            <div className="text-4xl mb-4">📋</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Hali tarix yo'q
-            </h3>
-            <p className="text-gray-600 mb-4">Birinchi bozorlikni yakunlang</p>
-            <Button className="bg-[#09bcbf]"
-            onClick={() => router.push("/")}>
-              Bozorlik boshlash
-            </Button>
-          </CardContent>
-        </Card>
+        <CardContent className="p-8 text-center">
+          <div className="text-4xl mb-4">📋</div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            {t("no_history")}
+          </h3>
+          <p className="text-gray-600 mb-4">
+            {t("finish_first_shopping")}
+          </p>
+          <Button className="bg-[#09bcbf]" onClick={() => router.push("/")}>
+            {t("start_shopping")}
+          </Button>
+        </CardContent>
+      </Card>
       ) : (
         <div className="space-y-6">
           {shoppingHistory.map((list) => (
@@ -72,7 +73,7 @@ const Page = () => {
                       {list.name}
                     </h3>
                     <p className="text-sm text-green-700">
-                      Yakunlangan:{" "}
+                    {t("completed")}:{" "}
                       {list.completedAt?.toLocaleDateString("uz-UZ", {
                         year: "numeric",
                         month: "long",
@@ -91,10 +92,10 @@ const Page = () => {
                           0
                         )
                         .toFixed(2)}{" "}
-                      so'm
+                      t("currency")
                     </p>
                     <p className="text-sm text-green-700">
-                      {list.items.length} ta mahsulot
+                    {t("products_count", { count: list.items.length })}
                     </p>
                   </div>
                 </div>

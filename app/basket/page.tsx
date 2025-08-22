@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
 
 const page = () => {
   const router = useRouter();
@@ -34,7 +35,7 @@ const page = () => {
   const [extraProductType, setExtraProductType] = useState("") // New state variable for extra product type
   const [price, setPrice] = useState("")
   const [sharePhoneNumber, setSharePhoneNumber] = useState("")
-
+  const { t, i18n } = useTranslation("common")
   const handleShareList = () => {
     setShowShareDialog(true);
   };
@@ -86,14 +87,15 @@ const page = () => {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Bozorlik savati
+          {t("basket1.title")}
+
           </h2>
           <p className="text-gray-600">
-            Bozorlik jarayoni va xarajatlaringizni kuzatib boring
+          {t("basket1.subtitle")}
           </p>
         </div>
         <Button variant="outline" onClick={() => router.push("/")}>
-          Ko'proq mahsulot qo'shish
+        {t("basket1.addMore")}
         </Button>
       </div>
 
@@ -102,15 +104,15 @@ const page = () => {
        <CardContent className="p-8 text-center">
          <ShoppingCart className="h-16 w-16 mx-auto text-gray-400 mb-4" />
          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-           Savat bo‘sh
+         {t("basket_empty")}
          </h3>
          <p className="text-gray-600 mb-4">
-           Hali hech narsa qo‘shmagansiz, mahsulot tanlang
+         {t("basket_empty_desc")}
          </p>
          <Button 
            className="bg-[#09bcbf]"
            onClick={() => router.push("/")}>
-           Mahsulotlarni ko‘rish
+           {t("view_products")}
          </Button>
        </CardContent>
      </Card>
@@ -152,7 +154,7 @@ const page = () => {
             </p>
             {item.purchased && item.actualPrice && (
               <p className="text-sm font-semibold text-green-700">
-                To‘langan: {item.actualPrice.toFixed(2)} so‘m
+               {t("paid")}: {item.actualPrice.toFixed(2)} {t("currency")}
               </p>
             )}
           </div>
@@ -161,7 +163,7 @@ const page = () => {
           {item.purchased ? (
             <Badge className="bg-green-100 text-green-800">
               <Check className="h-3 w-3 mr-1" />
-              Olingan
+              {t("received")}
             </Badge>
           ) : (
             <Button
@@ -170,7 +172,7 @@ const page = () => {
               className="bg-[#ff3131] hover:bg-[#09bcbf]"
             >
               <Edit3 className="h-3 w-3 mr-1" />
-              Sotib olish
+              {t("buy")}
             </Button>
           )}
           <Button
@@ -189,40 +191,46 @@ const page = () => {
 <div className="mt-4 mb-4">
   <Button
     onClick={() => setShowExtraProductDialog(true)}
-    className="w-full py-3 text-lg bg-[#09bcbf] from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 border-0"
+    className="w-full py-3 text-lg bg-[#09bcbf] text-white font-semibold"
   >
-     Mahsulot qo‘shish
+    {t("add_product")}
   </Button>
 </div>
+
 <div className="mt-4 mb-4">
   <Button
     onClick={handleShareList}
-    className="w-full py-3 text-lg bg-[#dc983d]  from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 border-0"
+    className="w-full py-3 text-lg bg-[#dc983d] text-white font-semibold"
   >
-     Ro‘yxatni ulashish
+    {t("share_list")}
   </Button>
 </div>
+
 <Separator />
 <Card className="bg-blue-50 border-blue-200">
   <CardContent className="p-4">
     <div className="flex justify-between items-center">
       <div>
         <h3 className="text-lg font-semibold text-blue-900">
-          Xarid xulosasi
+          {t("purchase_summary")}
         </h3>
         <p className="text-sm text-blue-700">
-          {getPurchasedCount()} ta {shoppingList.items.length} mahsulotdan olindi
+          {t("purchased_from_total", {
+            purchased: getPurchasedCount(),
+            total: shoppingList.items.length
+          })}
         </p>
       </div>
       <div className="text-right">
         <p className="text-2xl font-bold text-blue-900">
           {getTotalExpense().toFixed(2)} so‘m
         </p>
-        <p className="text-sm text-blue-700">Umumiy sarf</p>
+        <p className="text-sm text-blue-700">{t("total_expense")}</p>
       </div>
     </div>
   </CardContent>
 </Card>
+
 
         </div>
       )}

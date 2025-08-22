@@ -4,7 +4,7 @@ import axios, {
   } from "axios";
 import { useStore } from "../store/userStore";
 
-const REACT_APP_BASE_URL = "https://bozorlik.fayzullayevsh.uz";
+const REACT_APP_BASE_URL = "https://backend.marketveb.uz";
 
 const api = axios.create({
   baseURL: REACT_APP_BASE_URL,

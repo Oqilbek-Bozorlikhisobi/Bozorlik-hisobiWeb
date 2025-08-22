@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation"
 import { useTranslation } from "react-i18next"
 
 const languages = [
-  { code: "uz", label: "O‘zbekcha", flag: "🇺🇿" },
-  { code: "ru", label: "Русский", flag: "🇷🇺" },
-  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "uz", label: "Uzb", flag: "🇺🇿" },
+  { code: "ru", label: "Рус", flag: "🇷🇺" },
+  { code: "en", label: "Eng", flag: "🇬🇧" },
 ]
 
 export default function Header({ shoppingList }: any) {

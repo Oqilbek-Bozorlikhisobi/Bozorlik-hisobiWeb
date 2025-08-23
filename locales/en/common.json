@@ -49,7 +49,7 @@
   "add_product": "Add product",
   "share_list": "Share list",
   "purchase_summary": "Purchase summary",
-  "purchased_from_total": "{{purchased}} of {{total}} products purchased",
+  "purchased_from_total": "{{purchased}} out of {{total}} products purchased",
   "total_expense": "Total expense",
   "shopping_history": "Shopping history",
   "shopping_history_desc": "Completed shopping lists",

@@ -48,7 +48,7 @@
 "add_product": "Mahsulot qo‘shish",
   "share_list": "Ro‘yxatni ulashish",
   "purchase_summary": "Xarid xulosasi",
-  "purchased_from_total": "{{purchased}} ta {{total}} mahsulotdan olindi",
+  "purchased_from_total": "{{total}} ta mahsulotdan {{purchased}} tasi olindi",
   "total_expense": "Umumiy sarf",
   "shopping_history": "Bozorlik tarixi",
   "shopping_history_desc": "Yakunlangan bozorlik ro'yxatlari",

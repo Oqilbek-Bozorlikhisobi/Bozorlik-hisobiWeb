@@ -26,11 +26,8 @@ import { toast } from "react-toastify";
 const page = () => {
   const { id } = useParams();
   const router = useRouter();
-  const {
-    shoppingList,
-    showExtraProductDialog,
-    setShowExtraProductDialog,
-  } = useShoppingStore();
+  const { shoppingList, showExtraProductDialog, setShowExtraProductDialog } =
+    useShoppingStore();
   const [showPriceDialog, setShowPriceDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [extraProductName, setExtraProductName] = useState("");
@@ -40,8 +37,8 @@ const page = () => {
   const [sharePhoneNumber, setSharePhoneNumber] = useState("");
   const { t, i18n } = useTranslation("common");
   const [list, setList] = useState<any>(null);
-  const [productId, setProductId] = useState<string>("")
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [productId, setProductId] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const addList = (item: any) => {
     setList((prev: any) => ({
@@ -60,11 +57,11 @@ const page = () => {
     }));
   };
 
-  const setBuyingTrue = (id: any) => {
+  const setBuyingTrue = (id: any, price: string) => {
     setList((prev: any) => ({
       ...prev,
       marketLists: prev?.marketLists.map((item: any) =>
-        item.id === id ? { ...item, isBuying: true } : item
+        item.id === id ? { ...item, isBuying: true, price: price } : item
       ),
     }));
   };
@@ -88,19 +85,19 @@ const page = () => {
 
   const getPurchasedCount = () => {
     if (!list) return 0;
-    return list?.marketLists?.filter((item: any) => item.purchased).length;
+    return list?.marketLists?.filter((item: any) => item.isBuying).length;
   };
 
   const handleMarkAsPurchased = (item: any) => {
-    setSelectedProduct(item)
+    setSelectedProduct(item);
     setShowPriceDialog(true);
   };
 
   const { mutate: addProductExtra, isLoading: extraLoading } = useApiMutation({
     url: "market-list",
     method: "POST",
-    onSuccess: (data) => {        
-      addList(data?.data)
+    onSuccess: (data) => {
+      addList(data?.data);
       toast.success("Mahsulot qo'shildi");
       setShowExtraProductDialog(false);
       setExtraProductName("");
@@ -115,8 +112,8 @@ const page = () => {
   const { mutate: deleteProduct } = useApiMutation({
     url: "market-list",
     method: "DELETE",
-    onSuccess: () => {  
-      removeList(productId)
+    onSuccess: () => {
+      removeList(productId);
       toast.success("Mahsulot o'chirildi");
     },
     onError: (error: any) => {
@@ -128,10 +125,10 @@ const page = () => {
     url: `market-list/check-is-buying/${selectedProduct?.id}`,
     method: "PATCH",
     onSuccess: () => {
-    setBuyingTrue(selectedProduct?.id)
-    setShowPriceDialog(false);
-    setPrice("");
-      toast.success("Mahsulot sotib olindi")
+      setBuyingTrue(selectedProduct?.id, price);
+      setShowPriceDialog(false);
+      setPrice("");
+      toast.success("Mahsulot sotib olindi");
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -139,8 +136,8 @@ const page = () => {
   });
   const handleRemove = (id: string) => {
     deleteProduct({ id: id });
-    setProductId(id)
-  }
+    setProductId(id);
+  };
   const handleAddExtraProduct = () => {
     const data = {
       marketId: id,
@@ -154,9 +151,9 @@ const page = () => {
 
   const handleSavePrice = () => {
     const data = {
-        price
-    }
-    buyProduct(data)
+      price,
+    };
+    buyProduct(data);
   };
 
   const handlePhoneNumberChange = (phone: string) => {
@@ -244,7 +241,7 @@ const page = () => {
                       </p>
                       {item?.isBuying && item?.price && (
                         <p className="text-sm font-semibold text-green-700">
-                          {t("paid")}: {item?.price.toFixed(2) * item?.quantity}{" "}
+                          {t("paid")}: {item?.price * item?.quantity}{" "}
                           {t("currency")}
                         </p>
                       )}
@@ -307,14 +304,20 @@ const page = () => {
                   </h3>
                   <p className="text-sm text-blue-700">
                     {t("purchased_from_total", {
+                        total: list?.marketLists?.length,
                       purchased: getPurchasedCount(),
-                      total: shoppingList?.length,
                     })}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-blue-900">
-                    {(10000).toFixed(2)} so‘m
+                    {list?.marketLists
+                      ?.reduce(
+                        (total: number, item: any) => total + (item.price * item?.quantity || 0),
+                        0
+                      )
+                      }{" "}
+                    so‘m
                   </p>
                   <p className="text-sm text-blue-700">{t("total_expense")}</p>
                 </div>
@@ -323,7 +326,7 @@ const page = () => {
           </Card>
         </div>
       )}
-      {shoppingList?.length > 0 && (
+      {list?.marketLists?.length > 0 && (
         <Card className="mt-4">
           <CardContent className="p-4 text-center">
             <Button
@@ -427,14 +430,18 @@ const page = () => {
                 />
               )}
               <div>
-                <h3 className="font-semibold">{selectedProduct?.product
-                          ? (i18n?.language == "uz"
-                            ? selectedProduct?.product?.titleUz
-                            : i18n?.language == "ru"
-                            ? selectedProduct?.product?.titleRu
-                            : selectedProduct?.product?.titleEn)
-                          : selectedProduct?.productName}</h3>
-                <p className="text-sm text-gray-600">{selectedProduct?.quantity} kg</p>
+                <h3 className="font-semibold">
+                  {selectedProduct?.product
+                    ? i18n?.language == "uz"
+                      ? selectedProduct?.product?.titleUz
+                      : i18n?.language == "ru"
+                      ? selectedProduct?.product?.titleRu
+                      : selectedProduct?.product?.titleEn
+                    : selectedProduct?.productName}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {selectedProduct?.quantity} kg
+                </p>
               </div>
             </div>
             <div className="space-y-2">

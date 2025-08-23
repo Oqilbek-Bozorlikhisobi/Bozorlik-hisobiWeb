@@ -50,7 +50,7 @@
   "add_product": "Добавить продукт",
   "share_list": "Поделиться списком",
   "purchase_summary": "Итог покупки",
-  "purchased_from_total": "Куплено {{purchased}} из {{total}} товаров",
+  "purchased_from_total": "{{purchased}} из {{total}} товаров куплено",
   "total_expense": "Общие расходы",
   "shopping_history": "История покупок",
   "shopping_history_desc": "Завершенные списки покупок",

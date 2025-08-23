@@ -94,7 +94,7 @@ export default function ShoppingPlatform() {
   };
 
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ productName: "", productType: "", quantity: "", marketId: "" });
+  const [form, setForm] = useState({ productName: "",  quantity: "", marketId: "" });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -106,7 +106,7 @@ export default function ShoppingPlatform() {
     onSuccess: () => {
       toast.success("Mahsulot qo'shildi")
       setOpen(false);
-      setForm({ productName: "", productType: "", quantity: "", marketId: "" });
+      setForm({ productName: "",  quantity: "", marketId: "" });
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -250,15 +250,6 @@ export default function ShoppingPlatform() {
                         name="productName"
                         placeholder={t("productNamePlaceholder1")}
                         value={form.productName}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>{t("productType1")}</Label>
-                      <Input
-                        name="productType"
-                        placeholder={t("productTypePlaceholder1")}
-                        value={form.productType}
                         onChange={handleInputChange}
                       />
                     </div>

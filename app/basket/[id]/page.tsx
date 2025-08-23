@@ -22,6 +22,7 @@ import { useTranslation } from "react-i18next";
 import api from "@/service/api";
 import useApiMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
+import { set } from "date-fns";
 
 const page = () => {
   const { id } = useParams();
@@ -32,7 +33,6 @@ const page = () => {
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [extraProductName, setExtraProductName] = useState("");
   const [extraProductQuantity, setExtraProductQuantity] = useState(""); // New state variable for extra product quantity
-  const [extraProductType, setExtraProductType] = useState(""); // New state variable for extra product type
   const [price, setPrice] = useState("");
   const [sharePhoneNumber, setSharePhoneNumber] = useState("");
   const { t, i18n } = useTranslation("common");
@@ -77,11 +77,63 @@ const page = () => {
 
   useEffect(() => {
     getData();
+    const interval = setInterval(() => {
+      getData();
+    }, 5000); // 5 soniyada bir marta zapros
+    // komponent unmount bo‘lganda intervalni tozalash kerak
+    return () => clearInterval(interval);
   }, [id]);
 
   const handleShareList = () => {
     setShowShareDialog(true);
   };
+  const formatPhoneNumber = (value: string) => {
+    const digits = value.replace(/\D/g, "");
+    if (digits.length <= 3) {
+      return `+${digits}`;
+    } else if (digits.length <= 5) {
+      return `+${digits.slice(0, 3)} ${digits.slice(3)}`;
+    } else if (digits.length <= 8) {
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(5)}`;
+    } else if (digits.length <= 10) {
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(
+        5,
+        8
+      )} ${digits.slice(8)}`;
+    } else {
+      return `+${digits.slice(0, 3)} ${digits.slice(3, 5)} ${digits.slice(
+        5,
+        8
+      )} ${digits.slice(8, 10)} ${digits.slice(10, 12)}`;
+    }
+  };
+
+  const { mutate: sendList, isLoading: sendListLoading } = useApiMutation({
+    url: "market/add/user",
+    method: "PATCH",
+
+    onSuccess: (data) => {
+      console.log(data);
+      
+    //   toast.success("Mahsulot qo'shildi");
+    //   setShowExtraProductDialog(false);
+    //   setExtraProductName("");
+    //   setExtraProductQuantity("");
+    setShowShareDialog(false)
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
+  const sendShareList = () => {
+    const data = {
+        phoneNumber: sharePhoneNumber.replace(/\s/g, ""),
+        marketId: id
+    }
+    sendList(data)
+    
+  }
 
   const getPurchasedCount = () => {
     if (!list) return 0;
@@ -102,7 +154,6 @@ const page = () => {
       setShowExtraProductDialog(false);
       setExtraProductName("");
       setExtraProductQuantity("");
-      setExtraProductType("");
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -142,7 +193,6 @@ const page = () => {
     const data = {
       marketId: id,
       quantity: extraProductQuantity,
-      productType: extraProductType,
       productName: extraProductName,
     };
 
@@ -157,7 +207,8 @@ const page = () => {
   };
 
   const handlePhoneNumberChange = (phone: string) => {
-    setSharePhoneNumber(phone);
+    const formatted = formatPhoneNumber(phone)
+    setSharePhoneNumber(formatted);
   };
 
   const handleSendToUser = (user: {
@@ -234,6 +285,7 @@ const page = () => {
                             : item?.product?.titleEn
                           : item?.productName}
                       </h3>
+                      
                       <p className="text-sm text-gray-600">
                         {item.product
                           ? `${item?.quantity} dona`
@@ -243,6 +295,11 @@ const page = () => {
                         <p className="text-sm font-semibold text-green-700">
                           {t("paid")}: {item?.price * item?.quantity}{" "}
                           {t("currency")}
+                        </p>
+                      )}
+                      {item?.user && (
+                        <p className="text-sm text-gray-500">
+                          👤 {item.user.fullName}
                         </p>
                       )}
                     </div>
@@ -304,19 +361,18 @@ const page = () => {
                   </h3>
                   <p className="text-sm text-blue-700">
                     {t("purchased_from_total", {
-                        total: list?.marketLists?.length,
+                      total: list?.marketLists?.length,
                       purchased: getPurchasedCount(),
                     })}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-blue-900">
-                    {list?.marketLists
-                      ?.reduce(
-                        (total: number, item: any) => total + (item.price * item?.quantity || 0),
-                        0
-                      )
-                      }{" "}
+                    {list?.marketLists?.reduce(
+                      (total: number, item: any) =>
+                        total + (item.price * item?.quantity || 0),
+                      0
+                    )}{" "}
                     so‘m
                   </p>
                   <p className="text-sm text-blue-700">{t("total_expense")}</p>
@@ -370,17 +426,6 @@ const page = () => {
                 value={extraProductName}
                 onChange={(e) => setExtraProductName(e.target.value)}
                 placeholder="masalan, Tuz, Shakar, Sabun..."
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="extraProductType">
-                Mahsulot turi/navi (ixtiyoriy)
-              </Label>
-              <Input
-                id="extraProductType"
-                value={extraProductType}
-                onChange={(e) => setExtraProductType(e.target.value)}
-                placeholder="masalan, Premium, Katta, Kichik, 1kg..."
               />
             </div>
             <div className="space-y-2">
@@ -484,7 +529,7 @@ const page = () => {
                 className="mt-1"
               />
             </div>
-            {[].length > 0 && (
+            {/* {[].length > 0 && (
               <div className="space-y-2">
                 <Label>Topilgan foydalanuvchilar:</Label>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
@@ -513,11 +558,11 @@ const page = () => {
               <div className="text-center py-4 text-gray-500">
                 <p>Bu raqam bilan ro'yxatdan o'tgan foydalanuvchi topilmadi</p>
               </div>
-            )}
+            )} */}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowShareDialog(false)}>
-              Bekor qilish
+            <Button variant="outline" onClick={() => sendShareList()}>
+              ULashish
             </Button>
           </DialogFooter>
         </DialogContent>

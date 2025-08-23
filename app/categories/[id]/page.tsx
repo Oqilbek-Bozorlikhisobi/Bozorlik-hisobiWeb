@@ -20,7 +20,13 @@ import { useFetch } from "@/hooks/useFetch";
 import api from "@/service/api";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import useApiMutation from "@/hooks/useMutation";
 
 type Product = {
@@ -38,16 +44,14 @@ const CategoryPage = () => {
   const id = params?.id as string;
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState("");
-  const [productType, setProductType] = useState("");
-  const [marketId, setMarketId] = useState<string>("")
+  const [marketId, setMarketId] = useState<string>("");
   const [showQuantityDialog, setShowQuantityDialog] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<any>(null);
-  const { shoppingList, setShoppingList, } = useShoppingStore();
+  const { shoppingList } = useShoppingStore();
   const { i18n } = useTranslation();
 
   console.log(selectedProduct);
-  
 
   const getData = async () => {
     try {
@@ -76,7 +80,6 @@ const CategoryPage = () => {
   const handleProductSelect = (product: Product) => {
     setSelectedProduct(product);
     setQuantity("");
-    setProductType(""); // Reset product type
     setShowQuantityDialog(true);
   };
 
@@ -84,12 +87,11 @@ const CategoryPage = () => {
     url: "market-list",
     method: "POST",
     onSuccess: () => {
-      toast.success("Mahsulot qo'shildi")
+      toast.success("Mahsulot qo'shildi");
       setShowQuantityDialog(false);
       setSelectedProduct(null);
       setQuantity("");
-      setProductType(""); // Reset product type
-      setMarketId("")
+      setMarketId("");
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -100,10 +102,9 @@ const CategoryPage = () => {
     const data = {
       marketId,
       productId: selectedProduct?.id,
-      productType,
-      quantity
-    }
-    addProductExtra(data)
+      quantity,
+    };
+    addProductExtra(data);
   };
 
   return (
@@ -184,7 +185,12 @@ const CategoryPage = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {i18n.language == "uz" ? selectedProduct?.titleUz : i18n.language == "ru" ? selectedProduct?.titleRu : selectedProduct?.titleEn} ni savatga qo'shish
+              {i18n.language == "uz"
+                ? selectedProduct?.titleUz
+                : i18n.language == "ru"
+                ? selectedProduct?.titleRu
+                : selectedProduct?.titleEn}{" "}
+              ni savatga qo'shish
             </DialogTitle>
             <DialogDescription>
               Sotib olmoqchi bo'lgan miqdorni kiriting
@@ -202,23 +208,17 @@ const CategoryPage = () => {
                 />
               )}
               <div>
-                <h3 className="font-semibold">{i18n.language == "uz" ? selectedProduct?.titleUz : i18n.language == "ru" ? selectedProduct?.titleRu : selectedProduct?.titleEn}</h3>
+                <h3 className="font-semibold">
+                  {i18n.language == "uz"
+                    ? selectedProduct?.titleUz
+                    : i18n.language == "ru"
+                    ? selectedProduct?.titleRu
+                    : selectedProduct?.titleEn}
+                </h3>
                 <p className="text-sm text-gray-600">
                   har {selectedProduct?.unit}
                 </p>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="productType">
-                Mahsulot turi/navi (ixtiyoriy)
-              </Label>
-              <Input
-                id="productType"
-                value={productType}
-                required
-                onChange={(e) => setProductType(e.target.value)}
-                placeholder="masalan, Premium, Organik, 1L, 500ml..."
-              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="quantity">Miqdor ({selectedProduct?.unit})</Label>
@@ -234,24 +234,24 @@ const CategoryPage = () => {
               />
             </div>
             <div className="space-y-2">
-                      <Label htmlFor="marketId">Bozorlikni tanlang</Label>
-                      <Select
-                        value={marketId}
-                        onValueChange={(value) => setMarketId(value)}
-                        required
-                      >
-                        <SelectTrigger id="marketId" className="w-full">
-                          <SelectValue placeholder="Bozorlik tanlang" />
-                        </SelectTrigger>
-                        <SelectContent className="w-full">
-                          {shoppingList?.map((item: any) => (
-                            <SelectItem key={item?.id} value={item?.id}>
-                              {item?.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+              <Label htmlFor="marketId">Bozorlikni tanlang</Label>
+              <Select
+                value={marketId}
+                onValueChange={(value) => setMarketId(value)}
+                required
+              >
+                <SelectTrigger id="marketId" className="w-full">
+                  <SelectValue placeholder="Bozorlik tanlang" />
+                </SelectTrigger>
+                <SelectContent className="w-full">
+                  {shoppingList?.map((item: any) => (
+                    <SelectItem key={item?.id} value={item?.id}>
+                      {item?.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <DialogFooter>
             <Button onClick={handleAddToBasket} disabled={extraLoading}>

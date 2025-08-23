@@ -19,6 +19,7 @@ import { useShoppingStore } from "@/store/shoppingStore";
 import { useFetch } from "@/hooks/useFetch";
 import api from "@/service/api";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 type Product = {
   id: string;
@@ -39,7 +40,7 @@ const CategoryPage = () => {
   const [showQuantityDialog, setShowQuantityDialog] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<any>(null);
-  const { shoppingList, setShoppingList } = useShoppingStore();
+  const { shoppingList, setShoppingList, shoppingId } = useShoppingStore();
   const {i18n} = useTranslation()
 
   const getData = async () => {
@@ -69,10 +70,17 @@ const CategoryPage = () => {
   });
 
   const handleProductSelect = (product: Product) => {
-    setSelectedProduct(product);
+    if(shoppingId){
+      setSelectedProduct(product);
     setQuantity("");
     setProductType(""); // Reset product type
     setShowQuantityDialog(true);
+    }else{
+      toast.info("Mahsulot qo'shish uchun savat tanlang")
+      router.push(`/basket`);
+    }
+    
+    
   };
 
   const handleAddToBasket = () => {

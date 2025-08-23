@@ -216,7 +216,7 @@ export default function ForgotPasswordForm() {
             <Button
               type="submit"
               disabled={isLoading || !phoneNumber || !newPassword}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg"
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg"
             >
               {isLoading ? (
                 <>

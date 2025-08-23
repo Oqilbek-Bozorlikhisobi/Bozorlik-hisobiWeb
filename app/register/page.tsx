@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import Image from "next/image"
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2,  Lock, Phone, User } from "lucide-react";
+import { Loader2, Lock, Phone, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import {
@@ -27,9 +27,8 @@ import {
 import useApiMutation from "@/hooks/useMutation";
 import { setCookie } from "cookies-next";
 import { useStore } from "@/store/userStore";
-import { useTranslation } from "react-i18next"
-import Logo from "../../public/logo.png"
-
+import { useTranslation } from "react-i18next";
+import Logo from "../../public/logo.png";
 
 const regions = [
   "Toshkent V",
@@ -51,17 +50,17 @@ const languages = [
   { code: "uz", label: "Uzb", flag: "🇺🇿" },
   { code: "ru", label: "Рус", flag: "🇷🇺" },
   { code: "en", label: "Eng", flag: "🇬🇧" },
-]
+];
 
 export default function RegisterForm() {
-  const { t, i18n } = useTranslation("common")
-  const currentLang = i18n.language || "uz"
+  const { t, i18n } = useTranslation("common");
+  const currentLang = i18n.language || "uz";
 
   const handleLanguageChange = (lng: string) => {
-    i18n.changeLanguage(lng)
-  }
+    i18n.changeLanguage(lng);
+  };
 
-  const [region, setRegion] = useState("")
+  const [region, setRegion] = useState("");
 
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -125,7 +124,7 @@ export default function RegisterForm() {
   }, [verify, timeLeft]);
 
   const { mutate: resendMutate, isLoading: resendLoading } = useApiMutation({
-    url: "/auth/sendotp/again",
+    url: "/auth/sendotp/again/for-register",
     method: "POST",
     onSuccess: () => {
       toast.success(t("register.newCodeSent"));
@@ -140,6 +139,7 @@ export default function RegisterForm() {
   const handleResend = () => {
     resendMutate({
       phoneNumber: formData.phoneNumber.replace(/\s/g, ""),
+      verification_key: dataResponse?.details,
     });
   };
   const handleSubmit = async (e: React.FormEvent) => {
@@ -229,28 +229,27 @@ export default function RegisterForm() {
   return (
     <div className="min-h-screen py-10 flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
-        
         <CardHeader className="text-center">
-        <select
-              value={currentLang}
-              onChange={(e) => handleLanguageChange(e.target.value)}
-              className="border rounded-lg px-2 py-[9px] w-25 text-sm focus:outline-none focus:ring-2 focus:ring-[#09bcbf]"
-            >
-              {languages.map((lng) => (
-                <option key={lng.code} value={lng.code}>
-                  {lng.flag} {lng.label}
-                </option>
-              ))}
-            </select>
+          <select
+            value={currentLang}
+            onChange={(e) => handleLanguageChange(e.target.value)}
+            className="border rounded-lg px-2 py-[9px] w-25 text-sm focus:outline-none focus:ring-2 focus:ring-[#09bcbf]"
+          >
+            {languages.map((lng) => (
+              <option key={lng.code} value={lng.code}>
+                {lng.flag} {lng.label}
+              </option>
+            ))}
+          </select>
 
           <div className="mx-auto mb-4 w-23 h-23 bg-green-100 rounded-full flex items-center justify-center">
-          <Image src={Logo} alt="Logo" className="w-23 h-23 " />
+            <Image src={Logo} alt="Logo" className="w-23 h-23 " />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
-          {t("register.title")}
+            {t("register.title")}
           </CardTitle>
           <CardDescription className="text-gray-600">
-          {t("register.subtitle")}
+            {t("register.subtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -307,7 +306,6 @@ export default function RegisterForm() {
               </div>
             </div>
 
-
             {/* Viloyat tanlash */}
             <div className="space-y-2">
               <Label
@@ -317,34 +315,37 @@ export default function RegisterForm() {
                 {t("register.region")}
               </Label>
               <div className="relative">
-              <select
-        id="region"
-        value={formData.region}
-         onChange={(e) => handleInputChange("region", e.target.value)}
-        className="border rounded-lg px-2 py-2 w-full"
-      >
-        <option value="" disabled>
-          {t("register.regionSelect")}
-        </option>
-        <option value="tashkent">{t("register.tashkent")}</option>
-        <option value="andijan">{t("register.andijan")}</option>
-        <option value="fergana">{t("register.fergana")}</option>
-        <option value="namangan">{t("register.namangan")}</option>
-        <option value="sirdaryo">{t("register.sirdaryo")}</option>
-        <option value="jizzakh">{t("register.jizzakh")}</option>
-        <option value="samarkand">{t("register.samarkand")}</option>
-        <option value="kashkadarya">{t("register.kashkadarya")}</option>
-        <option value="surkhandarya">{t("register.surkhandarya")}</option>
-        <option value="bukhara">{t("register.bukhara")}</option>
-        <option value="navoiy">{t("register.navoiy")}</option>
-        <option value="khorezm">{t("register.khorezm")}</option>
-        <option value="karakalpakstan">{t("register.karakalpakstan")}</option>
-      </select>
+                <select
+                  id="region"
+                  value={formData.region}
+                  onChange={(e) => handleInputChange("region", e.target.value)}
+                  className="border rounded-lg px-2 py-2 w-full"
+                >
+                  <option value="" disabled>
+                    {t("register.regionSelect")}
+                  </option>
+                  <option value="tashkent">{t("register.tashkent")}</option>
+                  <option value="andijan">{t("register.andijan")}</option>
+                  <option value="fergana">{t("register.fergana")}</option>
+                  <option value="namangan">{t("register.namangan")}</option>
+                  <option value="sirdaryo">{t("register.sirdaryo")}</option>
+                  <option value="jizzakh">{t("register.jizzakh")}</option>
+                  <option value="samarkand">{t("register.samarkand")}</option>
+                  <option value="kashkadarya">
+                    {t("register.kashkadarya")}
+                  </option>
+                  <option value="surkhandarya">
+                    {t("register.surkhandarya")}
+                  </option>
+                  <option value="bukhara">{t("register.bukhara")}</option>
+                  <option value="navoiy">{t("register.navoiy")}</option>
+                  <option value="khorezm">{t("register.khorezm")}</option>
+                  <option value="karakalpakstan">
+                    {t("register.karakalpakstan")}
+                  </option>
+                </select>
               </div>
             </div>
-
-
-
 
             {/* Jins tanlash */}
             <div className="space-y-2">
@@ -363,7 +364,7 @@ export default function RegisterForm() {
                   required
                 >
                   <option value="" disabled>
-                  {t("register.genderSelect")}
+                    {t("register.genderSelect")}
                   </option>
                   <option value="Erkak">{t("register.male")}</option>
                   <option value="Ayol">{t("register.female")}</option>
@@ -448,7 +449,9 @@ export default function RegisterForm() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-gray-50 text-gray-500">{t("register.or")}</span>
+                <span className="px-2 bg-gray-50 text-gray-500">
+                  {t("register.or")}
+                </span>
               </div>
             </div>
 
@@ -458,16 +461,24 @@ export default function RegisterForm() {
               onClick={() => router.push("/login")}
               className="w-full border-2 border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600 font-medium py-2.5 rounded-lg transition-all duration-200 bg-transparent"
             >
-               {t("register.login")}
+              {t("register.login")}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500">
-            {t("register.agreeText", {
-    terms: <a href="#" className="text-green-600 hover:underline">{t("register.terms")}</a>,
-    privacy: <a href="#" className="text-green-600 hover:underline">{t("register.privacy")}</a>,
-  })}
+              {t("register.agreeText", {
+                terms: (
+                  <a href="#" className="text-green-600 hover:underline">
+                    {t("register.terms")}
+                  </a>
+                ),
+                privacy: (
+                  <a href="#" className="text-green-600 hover:underline">
+                    {t("register.privacy")}
+                  </a>
+                ),
+              })}
             </p>
           </div>
         </CardContent>
@@ -476,10 +487,10 @@ export default function RegisterForm() {
         <DialogContent className="fixed top-1/2 left-1/2 w-[90%] max-w-sm -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl p-6 shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-gray-800">
-            {t("register.verifyTitle")}
+              {t("register.verifyTitle")}
             </DialogTitle>
             <DialogDescription className="text-sm text-gray-500">
-            {t("register.verifyDescription")}
+              {t("register.verifyDescription")}
             </DialogDescription>
           </DialogHeader>
 
@@ -500,7 +511,7 @@ export default function RegisterForm() {
           <div className="mt-4 text-center">
             {!canResend ? (
               <p className="text-sm text-gray-500">
-               {t("register.timeLeft")}:{" "}
+                {t("register.timeLeft")}:{" "}
                 <span className="font-semibold text-gray-800">
                   {Math.floor(timeLeft / 60)}:
                   {(timeLeft % 60).toString().padStart(2, "0")}

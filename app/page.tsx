@@ -14,50 +14,46 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ShoppingCart, User } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useShoppingStore } from "@/store/shoppingStore";
 import { useFetch } from "@/hooks/useFetch";
 import { useTranslation } from "react-i18next";
-
-// Types
-
-const banners = [
-  {
-    id: 1,
-    title: "Maktab bozori",
-    discount: "15",
-    subtitle: "Uzum Karta bilan foydalirog",
-    bgColor: "from-purple-600 via-purple-500 to-pink-500",
-    image: "/placeholder.svg?height=120&width=120&text=Happy+Girl",
-  },
-  {
-    id: 2,
-    title: "Yoz chegirmalari",
-    discount: "25",
-    subtitle: "Barcha mevalar uchun",
-    bgColor: "from-orange-500 via-red-500 to-pink-500",
-    image: "/placeholder.svg?height=120&width=120&text=Summer+Sale",
-  },
-];
+import useApiMutation from "@/hooks/useMutation";
+import { toast } from "react-toastify";
+import { useStore } from "@/store/userStore";
 
 // Mock registered users for demonstration
 
 export default function ShoppingPlatform() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [shoppingList, setShoppingList] = useState<any>(null);
   const [listName, setListName] = useState("");
   const [showStartDialog, setShowStartDialog] = useState(false);
-  const [pendingCategory, setPendingCategory] = useState<string>("");
-  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState<any>(0);
   const [extraProductName, setExtraProductName] = useState("");
   const [extraProductQuantity, setExtraProductQuantity] = useState(""); // New state variable for extra product quantity
   const [extraProductType, setExtraProductType] = useState(""); // New state variable for extra product type
-  const { showExtraProductDialog, setShowExtraProductDialog } =
+  const { showExtraProductDialog, setShowExtraProductDialog, setShoppingId } =
     useShoppingStore();
   const [search, setSearch] = useState("");
   const { t, i18n } = useTranslation("common");
+  const {user} = useStore()
+
+  const { mutate } = useApiMutation({
+    url: "market",
+    method: "POST",
+    onSuccess: (data) => {
+      setShoppingId(data?.data?.id)
+      setShoppingList(data?.data);
+      setShowStartDialog(false);
+      setListName("");
+    },
+
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
 
   const { data } = useFetch<any>({
     key: ["category", search],
@@ -81,7 +77,8 @@ export default function ShoppingPlatform() {
   // Auto-rotate banner carousel
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBannerIndex((prevIndex) => (prevIndex + 1) % banners.length);
+      //@ts-ignore
+      setCurrentBannerIndex((prevIndex: any) => (prevIndex + 1) % bunners?.total);
     }, 4000); // Change banner every 4 seconds
 
     return () => clearInterval(interval);
@@ -91,33 +88,17 @@ export default function ShoppingPlatform() {
     if (listName.trim()) {
       // Create new shopping list
       const newList = {
-        id: Date.now().toString(),
         name: listName,
-        items: [],
-        createdAt: new Date(),
+        userId: user?.id
       };
-      setShoppingList(newList);
-      setShowStartDialog(false);
-      setListName("");
 
-      // If there was a pending category selection, handle it
-      if (pendingCategory) {
-        if (pendingCategory === "boshqalar") {
-          // Open extra product dialog for "Other" category
-          setShowExtraProductDialog(true);
-          setPendingCategory("");
-        } else {
-          // Go to products for other categories
-          setSelectedCategory(pendingCategory);
-          setPendingCategory("");
-        }
-      }
+      mutate(newList)
     }
   };
 
   const getPurchasedCount = () => {
     if (!shoppingList) return 0;
-    return shoppingList.items.filter((item: any) => item.purchased).length;
+    return shoppingList?.items?.filter((item: any) => item.purchased).length;
   };
 
   const [open, setOpen] = useState(false);
@@ -182,7 +163,7 @@ export default function ShoppingPlatform() {
                       {shoppingList
                         ? t("purchased", {
                             purchased: getPurchasedCount(),
-                            total: shoppingList.items.length,
+                            total: shoppingList?.items?.length,
                           })
                         : t("emptyList")}
                     </p>
@@ -273,7 +254,7 @@ export default function ShoppingPlatform() {
 
                 {/* Carousel Indicators */}
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                  {banners.map((_, index) => (
+                  {bunners?.items?.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setCurrentBannerIndex(index)}
@@ -290,7 +271,8 @@ export default function ShoppingPlatform() {
                 <button
                   onClick={() =>
                     setCurrentBannerIndex(
-                      (prev) => (prev - 1 + banners.length) % banners.length
+                      //@ts-ignore
+                      (prev: any) => (prev - 1 + bunners?.total) % bunners?.total
                     )
                   }
                   className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200"
@@ -311,7 +293,8 @@ export default function ShoppingPlatform() {
                 </button>
                 <button
                   onClick={() =>
-                    setCurrentBannerIndex((prev) => (prev + 1) % banners.length)
+                    //@ts-ignore
+                    setCurrentBannerIndex((prev) => (prev + 1) % bunners?.total)
                   }
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200"
                 >

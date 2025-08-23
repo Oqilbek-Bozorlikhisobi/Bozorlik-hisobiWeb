@@ -1,31 +1,26 @@
 // store/shoppingStore.ts
 import { create } from "zustand";
 
-type ShoppingItem = {
-  id: string;
-  name: string;
-  price: number;
-};
-
-type ShoppingState = {
-  shoppingList: {
-    items: ShoppingItem[];
-  };
-  setShoppingList: (newItem: ShoppingItem) => void;
-};
-
 export const useShoppingStore = create<any>((set) => ({
-  shoppingList: {
-    items: [],
-  },
+  shoppingList: null,
   showExtraProductDialog: false,
+  shoppingId: null,
   setShoppingList: (newItem: any) =>
     set((state: any) => ({
-      shoppingList: {
+      shoppingList: [
         ...state.shoppingList,
-        items: [...state.shoppingList.items, newItem],
-      },
+        newItem
+      ],
     })),
+
+    setShoppingListAll: (newItemAll: any) =>
+      set(() => ({
+        shoppingList: newItemAll,
+      })),
+      setShoppingId: (id: any) =>
+        set(() => ({
+          shoppingId: id,
+        })),
   removeShoppingItem: (id: string) =>
     set((state: any) => ({
       shoppingList: {

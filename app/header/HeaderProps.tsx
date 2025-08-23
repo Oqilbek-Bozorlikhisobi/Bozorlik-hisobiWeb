@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { deleteCookie } from "cookies-next";
 import { useStore } from "@/store/userStore"
+import { useShoppingStore } from "@/store/shoppingStore"
 
 const languages = [
   { code: "uz", label: "Uzb", flag: "🇺🇿" },
@@ -20,11 +21,13 @@ const languages = [
   { code: "en", label: "Eng", flag: "🇬🇧" },
 ]
 
-export default function Header({ shoppingList }: any) {
+export default function Header() {
   const router = useRouter()
   const { t, i18n } = useTranslation("common")
   const currentLang = i18n.language || "uz"
   const { clearUser } = useStore();
+  const { shoppingList } =
+      useShoppingStore();
 
   const handleBasketClick = () => {
     router.push(`/basket`)
@@ -93,9 +96,9 @@ export default function Header({ shoppingList }: any) {
             <Button onClick={handleBasketClick} className="bg-[#09bcbf] relative">
               <ShoppingCart className="h-4 w-4 mr-2" />
               {t("basket")}
-              {shoppingList && shoppingList.items.length > 0 && (
+              {shoppingList && shoppingList.length > 0 && (
                 <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  {shoppingList.items.length}
+                  {shoppingList.length}
                 </Badge>
               )}
             </Button>

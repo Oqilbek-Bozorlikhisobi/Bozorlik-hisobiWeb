@@ -143,7 +143,8 @@
   "ru": "Рус",
   "en": "Eng"
 },
-"choose_language": "Выберите язык"
+"choose_language": "Выберите язык",
+"language": "Язык"
 
 
   }

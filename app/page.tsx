@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,20 +30,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import BannerCarousel from "../app/baner/baner";
 // Mock registered users for demonstration
 
 export default function ShoppingPlatform() {
   const router = useRouter();
   const [listName, setListName] = useState("");
   const [showStartDialog, setShowStartDialog] = useState(false);
-  const [currentBannerIndex, setCurrentBannerIndex] = useState<any>(0);
-  // const [extraProductName, setExtraProductName] = useState("");
-  // const [marketId, setMarketId] = useState<any>(null);
-  // const [extraProductQuantity, setExtraProductQuantity] = useState(""); 
-  // const [extraProductType, setExtraProductType] = useState(""); 
   const {
-    // showExtraProductDialog,
-    // setShowExtraProductDialog,
     setShoppingId,
     setShoppingList,
     shoppingList,
@@ -77,25 +71,10 @@ export default function ShoppingPlatform() {
     },
   });
 
-  const { data: bunners } = useFetch<any>({
-    key: ["bunner"],
-    url: "/bunner",
-  });
 
   const handleCategoryClick = (id: string) => {
     router.push(`/categories/${id}`); // Sahifaga yo‘naltiramiz
   };
-
-  // Auto-rotate banner carousel
-  useEffect(() => {
-    const interval = setInterval(() => {
-      //@ts-ignore
-      setCurrentBannerIndex( (prevIndex: any) => (prevIndex + 1) % bunners?.total
-      );
-    }, 4000); // Change banner every 4 seconds
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleStartShopping = () => {
     if (listName.trim()) {
@@ -138,36 +117,6 @@ export default function ShoppingPlatform() {
     addProductExtra(form)
     
   };
-
-  // const handleAddExtraProduct = () => {
-  //   if (extraProductName.trim() && extraProductQuantity && shoppingList) {
-  //     const extraProduct = {
-  //       id: `extra_${Date.now()}`,
-  //       name: extraProductType
-  //         ? `${extraProductName.trim()} (${extraProductType})`
-  //         : extraProductName.trim(),
-  //       price: 0, // Price will be set when marking as purchased
-  //       isExtra: true,
-  //     };
-
-  //     const newItem = {
-  //       id: Date.now().toString(),
-  //       product: extraProduct,
-  //       quantity: Number.parseFloat(extraProductQuantity),
-  //       purchased: false,
-  //     };
-
-  //     setShoppingList({
-  //       ...shoppingList,
-  //       items: [...shoppingList.items, newItem],
-  //     });
-
-  //     setShowExtraProductDialog(false);
-  //     setExtraProductName("");
-  //     setExtraProductQuantity("");
-  //     setExtraProductType("");
-  //   }
-  // };
 
   return (
     <>
@@ -231,127 +180,14 @@ export default function ShoppingPlatform() {
             </div>
 
             {/* Promotional Banner Carousel */}
-            <div className="mb-8">
-              <div className="relative overflow-hidden rounded-2xl shadow-lg">
-                <div
-                  className="flex transition-transform duration-500 ease-in-out"
-                  style={{
-                    transform: `translateX(-${currentBannerIndex * 100}%)`,
-                  }}
-                >
-                  {bunners?.items.map((banner, index) => (
-                    <div
-                      key={banner.id}
-                      className={`w-full flex-shrink-0 bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 p-6`}
-                    >
-                      <div className="relative z-10 flex items-center justify-between">
-                        <div className="flex-1">
-                          <h2 className="text-2xl font-bold text-white mb-2">
-                            {i18n?.language == "uz"
-                              ? banner.nameUz
-                              : i18n?.language == "en"
-                              ? banner.nameEn
-                              : banner.nameRu}
-                          </h2>
-                          <div className="flex items-center space-x-3 mb-3">
-                            <span className="bg-white text-purple-600 text-2xl font-bold px-4 py-2 rounded-lg">
-                              {banner.discount}
-                            </span>
-                            <span className="text-white text-sm">
-                              % chegirma
-                            </span>
-                          </div>
-                          <p className="text-white/90 text-sm">
-                            {banner.subtitle}
-                          </p>
-                        </div>
-                        <div className="flex-shrink-0 ml-6">
-                          <img
-                            src={
-                              i18n?.language == "uz"
-                                ? banner.imageUz
-                                : i18n?.language == "en"
-                                ? banner.imageEn
-                                : banner.imageRu
-                            }
-                            alt={banner.imageEn}
-                            className="h-24 w-24 object-cover rounded-lg"
-                          />
-                        </div>
-                      </div>
+              
+            <BannerCarousel />
 
-                      {/* Decorative elements */}
-                      <div className="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 bg-white/10 rounded-full"></div>
-                      <div className="absolute bottom-0 left-0 -mb-6 -ml-6 h-16 w-16 bg-white/10 rounded-full"></div>
-                    </div>
-                  ))}
-                </div>
 
-                {/* Carousel Indicators */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                  {bunners?.items?.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentBannerIndex(index)}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                        index === currentBannerIndex
-                          ? "bg-white w-6"
-                          : "bg-white/50"
-                      }`}
-                    />
-                  ))}
-                </div>
+            {/* Bu  oraliqa  baner chaqiriladi   */}
 
-                {/* Navigation Arrows */}
-                <button
-                  onClick={() =>
-                    setCurrentBannerIndex(
-                      //@ts-ignore
-                      (prev: any) => (prev - 1 + bunners?.total) % bunners?.total
-                    )
-                  }
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
-                <button
-                  onClick={() =>
-                    //@ts-ignore
-                    setCurrentBannerIndex((prev) => (prev + 1) % bunners?.total)
-                  }
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full transition-all duration-200"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <div className="mb-9">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">
                 {t("chooseCategory")}
               </h2>
               <p className="text-gray-600">{t("chooseCategoryDesc")}</p>
@@ -494,66 +330,7 @@ export default function ShoppingPlatform() {
           </DialogContent>
         </Dialog>
 
-        {/* Share Dialog */}
-
-        {/* Extra Product Dialog */}
-        {/* <Dialog
-          open={showExtraProductDialog}
-          onOpenChange={setShowExtraProductDialog}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t("extraProductTitle")}</DialogTitle>
-              <DialogDescription>{t("extraProductDesc")}</DialogDescription>
-            </DialogHeader>
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="extraProductName">{t("productName1")}</Label>
-                <Input
-                  id="extraProductName"
-                  value={extraProductName}
-                  onChange={(e) => setExtraProductName(e.target.value)}
-                  placeholder={t("productNamePlaceholder")}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="extraProductType">{t("productType")}</Label>
-                <Input
-                  id="extraProductType"
-                  value={extraProductType}
-                  onChange={(e) => setExtraProductType(e.target.value)}
-                  placeholder={t("productTypePlaceholder")}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="extraProductQuantity">{t("quantity")}</Label>
-                <Input
-                  id="extraProductQuantity"
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  value={extraProductQuantity}
-                  onChange={(e) => setExtraProductQuantity(e.target.value)}
-                  placeholder={t("quantityPlaceholder")}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setShowExtraProductDialog(false)}
-              >
-                {t("cancel")}
-              </Button>
-              <Button
-                onClick={handleAddExtraProduct}
-                disabled={!extraProductName.trim() || !extraProductQuantity}
-              >
-                {t("add")}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog> */}
+        
       </div>
     </>
   );

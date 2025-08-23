@@ -214,7 +214,7 @@ const page = () => {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl font-bold text-blue-900">
-                    {(10000).toFixed(2)} so‘m
+                    {(10000).toFixed(2)} so'm
                   </p>
                   <p className="text-sm text-blue-700">{t("total_expense")}</p>
                 </div>

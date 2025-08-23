@@ -7,20 +7,17 @@ export const useShoppingStore = create<any>((set) => ({
   shoppingId: null,
   setShoppingList: (newItem: any) =>
     set((state: any) => ({
-      shoppingList: [
-        ...state.shoppingList,
-        newItem
-      ],
+      shoppingList: [...state.shoppingList, newItem],
     })),
 
-    setShoppingListAll: (newItemAll: any) =>
-      set(() => ({
-        shoppingList: newItemAll,
-      })),
-      setShoppingId: (id: any) =>
-        set(() => ({
-          shoppingId: id,
-        })),
+  setShoppingListAll: (newItemAll: any) =>
+    set(() => ({
+      shoppingList: newItemAll,
+    })),
+  setShoppingId: (id: any) =>
+    set(() => ({
+      shoppingId: id,
+    })),
   removeShoppingItem: (id: string) =>
     set((state: any) => ({
       shoppingList: {
@@ -29,5 +26,6 @@ export const useShoppingStore = create<any>((set) => ({
       },
     })),
 
-  setShowExtraProductDialog: (show: any) => set({ showExtraProductDialog: show }),
+  setShowExtraProductDialog: (show: any) =>
+    set({ showExtraProductDialog: show }),
 }));

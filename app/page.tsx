@@ -27,14 +27,13 @@ import { useStore } from "@/store/userStore";
 
 export default function ShoppingPlatform() {
   const router = useRouter();
-  const [shoppingList, setShoppingList] = useState<any>(null);
   const [listName, setListName] = useState("");
   const [showStartDialog, setShowStartDialog] = useState(false);
   const [currentBannerIndex, setCurrentBannerIndex] = useState<any>(0);
   const [extraProductName, setExtraProductName] = useState("");
   const [extraProductQuantity, setExtraProductQuantity] = useState(""); // New state variable for extra product quantity
   const [extraProductType, setExtraProductType] = useState(""); // New state variable for extra product type
-  const { showExtraProductDialog, setShowExtraProductDialog, setShoppingId } =
+  const { showExtraProductDialog, setShowExtraProductDialog, setShoppingId, setShoppingList, shoppingList } =
     useShoppingStore();
   const [search, setSearch] = useState("");
   const { t, i18n } = useTranslation("common");

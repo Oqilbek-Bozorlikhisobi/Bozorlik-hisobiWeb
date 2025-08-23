@@ -41,22 +41,20 @@ const CategoryPage = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<any>(null);
   const { shoppingList, setShoppingList, shoppingId } = useShoppingStore();
-  const {i18n} = useTranslation()
+  const { i18n } = useTranslation();
 
   const getData = async () => {
     try {
       const response = await api.get(`category/${id}`);
-      setCategory(response.data.data)
+      setCategory(response.data.data);
     } catch (error) {
       console.error("Xatolik yuz berdi:", error);
     }
   };
-  
-  
- useEffect(() => {
-  getData()
- }, [id])
-  
+
+  useEffect(() => {
+    getData();
+  }, [id]);
 
   const { data } = useFetch<any>({
     key: ["products", search, id],
@@ -70,17 +68,10 @@ const CategoryPage = () => {
   });
 
   const handleProductSelect = (product: Product) => {
-    if(shoppingId){
-      setSelectedProduct(product);
+    setSelectedProduct(product);
     setQuantity("");
     setProductType(""); // Reset product type
     setShowQuantityDialog(true);
-    }else{
-      toast.info("Mahsulot qo'shish uchun savat tanlang")
-      router.push(`/basket`);
-    }
-    
-    
   };
 
   const handleAddToBasket = () => {
@@ -136,7 +127,11 @@ const CategoryPage = () => {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {i18n?.language == "uz" ? category?.titleUz : i18n?.language == "ru" ? category?.titleRu : category?.titleEn }
+            {i18n?.language == "uz"
+              ? category?.titleUz
+              : i18n?.language == "ru"
+              ? category?.titleRu
+              : category?.titleEn}
           </h2>
           <p className="text-gray-600">
             Bozorlik ro'yxatingizga qo'shish uchun mahsulotni bosing
@@ -162,7 +157,13 @@ const CategoryPage = () => {
                 height={150}
                 className="w-full h-32 object-cover rounded-md mb-3"
               />
-              <h3 className="font-semibold text-center">{i18n?.language == "uz" ? product?.titleUz : i18n?.language == "ru" ? product?.titleRu : product?.titleEn }</h3>
+              <h3 className="font-semibold text-center">
+                {i18n?.language == "uz"
+                  ? product?.titleUz
+                  : i18n?.language == "ru"
+                  ? product?.titleRu
+                  : product?.titleEn}
+              </h3>
               <p className="text-sm text-gray-500 text-center">
                 har {product.unit || "dona"}
               </p>

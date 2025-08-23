@@ -24,20 +24,7 @@ const page = () => {
   };
 
 
-  const getMarkets = async () => {
-    try {
-      const response = await api.get("/market");
-      setShoppingListAll(response?.data?.data)
-      return response.data;
-    } catch (error: any) {
-      console.error("Marketlarni olishda xatolik:", error);
-      throw error;
-    }
-  };
-
-  useEffect(() => {
-    getMarkets()
-  }, [])
+  
   
 
   return (

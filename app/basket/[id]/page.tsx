@@ -5,8 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge, Check, Edit3, ShoppingCart, Trash2, User } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { useShoppingStore } from "@/store/shoppingStore";
 import {
   Dialog,
@@ -19,9 +19,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
-import { useFetch } from "@/hooks/useFetch";
+import api from "@/service/api";
 
 const page = () => {
+    const {id} = useParams();
   const router = useRouter();
   const {
     shoppingList,
@@ -37,19 +38,35 @@ const page = () => {
   const [price, setPrice] = useState("");
   const [sharePhoneNumber, setSharePhoneNumber] = useState("");
   const { t, i18n } = useTranslation("common");
+  const [list, setList] = useState<any>(null)
+  
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`market/${id}`);
+      console.log(response?.data?.data);
+      
+      setList(response.data.data)
+    } catch (error) {
+      console.error("Xatolik yuz berdi:", error);
+    }
+  };
+  
+  
+ useEffect(() => {
+  getData()
+ }, [id])
 
   const handleShareList = () => {
     setShowShareDialog(true);
   };
 
   const getPurchasedCount = () => {
-    if (!shoppingList) return 0;
-    return shoppingList.items.filter((item: any) => item.purchased).length;
+    if (!list) return 0;
+    return list?.marketLists?.filter((item: any) => item.purchased).length;
   };
 
   const handleMarkAsPurchased = (item: any) => {
-    console.log(item);
-
     setShowPriceDialog(true);
   };
 
@@ -93,7 +110,7 @@ const page = () => {
         </Button>
       </div>
 
-      {!shoppingList || shoppingList?.length === 0 ? (
+      {!list || list?.marketLists?.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center">
             <ShoppingCart className="h-16 w-16 mx-auto text-gray-400 mb-4" />
@@ -108,7 +125,7 @@ const page = () => {
         </Card>
       ) : (
         <div className="space-y-4">
-          {shoppingList?.map((item: any) => (
+          {list?.marketLists?.map((item: any) => (
             <Card
               key={item.id}
               className={item.purchased ? "bg-green-50 border-green-200" : ""}

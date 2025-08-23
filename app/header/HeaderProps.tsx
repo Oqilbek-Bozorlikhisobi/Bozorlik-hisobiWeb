@@ -14,6 +14,8 @@ import {
 import { deleteCookie } from "cookies-next";
 import { useStore } from "@/store/userStore"
 import { useShoppingStore } from "@/store/shoppingStore"
+import api from "@/service/api"
+import { useEffect } from "react"
 
 const languages = [
   { code: "uz", label: "Uzb", flag: "🇺🇿" },
@@ -26,9 +28,22 @@ export default function Header() {
   const { t, i18n } = useTranslation("common")
   const currentLang = i18n.language || "uz"
   const { clearUser } = useStore();
-  const { shoppingList } =
+  const { shoppingList, setShoppingListAll } =
       useShoppingStore();
+const getMarkets = async () => {
+    try {
+      const response = await api.get("/market");
+      setShoppingListAll(response?.data?.data)
+      return response.data;
+    } catch (error: any) {
+      console.error("Marketlarni olishda xatolik:", error);
+      throw error;
+    }
+  };
 
+  useEffect(() => {
+    getMarkets()
+  }, [])
   const handleBasketClick = () => {
     router.push(`/basket`)
   }

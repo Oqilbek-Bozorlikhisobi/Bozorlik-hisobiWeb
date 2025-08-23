@@ -2,17 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import React, { useEffect, useState } from "react";
+import React  from "react";
 import { useRouter } from "next/navigation";
 import { useShoppingStore } from "@/store/shoppingStore";
 import { useTranslation } from "react-i18next";
-import api from "@/service/api";
 
 const page = () => {
   const router = useRouter();
   const {
     shoppingList,
-    setShoppingListAll,
     setShoppingId
   } = useShoppingStore();
 
@@ -22,10 +20,6 @@ const page = () => {
     setShoppingId(id)
     router.push(`/basket/${id}`); // Sahifaga yo‘naltiramiz
   };
-
-
-  
-  
 
   return (
     <div className="max-w-7xl mx-auto p-7">

@@ -20,6 +20,8 @@ import { useFetch } from "@/hooks/useFetch";
 import api from "@/service/api";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import useApiMutation from "@/hooks/useMutation";
 
 type Product = {
   id: string;
@@ -37,11 +39,15 @@ const CategoryPage = () => {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState("");
   const [productType, setProductType] = useState("");
+  const [marketId, setMarketId] = useState<string>("")
   const [showQuantityDialog, setShowQuantityDialog] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<any>(null);
-  const { shoppingList, setShoppingList, shoppingId } = useShoppingStore();
+  const { shoppingList, setShoppingList, } = useShoppingStore();
   const { i18n } = useTranslation();
+
+  console.log(selectedProduct);
+  
 
   const getData = async () => {
     try {
@@ -74,27 +80,30 @@ const CategoryPage = () => {
     setShowQuantityDialog(true);
   };
 
-  const handleAddToBasket = () => {
-    if (selectedProduct && quantity && shoppingList) {
-      const newItem = {
-        id: Date.now().toString(),
-        product: {
-          ...selectedProduct,
-          name: productType
-            ? `${selectedProduct.name} (${productType})`
-            : selectedProduct.name,
-        },
-        quantity: Number.parseFloat(quantity),
-        purchased: false,
-      };
-
-      setShoppingList(newItem);
-
+  const { mutate: addProductExtra, isLoading: extraLoading } = useApiMutation({
+    url: "market-list",
+    method: "POST",
+    onSuccess: () => {
+      toast.success("Mahsulot qo'shildi")
       setShowQuantityDialog(false);
       setSelectedProduct(null);
       setQuantity("");
       setProductType(""); // Reset product type
+      setMarketId("")
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
+  const handleAddToBasket = () => {
+    const data = {
+      marketId,
+      productId: selectedProduct?.id,
+      productType,
+      quantity
     }
+    addProductExtra(data)
   };
 
   return (
@@ -175,7 +184,7 @@ const CategoryPage = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {selectedProduct?.name}ni savatga qo'shish
+              {i18n.language == "uz" ? selectedProduct?.titleUz : i18n.language == "ru" ? selectedProduct?.titleRu : selectedProduct?.titleEn} ni savatga qo'shish
             </DialogTitle>
             <DialogDescription>
               Sotib olmoqchi bo'lgan miqdorni kiriting
@@ -185,15 +194,15 @@ const CategoryPage = () => {
             <div className="flex items-center space-x-4">
               {selectedProduct && (
                 <Image
-                  src={selectedProduct.image || "/placeholder.svg"}
-                  alt={selectedProduct.name}
+                  src={selectedProduct.images || "/placeholder.svg"}
+                  alt={selectedProduct.titleEn}
                   width={80}
                   height={80}
                   className="rounded-md"
                 />
               )}
               <div>
-                <h3 className="font-semibold">{selectedProduct?.name}</h3>
+                <h3 className="font-semibold">{i18n.language == "uz" ? selectedProduct?.titleUz : i18n.language == "ru" ? selectedProduct?.titleRu : selectedProduct?.titleEn}</h3>
                 <p className="text-sm text-gray-600">
                   har {selectedProduct?.unit}
                 </p>
@@ -206,6 +215,7 @@ const CategoryPage = () => {
               <Input
                 id="productType"
                 value={productType}
+                required
                 onChange={(e) => setProductType(e.target.value)}
                 placeholder="masalan, Premium, Organik, 1L, 500ml..."
               />
@@ -216,15 +226,35 @@ const CategoryPage = () => {
                 id="quantity"
                 type="number"
                 step="0.1"
+                required
                 min="0.1"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="masalan, 2.5"
               />
             </div>
+            <div className="space-y-2">
+                      <Label htmlFor="marketId">Bozorlikni tanlang</Label>
+                      <Select
+                        value={marketId}
+                        onValueChange={(value) => setMarketId(value)}
+                        required
+                      >
+                        <SelectTrigger id="marketId" className="w-full">
+                          <SelectValue placeholder="Bozorlik tanlang" />
+                        </SelectTrigger>
+                        <SelectContent className="w-full">
+                          {shoppingList?.map((item: any) => (
+                            <SelectItem key={item?.id} value={item?.id}>
+                              {item?.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleAddToBasket} disabled={!quantity}>
+            <Button onClick={handleAddToBasket} disabled={extraLoading}>
               Savatga qo'shish
             </Button>
           </DialogFooter>

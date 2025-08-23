@@ -59,9 +59,6 @@ export default function RegisterForm() {
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng);
   };
-
-  const [region, setRegion] = useState("");
-
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",

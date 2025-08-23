@@ -22,6 +22,13 @@ import { useTranslation } from "react-i18next";
 import useApiMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
 import { useStore } from "@/store/userStore";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Mock registered users for demonstration
 
@@ -30,20 +37,26 @@ export default function ShoppingPlatform() {
   const [listName, setListName] = useState("");
   const [showStartDialog, setShowStartDialog] = useState(false);
   const [currentBannerIndex, setCurrentBannerIndex] = useState<any>(0);
-  const [extraProductName, setExtraProductName] = useState("");
-  const [extraProductQuantity, setExtraProductQuantity] = useState(""); // New state variable for extra product quantity
-  const [extraProductType, setExtraProductType] = useState(""); // New state variable for extra product type
-  const { showExtraProductDialog, setShowExtraProductDialog, setShoppingId, setShoppingList, shoppingList } =
-    useShoppingStore();
+  // const [extraProductName, setExtraProductName] = useState("");
+  // const [marketId, setMarketId] = useState<any>(null);
+  // const [extraProductQuantity, setExtraProductQuantity] = useState(""); 
+  // const [extraProductType, setExtraProductType] = useState(""); 
+  const {
+    // showExtraProductDialog,
+    // setShowExtraProductDialog,
+    setShoppingId,
+    setShoppingList,
+    shoppingList,
+  } = useShoppingStore();
   const [search, setSearch] = useState("");
   const { t, i18n } = useTranslation("common");
-  const {user} = useStore()
+  const { user } = useStore();
 
   const { mutate } = useApiMutation({
     url: "market",
     method: "POST",
     onSuccess: (data) => {
-      setShoppingId(data?.data?.id)
+      setShoppingId(data?.data?.id);
       setShoppingList(data?.data);
       setShowStartDialog(false);
       setListName("");
@@ -77,7 +90,8 @@ export default function ShoppingPlatform() {
   useEffect(() => {
     const interval = setInterval(() => {
       //@ts-ignore
-      setCurrentBannerIndex((prevIndex: any) => (prevIndex + 1) % bunners?.total);
+      setCurrentBannerIndex( (prevIndex: any) => (prevIndex + 1) % bunners?.total
+      );
     }, 4000); // Change banner every 4 seconds
 
     return () => clearInterval(interval);
@@ -88,10 +102,10 @@ export default function ShoppingPlatform() {
       // Create new shopping list
       const newList = {
         name: listName,
-        userId: user?.id
+        userId: user?.id,
       };
 
-      mutate(newList)
+      mutate(newList);
     }
   };
 
@@ -101,47 +115,59 @@ export default function ShoppingPlatform() {
   };
 
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", type: "", quantity: "" });
+  const [form, setForm] = useState({ productName: "", productType: "", quantity: "", marketId: "" });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const { mutate: addProductExtra, isLoading: extraLoading } = useApiMutation({
+    url: "market-list",
+    method: "POST",
+    onSuccess: () => {
+      toast.success("Mahsulot qo'shildi")
+      setOpen(false);
+      setForm({ productName: "", productType: "", quantity: "", marketId: "" });
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
   const handleSubmit = () => {
-    console.log("Yangi mahsulot:", form);
-    setOpen(false);
-    setForm({ name: "", type: "", quantity: "" });
+    addProductExtra(form)
+    
   };
 
-  const handleAddExtraProduct = () => {
-    if (extraProductName.trim() && extraProductQuantity && shoppingList) {
-      const extraProduct = {
-        id: `extra_${Date.now()}`,
-        name: extraProductType
-          ? `${extraProductName.trim()} (${extraProductType})`
-          : extraProductName.trim(),
-        price: 0, // Price will be set when marking as purchased
-        isExtra: true,
-      };
+  // const handleAddExtraProduct = () => {
+  //   if (extraProductName.trim() && extraProductQuantity && shoppingList) {
+  //     const extraProduct = {
+  //       id: `extra_${Date.now()}`,
+  //       name: extraProductType
+  //         ? `${extraProductName.trim()} (${extraProductType})`
+  //         : extraProductName.trim(),
+  //       price: 0, // Price will be set when marking as purchased
+  //       isExtra: true,
+  //     };
 
-      const newItem = {
-        id: Date.now().toString(),
-        product: extraProduct,
-        quantity: Number.parseFloat(extraProductQuantity),
-        purchased: false,
-      };
+  //     const newItem = {
+  //       id: Date.now().toString(),
+  //       product: extraProduct,
+  //       quantity: Number.parseFloat(extraProductQuantity),
+  //       purchased: false,
+  //     };
 
-      setShoppingList({
-        ...shoppingList,
-        items: [...shoppingList.items, newItem],
-      });
+  //     setShoppingList({
+  //       ...shoppingList,
+  //       items: [...shoppingList.items, newItem],
+  //     });
 
-      setShowExtraProductDialog(false);
-      setExtraProductName("");
-      setExtraProductQuantity("");
-      setExtraProductType("");
-    }
-  };
+  //     setShowExtraProductDialog(false);
+  //     setExtraProductName("");
+  //     setExtraProductQuantity("");
+  //     setExtraProductType("");
+  //   }
+  // };
 
   return (
     <>
@@ -221,7 +247,11 @@ export default function ShoppingPlatform() {
                       <div className="relative z-10 flex items-center justify-between">
                         <div className="flex-1">
                           <h2 className="text-2xl font-bold text-white mb-2">
-                            {i18n?.language == "uz" ? banner.nameUz : i18n?.language == "en" ? banner.nameEn : banner.nameRu}
+                            {i18n?.language == "uz"
+                              ? banner.nameUz
+                              : i18n?.language == "en"
+                              ? banner.nameEn
+                              : banner.nameRu}
                           </h2>
                           <div className="flex items-center space-x-3 mb-3">
                             <span className="bg-white text-purple-600 text-2xl font-bold px-4 py-2 rounded-lg">
@@ -237,7 +267,13 @@ export default function ShoppingPlatform() {
                         </div>
                         <div className="flex-shrink-0 ml-6">
                           <img
-                            src={i18n?.language == "uz" ? banner.imageUz : i18n?.language == "en" ? banner.imageEn : banner.imageRu}
+                            src={
+                              i18n?.language == "uz"
+                                ? banner.imageUz
+                                : i18n?.language == "en"
+                                ? banner.imageEn
+                                : banner.imageRu
+                            }
                             alt={banner.imageEn}
                             className="h-24 w-24 object-cover rounded-lg"
                           />
@@ -375,18 +411,18 @@ export default function ShoppingPlatform() {
                     <div className="space-y-2">
                       <Label>{t("productName")}</Label>
                       <Input
-                        name="name"
+                        name="productName"
                         placeholder={t("productNamePlaceholder1")}
-                        value={form.name}
+                        value={form.productName}
                         onChange={handleInputChange}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label>{t("productType1")}</Label>
                       <Input
-                        name="type"
+                        name="productType"
                         placeholder={t("productTypePlaceholder1")}
-                        value={form.type}
+                        value={form.productType}
                         onChange={handleInputChange}
                       />
                     </div>
@@ -399,9 +435,27 @@ export default function ShoppingPlatform() {
                         onChange={handleInputChange}
                       />
                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="marketId">Bozorlikni tanlang</Label>
+                      <Select
+                        value={form?.marketId}
+                        onValueChange={(value) => setForm({ ...form, marketId: value })}
+                      >
+                        <SelectTrigger id="marketId" className="w-full">
+                          <SelectValue placeholder="Bozorlik tanlang" />
+                        </SelectTrigger>
+                        <SelectContent className="w-full">
+                          {shoppingList?.map((item: any) => (
+                            <SelectItem key={item?.id} value={item?.id}>
+                              {item?.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <DialogFooter>
-                    <Button className="bg-[#09bcbf]" onClick={handleSubmit}>
+                    <Button disabled={extraLoading} className="bg-[#09bcbf]" onClick={handleSubmit}>
                       {t("addToBasket")}
                     </Button>
                   </DialogFooter>
@@ -443,7 +497,7 @@ export default function ShoppingPlatform() {
         {/* Share Dialog */}
 
         {/* Extra Product Dialog */}
-        <Dialog
+        {/* <Dialog
           open={showExtraProductDialog}
           onOpenChange={setShowExtraProductDialog}
         >
@@ -499,7 +553,7 @@ export default function ShoppingPlatform() {
               </Button>
             </DialogFooter>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
       </div>
     </>
   );

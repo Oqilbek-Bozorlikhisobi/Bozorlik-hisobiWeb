@@ -20,13 +20,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import api from "@/service/api";
+import useApiMutation from "@/hooks/useMutation";
+import { toast } from "react-toastify";
 
 const page = () => {
-    const {id} = useParams();
+  const { id } = useParams();
   const router = useRouter();
   const {
     shoppingList,
-    removeShoppingItem,
     showExtraProductDialog,
     setShowExtraProductDialog,
   } = useShoppingStore();
@@ -38,24 +39,48 @@ const page = () => {
   const [price, setPrice] = useState("");
   const [sharePhoneNumber, setSharePhoneNumber] = useState("");
   const { t, i18n } = useTranslation("common");
-  const [list, setList] = useState<any>(null)
-  
+  const [list, setList] = useState<any>(null);
+  const [productId, setProductId] = useState<string>("")
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+
+  const addList = (item: any) => {
+    setList((prev: any) => ({
+      ...prev,
+      marketLists: [
+        ...prev?.marketLists,
+        item, // agar item object bo‘lsa
+      ],
+    }));
+  };
+
+  const removeList = (id: any) => {
+    setList((prev: any) => ({
+      ...prev,
+      marketLists: prev?.marketLists.filter((item: any) => item.id !== id),
+    }));
+  };
+
+  const setBuyingTrue = (id: any) => {
+    setList((prev: any) => ({
+      ...prev,
+      marketLists: prev?.marketLists.map((item: any) =>
+        item.id === id ? { ...item, isBuying: true } : item
+      ),
+    }));
+  };
 
   const getData = async () => {
     try {
       const response = await api.get(`market/${id}`);
-      console.log(response?.data?.data);
-      
-      setList(response.data.data)
+      setList(response.data.data);
     } catch (error) {
       console.error("Xatolik yuz berdi:", error);
     }
   };
-  
-  
- useEffect(() => {
-  getData()
- }, [id])
+
+  useEffect(() => {
+    getData();
+  }, [id]);
 
   const handleShareList = () => {
     setShowShareDialog(true);
@@ -67,19 +92,71 @@ const page = () => {
   };
 
   const handleMarkAsPurchased = (item: any) => {
+    setSelectedProduct(item)
     setShowPriceDialog(true);
   };
 
+  const { mutate: addProductExtra, isLoading: extraLoading } = useApiMutation({
+    url: "market-list",
+    method: "POST",
+    onSuccess: (data) => {        
+      addList(data?.data)
+      toast.success("Mahsulot qo'shildi");
+      setShowExtraProductDialog(false);
+      setExtraProductName("");
+      setExtraProductQuantity("");
+      setExtraProductType("");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
+  const { mutate: deleteProduct } = useApiMutation({
+    url: "market-list",
+    method: "DELETE",
+    onSuccess: () => {  
+      removeList(productId)
+      toast.success("Mahsulot o'chirildi");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
+  const { mutate: buyProduct, isLoading: buyLoading } = useApiMutation({
+    url: `market-list/check-is-buying/${selectedProduct?.id}`,
+    method: "PATCH",
+    onSuccess: () => {
+    setBuyingTrue(selectedProduct?.id)
+    setShowPriceDialog(false);
+    setPrice("");
+      toast.success("Mahsulot sotib olindi")
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+  const handleRemove = (id: string) => {
+    deleteProduct({ id: id });
+    setProductId(id)
+  }
   const handleAddExtraProduct = () => {
-    setShowExtraProductDialog(false);
-    setExtraProductName("");
-    setExtraProductQuantity("");
-    setExtraProductType("");
+    const data = {
+      marketId: id,
+      quantity: extraProductQuantity,
+      productType: extraProductType,
+      productName: extraProductName,
+    };
+
+    addProductExtra(data);
   };
 
   const handleSavePrice = () => {
-    setShowPriceDialog(false);
-    setPrice("");
+    const data = {
+        price
+    }
+    buyProduct(data)
   };
 
   const handlePhoneNumberChange = (phone: string) => {
@@ -133,14 +210,14 @@ const page = () => {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    {"isExtra" in item?.product ? (
+                    {!item?.product ? (
                       <div className="w-15 h-15 bg-gray-200 rounded-md flex items-center justify-center">
                         <span className="text-2xl">📦</span>
                       </div>
                     ) : (
-                      <Image
-                        src={item.product.image || "/placeholder.svg"}
-                        alt={item.product.name}
+                      <img
+                        src={item?.product?.images || "/placeholder.svg"}
+                        alt={item?.product?.nameEn}
                         width={60}
                         height={60}
                         className="rounded-md"
@@ -149,26 +226,32 @@ const page = () => {
                     <div>
                       <h3
                         className={`font-semibold ${
-                          item.purchased ? "line-through text-green-700" : ""
+                          item?.isBuying ? "line-through text-green-700" : ""
                         }`}
                       >
-                        {item.product.name}
+                        {item?.product
+                          ? i18n?.language == "uz"
+                            ? item?.product?.titleUz
+                            : i18n?.language == "ru"
+                            ? item?.product?.titleRu
+                            : item?.product?.titleEn
+                          : item?.productName}
                       </h3>
                       <p className="text-sm text-gray-600">
-                        {"isExtra" in item.product
-                          ? `${item.quantity} dona`
-                          : `${item.quantity} ${item.product.unit}`}
+                        {item.product
+                          ? `${item?.quantity} dona`
+                          : `${item?.quantity} kg`}
                       </p>
-                      {item.purchased && item.actualPrice && (
+                      {item?.isBuying && item?.price && (
                         <p className="text-sm font-semibold text-green-700">
-                          {t("paid")}: {item.actualPrice.toFixed(2)}{" "}
+                          {t("paid")}: {item?.price.toFixed(2) * item?.quantity}{" "}
                           {t("currency")}
                         </p>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    {item.purchased ? (
+                    {item.isBuying ? (
                       <Badge className="bg-green-100 text-green-800">
                         <Check className="h-3 w-3 mr-1" />
                         {t("received")}
@@ -186,7 +269,7 @@ const page = () => {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => removeShoppingItem(item?.id)}
+                      onClick={() => handleRemove(item?.id)}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -344,8 +427,14 @@ const page = () => {
                 />
               )}
               <div>
-                <h3 className="font-semibold">name</h3>
-                <p className="text-sm text-gray-600">10 kg</p>
+                <h3 className="font-semibold">{selectedProduct?.product
+                          ? (i18n?.language == "uz"
+                            ? selectedProduct?.product?.titleUz
+                            : i18n?.language == "ru"
+                            ? selectedProduct?.product?.titleRu
+                            : selectedProduct?.product?.titleEn)
+                          : selectedProduct?.productName}</h3>
+                <p className="text-sm text-gray-600">{selectedProduct?.quantity} kg</p>
               </div>
             </div>
             <div className="space-y-2">

@@ -1,19 +1,20 @@
 "use client"
 
-import { ShoppingCart, User } from "lucide-react"
+import { ShoppingCart, User, Home, History, Settings, Languages } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import { useTranslation } from "react-i18next"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { deleteCookie } from "cookies-next";
+import { deleteCookie } from "cookies-next"
 import { useStore } from "@/store/userStore"
 import { useShoppingStore } from "@/store/shoppingStore"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 const languages = [
   { code: "uz", label: "Uzb", flag: "🇺🇿" },
@@ -24,92 +25,137 @@ const languages = [
 export default function Header() {
   const router = useRouter()
   const { t, i18n } = useTranslation("common")
+  const { clearUser } = useStore()
+  const { shoppingList } = useShoppingStore()
+
   const currentLang = i18n.language || "uz"
-  const { clearUser } = useStore();
-  const { shoppingList } =
-      useShoppingStore();
 
-  const handleBasketClick = () => {
-    router.push(`/basket`)
-  }
+  const handleBasketClick = () => router.push(`/basket`)
+  const handleHistoryClick = () => router.push(`/history`)
+  const handleHomeClick = () => router.push(`/`)
+  const handleSettingsClick = () => router.push(`/settings`)
 
-  const handleHistoryClick = () => {
-    router.push(`/history`)
+  const handleLogout = () => {
+    deleteCookie("token")
+    router.push("/login")
+    clearUser()
   }
 
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng)
   }
 
-  const handleLogout = () => {
-    // logout logikasini shu yerga yozasan
-    deleteCookie("token");
-    router.push("/login")
-    clearUser()
-  }
-
   return (
-    <header className="bg-white shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Chap tomondagi user logosi */}
-          <div className="flex items-center space-x-4">
-            
+    <>
+      {/* DESKTOP NAVBAR */}
+      <header className="bg-white shadow-sm border-b hidden md:block">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
+              <User className="h-8 w-8 text-blue-600" />
+              <button
+                onClick={handleLogout}
+                className="text-xl font-semibold text-gray-900 focus:outline-none"
+              >
+                {t("logout")}
+              </button>
+              <p className="text-sm text-gray-500">{t("welcome")}</p>
+            </div>
 
-            {/* Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="flex items-center space-x-4">
-                <User className="h-8 w-8 text-blue-600" />
-                <button className="text-xl font-semibold text-gray-900 focus:outline-none">
-                  Tog'ga
-                </button>
-                </div>
-             
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-40">
-                <DropdownMenuItem onClick={handleLogout}>
-                  Profildan chiqish
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center space-x-4">
+              {/* Til select faqat desktopda */}
+              <select
+                value={currentLang}
+                onChange={(e) => handleLanguageChange(e.target.value)}
+                className="border rounded-lg px-2 py-[9px] text-sm focus:outline-none focus:ring-2 focus:ring-[#09bcbf] hidden md:block"
+              >
+                {languages.map((lng) => (
+                  <option key={lng.code} value={lng.code}>
+                    {lng.flag} {lng.label}
+                  </option>
+                ))}
+              </select>
 
-            <p className="text-sm text-gray-500">{t("welcome")}</p>
-          </div>
-
-          {/* O'ng tomondagi tugmalar */}
-          <div className="flex items-center space-x-4">
-            {/* Til select */}
-            <select
-              value={currentLang}
-              onChange={(e) => handleLanguageChange(e.target.value)}
-              className="border rounded-lg px-2 py-[9px] text-sm focus:outline-none focus:ring-2 focus:ring-[#09bcbf]"
-            >
-              {languages.map((lng) => (
-                <option key={lng.code} value={lng.code}>
-                  {lng.flag} {lng.label}
-                </option>
-              ))}
-            </select>
-
-            {/* Savat tugmasi */}
-            <Button onClick={handleBasketClick} className="bg-[#09bcbf] relative">
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              {t("basket")}
-              {shoppingList && shoppingList.length > 0 && (
-                <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                  {shoppingList.length}
-                </Badge>
-              )}
-            </Button>
-
-            {/* Tarix tugmasi */}
-            <Button className="bg-[#09bcbf]" onClick={handleHistoryClick}>
-              {t("history")}
-            </Button>
+              <Button
+                onClick={handleBasketClick}
+                className="bg-[#09bcbf] relative"
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                {t("basket")}
+                {shoppingList?.length > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                    {shoppingList.length}
+                  </Badge>
+                )}
+              </Button>
+              <Button className="bg-[#09bcbf]" onClick={handleHistoryClick}>
+                {t("history")}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* MOBILE BOTTOM NAVBAR */}
+      <nav className="md:hidden fixed bottom-0 w-full bg-white border-t shadow-md">
+        <div className="flex justify-around items-center py-2">
+          {/* Home */}
+          <button onClick={handleHomeClick} className="flex flex-col items-center text-gray-600">
+            <Home className="h-6 w-6" />
+            <span className="text-xs">{t("home")}</span>
+          </button>
+
+          {/* LANGUAGE SELECT (Dialog) faqat mobil uchun */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="flex flex-col items-center text-gray-600">
+                <Languages className="h-6 w-6" />
+                <span className="text-xs">{t("language")}</span>
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t("choose_language")}</DialogTitle>
+              </DialogHeader>
+              <div className="flex flex-col space-y-2 mt-4">
+                {languages.map((lng) => (
+                  <Button
+                    key={lng.code}
+                    variant="outline"
+                    onClick={() => handleLanguageChange(lng.code)}
+                  >
+                    <span className="mr-2">{lng.flag}</span>
+                    {lng.label}
+                  </Button>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Basket */}
+          <button onClick={handleBasketClick} className="flex flex-col items-center text-gray-600 relative">
+            <ShoppingCart className="h-6 w-6" />
+            <span className="text-xs">{t("basket")}</span>
+            {shoppingList?.length > 0 && (
+              <Badge className="absolute top-0 right-3 h-4 w-4 rounded-full flex items-center justify-center text-[10px]">
+                {shoppingList.length}
+              </Badge>
+            )}
+          </button>
+
+          {/* History */}
+          <button onClick={handleHistoryClick} className="flex flex-col items-center text-gray-600">
+            <History className="h-6 w-6" />
+            <span className="text-xs">{t("history")}</span>
+          </button>
+
+          {/* Settings */}
+          <button onClick={handleSettingsClick} className="flex flex-col items-center text-gray-600">
+            <Settings className="h-6 w-6" />
+            <span className="text-xs">{t("settings")}</span>
+          </button>
+        </div>
+      </nav>
+    </>
   )
 }

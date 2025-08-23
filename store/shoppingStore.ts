@@ -20,10 +20,7 @@ export const useShoppingStore = create<any>((set) => ({
     })),
   removeShoppingItem: (id: string) =>
     set((state: any) => ({
-      shoppingList: {
-        ...state.shoppingList,
-        items: state.shoppingList.items.filter((item: any) => item.id !== id),
-      },
+      shoppingList: state?.shoppingList?.filter((item:any) => item?.id !== id),
     })),
 
   setShowExtraProductDialog: (show: any) =>

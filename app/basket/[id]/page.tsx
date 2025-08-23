@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Badge, Check, Edit3, ShoppingCart, Trash2, User } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -22,15 +21,15 @@ import { useTranslation } from "react-i18next";
 import api from "@/service/api";
 import useApiMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
-import { set } from "date-fns";
 
 const page = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { shoppingList, showExtraProductDialog, setShowExtraProductDialog } =
+  const { showExtraProductDialog, setShowExtraProductDialog, removeShoppingItem } =
     useShoppingStore();
   const [showPriceDialog, setShowPriceDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showEndMarket, setShowEndMarket] = useState(false);
   const [extraProductName, setExtraProductName] = useState("");
   const [extraProductQuantity, setExtraProductQuantity] = useState(""); // New state variable for extra product quantity
   const [price, setPrice] = useState("");
@@ -39,6 +38,7 @@ const page = () => {
   const [list, setList] = useState<any>(null);
   const [productId, setProductId] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [location, setLocation] = useState<string>("")
 
   const addList = (item: any) => {
     setList((prev: any) => ({
@@ -112,13 +112,9 @@ const page = () => {
     url: "market/add/user",
     method: "PATCH",
 
-    onSuccess: (data) => {
-      console.log(data);
-      
-    //   toast.success("Mahsulot qo'shildi");
-    //   setShowExtraProductDialog(false);
-    //   setExtraProductName("");
-    //   setExtraProductQuantity("");
+    onSuccess: () => {
+    toast.success("Yangi foydalanuvchi qo'shildi");
+    setSharePhoneNumber("")
     setShowShareDialog(false)
     },
     onError: (error: any) => {
@@ -132,7 +128,6 @@ const page = () => {
         marketId: id
     }
     sendList(data)
-    
   }
 
   const getPurchasedCount = () => {
@@ -189,6 +184,10 @@ const page = () => {
     deleteProduct({ id: id });
     setProductId(id);
   };
+
+  const handleShowEndMarket = () =>{
+    setShowEndMarket(true)
+  }
   const handleAddExtraProduct = () => {
     const data = {
       marketId: id,
@@ -198,12 +197,47 @@ const page = () => {
 
     addProductExtra(data);
   };
-
   const handleSavePrice = () => {
     const data = {
       price,
     };
     buyProduct(data);
+  };
+  const { mutate: endMarket, isLoading: endLoading } = useApiMutation({
+    url: `history`,
+    method: "POST",
+    onSuccess: () => {
+        setShowEndMarket(false)
+        removeShoppingItem(id)
+        router.push("/basket")
+      toast.success("Bozorlik istoriyaga qo'shildi");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+  const { mutate: saveLocation, isLoading: locationLoading } = useApiMutation({
+    url: `market/${id}`,
+    method: "PATCH",
+    onSuccess: () => {
+      setLocation("");
+      const data = {
+        marketId: id
+      }
+      endMarket(data)
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
+  
+
+  const handleSaveLocation = () => {
+    const data = {
+      location,
+    };
+    saveLocation(data);
   };
 
   const handlePhoneNumberChange = (phone: string) => {
@@ -211,16 +245,6 @@ const page = () => {
     setSharePhoneNumber(formatted);
   };
 
-  const handleSendToUser = (user: {
-    id: string;
-    name: string;
-    phone: string;
-  }) => {
-    // Simulate sending the list
-    alert(`Ro'yxat ${user.name}ga yuborildi!`);
-    setShowShareDialog(false);
-    setSharePhoneNumber("");
-  };
   return (
     <div className=" max-w-7xl mx-auto p-7">
       <div className="mb-8 flex items-center justify-between">
@@ -324,6 +348,7 @@ const page = () => {
                       size="sm"
                       variant="outline"
                       onClick={() => handleRemove(item?.id)}
+                      className="cursor-pointer"
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -336,7 +361,7 @@ const page = () => {
           <div className="mt-4 mb-4">
             <Button
               onClick={() => setShowExtraProductDialog(true)}
-              className="w-full py-3 text-lg bg-[#09bcbf] text-white font-semibold"
+              className="w-full py-3 text-lg bg-[#09bcbf] text-white font-semibold cursor-pointer"
             >
               {t("add_product")}
             </Button>
@@ -345,13 +370,13 @@ const page = () => {
           <div className="mt-4 mb-4">
             <Button
               onClick={handleShareList}
-              className="w-full py-3 text-lg bg-[#dc983d] text-white font-semibold"
+              className="w-full py-3 text-lg bg-[#dc983d] text-white font-semibold cursor-pointer"
             >
               {t("share_list")}
             </Button>
           </div>
 
-          <Separator />
+          {/* <Separator /> */}
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-4">
               <div className="flex justify-between items-center">
@@ -386,24 +411,24 @@ const page = () => {
         <Card className="mt-4">
           <CardContent className="p-4 text-center">
             <Button
-              //   onClick={handleCompleteShopping}
-              //   disabled={!isShoppingComplete()}
+                onClick={() => {
+                    if ((list?.marketLists?.length - getPurchasedCount()) === 0) {
+                      // Bozorlikni yakunlash funksiyasini shu yerga yozasiz
+                      handleShowEndMarket()
+                    }
+                  }}
               className={`w-full py-3 text-lg ${
-                false
-                  ? "bg-green-600 hover:bg-green-700"
+                (list?.marketLists?.length - getPurchasedCount()) == 0
+                  ? "bg-green-600 hover:bg-green-700 cursor-pointer"
                   : "bg-gray-300 cursor-not-allowed"
               }`}
               size="lg"
             >
-              {false
-                ? "Bozorlik yakunlandi"
-                : "Barcha mahsulotlarni sotib oling"}
+              Bozorlikni yakunlash    
             </Button>
-            {!false && (
               <p className="text-sm text-gray-500 mt-2">
-                {shoppingList?.length - getPurchasedCount()} ta mahsulot qoldi
+                {list?.marketLists?.length - getPurchasedCount()} ta mahsulot qoldi
               </p>
-            )}
           </CardContent>
         </Card>
       )}
@@ -450,7 +475,7 @@ const page = () => {
             </Button>
             <Button
               onClick={handleAddExtraProduct}
-              disabled={!extraProductName.trim() || !extraProductQuantity}
+              disabled={extraLoading && !extraProductName && !extraProductQuantity}
             >
               Qo'shish
             </Button>
@@ -561,8 +586,33 @@ const page = () => {
             )} */}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => sendShareList()}>
-              ULashish
+            <Button variant="outline"  disabled={sendListLoading} onClick={() => sendShareList()}>
+              Ulashish
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={showEndMarket} onOpenChange={setShowEndMarket}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Bozorlikni yakunlash</DialogTitle>
+            <DialogDescription>Bozor nomini yozing va bozorlikni yakunlang</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="location">Bozor nomi</Label>
+              <Input
+                id="location"
+                type="text"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="masalan, Chorsu"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={handleSaveLocation} disabled={!location && locationLoading && endLoading }>
+              Yakunlash
             </Button>
           </DialogFooter>
         </DialogContent>

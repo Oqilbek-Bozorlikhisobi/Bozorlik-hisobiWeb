@@ -140,6 +140,7 @@
     "ru": "Рус",
     "en": "Eng"
   },
-  "choose_language": "Choose a language"
+  "choose_language": "Choose a language",
+  "language": "Language"
 
   }

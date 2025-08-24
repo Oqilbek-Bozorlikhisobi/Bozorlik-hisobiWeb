@@ -50,7 +50,7 @@ const getMarkets = async () => {
   const handleBasketClick = () => router.push(`/basket`)
   const handleHistoryClick = () => router.push(`/history`)
   const handleHomeClick = () => router.push(`/`)
-  const handleSettingsClick = () => router.push(`/settings`)
+  const handleSettingsClick = () => router.push(`/profile`)
 
   const handleLogout = () => {
     deleteCookie("token")
@@ -69,7 +69,11 @@ const getMarkets = async () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
+              
+              <button onClick={handleSettingsClick} className="flex flex-col cursor-pointer items-center text-gray-600">
               <User className="h-8 w-8 text-blue-600" />
+           
+          </button>
               <button
                 onClick={handleLogout}
                 className="text-xl font-semibold cursor-pointer text-gray-900 focus:outline-none"

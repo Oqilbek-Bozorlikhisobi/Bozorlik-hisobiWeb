@@ -141,6 +141,18 @@
     "en": "Eng"
   },
   "choose_language": "Choose a language",
-  "language": "Language"
+  "language": "Language",
+  "profile": {
+    "title": "Profile",
+    "phone": "Phone number",
+    "changePhone": "Change phone number",
+    "save": "Save",
+    "feedbackTitle": "Suggestions & Feedback",
+    "feedbackPlaceholder": "Write your feedback...",
+    "send": "Send",
+    "cancel": "Cancel",
+    "alertMessage": "Sent:"
 
   }
+
+}

@@ -144,8 +144,18 @@
   "en": "Eng"
 },
 "choose_language": "Выберите язык",
-"language": "Язык"
+"language": "Язык",
+"profile": {
+    "title": "Профиль",
+    "phone": "Номер телефона",
+    "changePhone": "Изменить номер телефона",
+    "save": "Сохранить",
+    "feedbackTitle": "Предложения и пожелания",
+    "feedbackPlaceholder": "Введите ваш отзыв...",
+    "send": "Отправить",
+    "cancel": "Отмена",
+    "alertMessage": "Отправлено:"
 
 
   }
-  
+}

@@ -143,6 +143,17 @@
     "en": "Eng"
   },
   "choose_language": "Tilni tanlang",
-  "language": "Til"
+  "language": "Til",
+  "profile": {
+    "title": "Profil",
+    "phone": "Telefon raqam",
+    "changePhone": "Telefon raqamni almashtirish",
+    "save": "Saqlash",
+    "feedbackTitle": "Talab va takliflar",
+    "feedbackPlaceholder": "Fikringizni yozing...",
+    "send": "Yuborish",
+    "cancel": "Bekor qilish",
+    "alertMessage": "Yuborildi:"
+  }
 
   }

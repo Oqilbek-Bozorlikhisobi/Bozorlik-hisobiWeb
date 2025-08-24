@@ -2,37 +2,38 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Check } from "lucide-react";
-import Image from "next/image";
+import api from "@/service/api";
+import { ShoppingBasket } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-type ShoppingItem = {
-  id: string;
-  product: {
-    id: string;
-    name: string;
-    image?: string;
-    unit?: string;
-    isExtra?: boolean;
-  };
-  quantity: number;
-  purchased: boolean;
-  actualPrice?: number;
-};
 
-type ShoppingList = {
-  id: string;
-  name: string;
-  completedAt?: Date;
-  items: ShoppingItem[];
-};
 
 const Page = () => {
   // mock state (siz Zustand yoki API dan olasiz)
-  const [shoppingHistory, setShoppingHistory] = useState<ShoppingList[]>([]);
+  const [shoppingHistory, setShoppingHistory] = useState<any>([]);
   const router = useRouter()
   const { t, i18n } = useTranslation("common")
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`history`);
+      console.log(response.data.data);
+      
+      setShoppingHistory(response.data.data);
+    } catch (error) {
+      console.error("Xatolik yuz berdi:", error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const handleHistoryClick = (id: string) => {
+    // setShoppingId(id);
+    router.push(`/history/${id}`);
+  };
   return (
     <div className="max-w-7xl mx-auto p-7">
       <div className="mb-8 flex items-center justify-between">
@@ -63,83 +64,26 @@ const Page = () => {
         </CardContent>
       </Card>
       ) : (
-        <div className="space-y-6">
-          {shoppingHistory.map((list) => (
-            <Card key={list.id} className="bg-green-50 border-green-200">
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-semibold text-green-900">
-                      {list.name}
-                    </h3>
-                    <p className="text-sm text-green-700">
-                    {t("completed")}:{" "}
-                      {list.completedAt?.toLocaleDateString("uz-UZ", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-green-900">
-                      {list.items
-                        .filter((item) => item.purchased && item.actualPrice)
-                        .reduce(
-                          (total, item) => total + (item.actualPrice || 0),
-                          0
-                        )
-                        .toFixed(2)}{" "}
-                      t("currency")
-                    </p>
-                    <p className="text-sm text-green-700">
-                    {t("products_count", { count: list.items.length })}
-                    </p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {list.items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center space-x-3 bg-white p-3 rounded-lg"
-                    >
-                      {"isExtra" in item.product ? (
-                        <div className="w-10 h-10 bg-gray-200 rounded-md flex items-center justify-center">
-                          <span className="text-xl">📦</span>
-                        </div>
-                      ) : (
-                        <Image
-                          src={item.product.image || "/placeholder.svg"}
-                          alt={item.product.name}
-                          width={40}
-                          height={40}
-                          className="rounded"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">
-                          {item.product.name}
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          {"isExtra" in item.product
-                            ? `${item.quantity} dona - ${item.actualPrice?.toFixed(
-                                2
-                              )} so'm`
-                            : `${item.quantity} ${item.product.unit} - ${item.actualPrice?.toFixed(
-                                2
-                              )} so'm`}
-                        </p>
-                      </div>
-                      <Check className="h-4 w-4 text-green-600" />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {shoppingHistory?.map((market: any) => (
+          <Card
+            onClick={() => handleHistoryClick(market?.id)}
+            key={market.id}
+            className="cursor-pointer rounded-2xl bg-gradient-to-br from-teal-50 to-white 
+                       shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+          >
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="w-12 h-12 mb-3 flex items-center justify-center 
+                              rounded-full bg-teal-100 text-teal-700">
+                <ShoppingBasket size={24} />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800">
+                {market.name}
+              </h3>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
       )}
     </div>
   );

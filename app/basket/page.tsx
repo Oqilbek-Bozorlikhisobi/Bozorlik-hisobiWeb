@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -46,8 +46,10 @@ const Page = () => {
                        shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
           >
             <CardContent className="p-6 flex flex-col items-center text-center">
-              <div className="w-12 h-12 mb-3 flex items-center justify-center 
-                              rounded-full bg-teal-100 text-teal-700">
+              <div
+                className="w-12 h-12 mb-3 flex items-center justify-center 
+                              rounded-full bg-teal-100 text-teal-700"
+              >
                 <ShoppingBasket size={24} />
               </div>
               <h3 className="text-lg font-semibold text-gray-800">

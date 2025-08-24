@@ -51,7 +51,6 @@ const CategoryPage = () => {
   const { shoppingList } = useShoppingStore();
   const { i18n } = useTranslation();
 
-  console.log(selectedProduct);
 
   const getData = async () => {
     try {

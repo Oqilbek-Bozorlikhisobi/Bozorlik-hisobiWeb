@@ -18,7 +18,6 @@ const Page = () => {
   const getData = async () => {
     try {
       const response = await api.get(`history`);
-      console.log(response.data.data);
       
       setShoppingHistory(response.data.data);
     } catch (error) {

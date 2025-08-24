@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import { useTranslation } from "react-i18next"
-import { deleteCookie } from "cookies-next"
+
 import { useStore } from "@/store/userStore"
 import { useShoppingStore } from "@/store/shoppingStore"
 import api from "@/service/api"
@@ -29,7 +29,7 @@ export default function Header() {
   const { t, i18n } = useTranslation("common")
 
   const currentLang = i18n.language || "uz"
-  const { clearUser } = useStore();
+  const { clearUser, user } = useStore();
   const { shoppingList, setShoppingListAll } =
       useShoppingStore();
 const getMarkets = async () => {
@@ -52,11 +52,7 @@ const getMarkets = async () => {
   const handleHomeClick = () => router.push(`/`)
   const handleSettingsClick = () => router.push(`/profile`)
 
-  const handleLogout = () => {
-    deleteCookie("token")
-    router.push("/login")
-    clearUser()
-  }
+  
 
   const handleLanguageChange = (lng: string) => {
     i18n.changeLanguage(lng)
@@ -68,19 +64,19 @@ const getMarkets = async () => {
       <header className="bg-white shadow-sm border-b hidden md:block">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1" onClick={handleSettingsClick}>
               
-              <button onClick={handleSettingsClick} className="flex flex-col cursor-pointer items-center text-gray-600">
+              <button  className="flex flex-col cursor-pointer items-center text-gray-600">
               <User className="h-8 w-8 text-blue-600" />
            
           </button>
               <button
-                onClick={handleLogout}
-                className="text-xl font-semibold cursor-pointer text-gray-900 focus:outline-none"
+                
+                className="text-base font-semibold cursor-pointer text-gray-900 focus:outline-none"
               >
-                {t("logout")}
+                {user?.fullName}
               </button>
-              <p className="text-sm text-gray-500">{t("welcome")}</p>
+              {/* <p className="text-sm text-gray-500">{t("welcome")}</p> */}
             </div>
 
             <div className="flex items-center space-x-4">
@@ -118,7 +114,7 @@ const getMarkets = async () => {
       </header>
 
       {/* MOBILE BOTTOM NAVBAR */}
-      <nav className="md:hidden fixed bottom-0 w-full bg-white border-t shadow-md">
+      <nav className="md:hidden fixed bottom-0 z-[99999] w-full bg-white border-t shadow-md">
         <div className="flex justify-around items-center py-2">
           {/* Home */}
           <button onClick={handleHomeClick} className="flex cursor-pointer flex-col items-center text-gray-600">

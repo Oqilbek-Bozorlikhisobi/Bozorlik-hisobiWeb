@@ -239,7 +239,6 @@ const Page = () => {
           </div>
         )}
       </div>
-
       <Dialog open={showCheck} onOpenChange={setShowCheck}>
         <DialogContent className="w-[360px] px-1 py-4">
           <div

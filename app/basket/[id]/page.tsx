@@ -545,7 +545,7 @@ const page = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">To'langan narx (so'm)</Label>
+              <Label htmlFor="price">To'langan narxi (so'm)</Label>
               <Input
                 id="price"
                 type="number"

@@ -226,11 +226,7 @@ const Page = () => {
                             : list?.productName}
                         </p>
                         <p className="text-xs text-gray-600">
-                          {list.product
-                            ? `${list.quantity} dona - ${
-                                list?.price * list?.quantity
-                              } so'm`
-                            : `${list.quantity} kg - ${
+                          {`${list.quantity} ${list.unit?.name} - ${
                                 list?.price * list?.quantity
                               } so'm`}
                         </p>

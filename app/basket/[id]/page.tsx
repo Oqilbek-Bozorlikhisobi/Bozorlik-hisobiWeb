@@ -321,8 +321,8 @@ const page = () => {
                       
                       <p className="text-sm text-gray-600">
                         {item.product
-                          ? `${item?.quantity} dona`
-                          : `${item?.quantity} kg`}
+                          ? `${item?.quantity} ${item?.unit?.name}`
+                          : `${item?.quantity} ${item?.unit?.name}`}
                       </p>
                       {item?.isBuying && item?.price && (
                         <p className="text-sm font-semibold text-green-700">

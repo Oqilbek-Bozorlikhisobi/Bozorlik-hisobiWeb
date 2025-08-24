@@ -339,6 +339,7 @@ const Page = () => {
                             📦
                           </span>
                         </div>
+                        
                       ) : (
                         <img
                           src={list?.product?.images || "/placeholder.svg"}

@@ -21,6 +21,8 @@ import { useTranslation } from "react-i18next";
 import api from "@/service/api";
 import useApiMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
+import { useFetch } from "@/hooks/useFetch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const page = () => {
   const { id } = useParams();
@@ -39,6 +41,12 @@ const page = () => {
   const [productId, setProductId] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [location, setLocation] = useState<string>("")
+  const [unit, setUnit] = useState<string>("")
+  
+    const { data: units } = useFetch<any>({
+      key: ["unit",],
+      url: "/unit",
+    });
 
   const addList = (item: any) => {
     setList((prev: any) => ({
@@ -193,6 +201,7 @@ const page = () => {
       marketId: id,
       quantity: extraProductQuantity,
       productName: extraProductName,
+      unidId: unit
     };
 
     addProductExtra(data);
@@ -464,6 +473,25 @@ const page = () => {
                 onChange={(e) => setExtraProductQuantity(e.target.value)}
                 placeholder="masalan, 2.5"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="unitId">Birlikni tanlang</Label>
+              <Select
+                value={unit}
+                onValueChange={(value) => setUnit(value)}
+                required
+              >
+                <SelectTrigger id="unitId" className="w-full">
+                  <SelectValue placeholder="Birlik tanlang" />
+                </SelectTrigger>
+                <SelectContent className="w-full">
+                  {units?.items?.map((item: any) => (
+                    <SelectItem key={item?.id} value={item?.id}>
+                      {item?.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter>

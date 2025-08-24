@@ -50,8 +50,12 @@ const CategoryPage = () => {
   const [category, setCategory] = useState<any>(null);
   const { shoppingList } = useShoppingStore();
   const { i18n } = useTranslation();
+  const [unit, setUnit] = useState<string>("")
 
-
+  const { data: units } = useFetch<any>({
+    key: ["unit",],
+    url: "/unit",
+  });
   const getData = async () => {
     try {
       const response = await api.get(`category/${id}`);
@@ -91,6 +95,7 @@ const CategoryPage = () => {
       setSelectedProduct(null);
       setQuantity("");
       setMarketId("");
+      setUnit("")
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -102,6 +107,7 @@ const CategoryPage = () => {
       marketId,
       productId: selectedProduct?.id,
       quantity,
+      unitId: unit
     };
     addProductExtra(data);
   };
@@ -231,6 +237,25 @@ const CategoryPage = () => {
                 onChange={(e) => setQuantity(e.target.value)}
                 placeholder="masalan, 2.5"
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="unitId">Birlikni tanlang</Label>
+              <Select
+                value={unit}
+                onValueChange={(value) => setUnit(value)}
+                required
+              >
+                <SelectTrigger id="unitId" className="w-full">
+                  <SelectValue placeholder="Birlik tanlang" />
+                </SelectTrigger>
+                <SelectContent className="w-full">
+                  {units?.items?.map((item: any) => (
+                    <SelectItem key={item?.id} value={item?.id}>
+                      {item?.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="marketId">Bozorlikni tanlang</Label>

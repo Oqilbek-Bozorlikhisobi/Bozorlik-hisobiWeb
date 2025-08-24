@@ -45,6 +45,7 @@ export default function ShoppingPlatform() {
   const [search, setSearch] = useState("");
   const { t, i18n } = useTranslation("common");
   const { user } = useStore();
+  const [unit, setUnit] = useState<string>("")
 
   const { mutate } = useApiMutation({
     url: "market",
@@ -70,6 +71,10 @@ export default function ShoppingPlatform() {
       },
     },
   });
+  const { data: units } = useFetch<any>({
+    key: ["unit",],
+    url: "/unit",
+  });
 
 
   const handleCategoryClick = (id: string) => {
@@ -94,7 +99,7 @@ export default function ShoppingPlatform() {
   };
 
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ productName: "",  quantity: "", marketId: "" });
+  const [form, setForm] = useState({ productName: "",  quantity: "", marketId: "", unitId: "" });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -106,7 +111,7 @@ export default function ShoppingPlatform() {
     onSuccess: () => {
       toast.success("Mahsulot qo'shildi")
       setOpen(false);
-      setForm({ productName: "",  quantity: "", marketId: "" });
+      setForm({ productName: "",  quantity: "", marketId: "", unitId: "" });
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -263,6 +268,24 @@ export default function ShoppingPlatform() {
                       />
                     </div>
                     <div className="space-y-2">
+                      <Label htmlFor="unitId">Birlikni tanlang</Label>
+                      <Select
+                        value={form?.unitId}
+                        onValueChange={(value) => setForm({ ...form, unitId: value })}
+                      >
+                        <SelectTrigger id="unitId" className="w-full">
+                          <SelectValue placeholder="Birlik tanlang" />
+                        </SelectTrigger>
+                        <SelectContent className="w-full">
+                          {units?.items?.map((item: any) => (
+                            <SelectItem key={item?.id} value={item?.id}>
+                              {item?.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
                       <Label htmlFor="marketId">Bozorlikni tanlang</Label>
                       <Select
                         value={form?.marketId}
@@ -280,6 +303,7 @@ export default function ShoppingPlatform() {
                         </SelectContent>
                       </Select>
                     </div>
+
                   </div>
                   <DialogFooter>
                     <Button disabled={extraLoading} className="bg-[#09bcbf] cursor-pointer" onClick={handleSubmit}>

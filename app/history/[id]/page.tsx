@@ -380,7 +380,7 @@ const Page = () => {
                           }}
                           className="text-xs"
                         >
-                          {list.quantity} dona
+                          {`${list?.quantity} ${list?.unit?.name}`}
                         </p>
                       </div>
                     </div>

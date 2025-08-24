@@ -42,7 +42,7 @@ const Page = () => {
           </h2>
           <p className="text-gray-600">{t("shopping_history_desc")}i</p>
         </div>
-        <Button variant="outline" onClick={() => router.push("/")}>
+        <Button variant="outline" className="cursor-pointer" onClick={() => router.push("/")}>
         {t("new_shopping")}
         </Button>
       </div>
@@ -57,7 +57,7 @@ const Page = () => {
           <p className="text-gray-600 mb-4">
             {t("finish_first_shopping")}
           </p>
-          <Button className="bg-[#09bcbf]" onClick={() => router.push("/")}>
+          <Button className="bg-[#09bcbf] cursor-pointer" onClick={() => router.push("/")}>
             {t("start_shopping")}
           </Button>
         </CardContent>

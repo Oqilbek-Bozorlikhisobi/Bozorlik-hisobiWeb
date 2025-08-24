@@ -145,7 +145,7 @@ export default function ShoppingPlatform() {
                 </div>
                 <Button
                   onClick={() => setShowStartDialog(true)}
-                  className="bg-[#dd993e] hover:bg-[#09bcbf] text-white"
+                  className="bg-[#dd993e] hover:bg-[#09bcbf] cursor-pointer text-white"
                 >
                   {t("createList")}
                 </Button>
@@ -282,7 +282,7 @@ export default function ShoppingPlatform() {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button disabled={extraLoading} className="bg-[#09bcbf]" onClick={handleSubmit}>
+                    <Button disabled={extraLoading} className="bg-[#09bcbf] cursor-pointer" onClick={handleSubmit}>
                       {t("addToBasket")}
                     </Button>
                   </DialogFooter>
@@ -314,7 +314,7 @@ export default function ShoppingPlatform() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={handleStartShopping} disabled={!listName.trim()}>
+              <Button onClick={handleStartShopping} className="cursor-pointer" disabled={!listName.trim()}>
                 {t("createListBtn")}
               </Button>
             </DialogFooter>

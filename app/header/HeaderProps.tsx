@@ -72,7 +72,7 @@ const getMarkets = async () => {
               <User className="h-8 w-8 text-blue-600" />
               <button
                 onClick={handleLogout}
-                className="text-xl font-semibold text-gray-900 focus:outline-none"
+                className="text-xl font-semibold cursor-pointer text-gray-900 focus:outline-none"
               >
                 {t("logout")}
               </button>
@@ -95,7 +95,7 @@ const getMarkets = async () => {
 
               <Button
                 onClick={handleBasketClick}
-                className="bg-[#09bcbf] relative"
+                className="bg-[#09bcbf] relative cursor-pointer"
               >
                 <ShoppingCart className="h-4 w-4 mr-2" />
                 {t("basket")}
@@ -105,7 +105,7 @@ const getMarkets = async () => {
                   </Badge>
                 )}
               </Button>
-              <Button className="bg-[#09bcbf]" onClick={handleHistoryClick}>
+              <Button className="bg-[#09bcbf] cursor-pointer" onClick={handleHistoryClick}>
                 {t("history")}
               </Button>
             </div>
@@ -117,7 +117,7 @@ const getMarkets = async () => {
       <nav className="md:hidden fixed bottom-0 w-full bg-white border-t shadow-md">
         <div className="flex justify-around items-center py-2">
           {/* Home */}
-          <button onClick={handleHomeClick} className="flex flex-col items-center text-gray-600">
+          <button onClick={handleHomeClick} className="flex cursor-pointer flex-col items-center text-gray-600">
             <Home className="h-6 w-6" />
             <span className="text-xs">{t("home")}</span>
           </button>
@@ -125,7 +125,7 @@ const getMarkets = async () => {
           {/* LANGUAGE SELECT (Dialog) faqat mobil uchun */}
           <Dialog>
             <DialogTrigger asChild>
-              <button className="flex flex-col items-center text-gray-600">
+              <button className="flex flex-col items-center cursor-pointer text-gray-600">
                 <Languages className="h-6 w-6" />
                 <span className="text-xs">{t("language")}</span>
               </button>
@@ -139,6 +139,7 @@ const getMarkets = async () => {
                   <Button
                     key={lng.code}
                     variant="outline"
+                    className="cursor-pointer"
                     onClick={() => handleLanguageChange(lng.code)}
                   >
                     <span className="mr-2">{lng.flag}</span>
@@ -150,7 +151,7 @@ const getMarkets = async () => {
           </Dialog>
 
           {/* Basket */}
-          <button onClick={handleBasketClick} className="flex flex-col items-center text-gray-600 relative">
+          <button onClick={handleBasketClick} className="flex flex-col items-center cursor-pointer text-gray-600 relative">
             <ShoppingCart className="h-6 w-6" />
             <span className="text-xs">{t("basket")}</span>
             {shoppingList?.length > 0 && (
@@ -161,13 +162,13 @@ const getMarkets = async () => {
           </button>
 
           {/* History */}
-          <button onClick={handleHistoryClick} className="flex flex-col items-center text-gray-600">
+          <button onClick={handleHistoryClick} className="flex flex-col cursor-pointer items-center text-gray-600">
             <History className="h-6 w-6" />
             <span className="text-xs">{t("history")}</span>
           </button>
 
           {/* Settings */}
-          <button onClick={handleSettingsClick} className="flex flex-col items-center text-gray-600">
+          <button onClick={handleSettingsClick} className="flex flex-col cursor-pointer items-center text-gray-600">
             <Settings className="h-6 w-6" />
             <span className="text-xs">{t("settings")}</span>
           </button>

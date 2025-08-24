@@ -254,7 +254,7 @@ const page = () => {
           </h2>
           <p className="text-gray-600">{t("basket1.subtitle")}</p>
         </div>
-        <Button variant="outline" onClick={() => router.push("/")}>
+        <Button variant="outline" className="cursor-pointer" onClick={() => router.push("/")}>
           {t("basket1.addMore")}
         </Button>
       </div>
@@ -267,7 +267,7 @@ const page = () => {
               {t("basket_empty")}
             </h3>
             <p className="text-gray-600 mb-4">{t("basket_empty_desc")}</p>
-            <Button className="bg-[#09bcbf]" onClick={() => router.push("/")}>
+            <Button className="bg-[#09bcbf] cursor-pointer" onClick={() => router.push("/")}>
               {t("view_products")}
             </Button>
           </CardContent>
@@ -338,7 +338,7 @@ const page = () => {
                       <Button
                         size="sm"
                         onClick={() => handleMarkAsPurchased(item)}
-                        className="bg-[#ff3131] hover:bg-[#09bcbf]"
+                        className="bg-[#ff3131] cursor-pointer hover:bg-[#09bcbf]"
                       >
                         <Edit3 className="h-3 w-3 mr-1" />
                         {t("buy")}
@@ -469,12 +469,14 @@ const page = () => {
           <DialogFooter>
             <Button
               variant="outline"
+              className="cursor-pointer"
               onClick={() => setShowExtraProductDialog(false)}
             >
               Bekor qilish
             </Button>
             <Button
               onClick={handleAddExtraProduct}
+              className="cursor-pointer"
               disabled={extraLoading && !extraProductName && !extraProductQuantity}
             >
               Qo'shish
@@ -528,7 +530,7 @@ const page = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleSavePrice} disabled={!price}>
+            <Button onClick={handleSavePrice} className="cursor-pointer" disabled={!price}>
               Sotib olindi
             </Button>
           </DialogFooter>
@@ -586,7 +588,7 @@ const page = () => {
             )} */}
           </div>
           <DialogFooter>
-            <Button variant="outline"  disabled={sendListLoading} onClick={() => sendShareList()}>
+            <Button variant="outline" className="cursor-pointer" disabled={sendListLoading} onClick={() => sendShareList()}>
               Ulashish
             </Button>
           </DialogFooter>
@@ -611,7 +613,7 @@ const page = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleSaveLocation} disabled={!location && locationLoading && endLoading }>
+            <Button onClick={handleSaveLocation} className="cursor-pointer" disabled={!location && locationLoading && endLoading }>
               Yakunlash
             </Button>
           </DialogFooter>

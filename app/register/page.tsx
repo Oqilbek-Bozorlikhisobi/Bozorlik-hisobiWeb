@@ -429,7 +429,7 @@ export default function RegisterForm() {
                 !formData.region ||
                 !formData.gender
               }
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg transition-colors duration-200"
+              className="w-full cursor-pointer bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg transition-colors duration-200"
             >
               {isLoading ? (
                 <>
@@ -456,7 +456,7 @@ export default function RegisterForm() {
               type="button"
               variant="outline"
               onClick={() => router.push("/login")}
-              className="w-full border-2 border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600 font-medium py-2.5 rounded-lg transition-all duration-200 bg-transparent"
+              className="w-full cursor-pointer border-2 border-blue-500 text-blue-600 hover:bg-blue-50 hover:border-blue-600 font-medium py-2.5 rounded-lg transition-all duration-200 bg-transparent"
             >
               {t("register.login")}
             </Button>
@@ -519,7 +519,7 @@ export default function RegisterForm() {
                 onClick={handleResend}
                 disabled={resendLoading}
                 variant="outline"
-                className="w-full border-blue-500 text-blue-600 hover:bg-blue-50"
+                className="w-full cursor-pointer border-blue-500 text-blue-600 hover:bg-blue-50"
               >
                 {resendLoading ? t("register.resending") : t("register.resend")}
               </Button>
@@ -529,7 +529,7 @@ export default function RegisterForm() {
           <Button
             onClick={handleVerify}
             disabled={otpLoading}
-            className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
+            className="w-full cursor-pointer mt-6 bg-green-600 hover:bg-green-700 text-white"
           >
             {otpLoading ? (
               <Loader2 className="animate-spin h-4 w-4 mr-2" />

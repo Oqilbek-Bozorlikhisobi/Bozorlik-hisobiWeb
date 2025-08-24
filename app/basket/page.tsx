@@ -29,7 +29,7 @@ const Page = () => {
           <p className="text-gray-600">{t("basket1.subtitle")}</p>
         </div>
         <Button
-          className="rounded-xl px-5 py-2 text-white bg-teal-600 hover:bg-teal-700"
+          className="rounded-xl px-5 py-2 text-white cursor-pointer bg-teal-600 hover:bg-teal-700"
           onClick={() => router.push("/")}
         >
           {t("createListBtn")}

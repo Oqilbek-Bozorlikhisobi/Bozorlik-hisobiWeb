@@ -151,7 +151,7 @@ const Page = () => {
             {/* Hamma mahsulotlarni qo‘shish tugmasi tepada */}
             {shoppingHistory?.marketLists?.length > 0 && (
               <Button
-                className="bg-[#09bcbf] w-full sm:w-auto flex items-center gap-2"
+                className="bg-[#09bcbf] cursor-pointer w-full sm:w-auto flex items-center gap-2"
                 onClick={addAllToBasket}
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -179,7 +179,7 @@ const Page = () => {
                 {t("no_history")}
               </h3>
               <p className="text-gray-600 mb-4">{t("finish_first_shopping")}</p>
-              <Button className="bg-[#09bcbf]" onClick={() => router.push("/")}>
+              <Button className="bg-[#09bcbf] cursor-pointer" onClick={() => router.push("/")}>
                 {t("start_shopping")}
               </Button>
             </CardContent>
@@ -426,7 +426,7 @@ const Page = () => {
             {/* Download button */}
           </div>
           <DialogFooter>
-            <Button className="w-full" onClick={handleDownload}>Yuklash</Button>
+            <Button className="w-full cursor-pointer" onClick={handleDownload}>Yuklash</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

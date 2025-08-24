@@ -74,7 +74,7 @@ export default function BannerCarousel() {
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 rounded-full cursor-pointer transition-all duration-300 ${
               index === current ? "bg-white w-6" : "bg-white/50"
             }`}
           />
@@ -84,7 +84,7 @@ export default function BannerCarousel() {
       {/* Chap tugma */}
       <button
         onClick={prevSlide}
-        className="absolute top-1/2 left-3 -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50"
+        className="absolute top-1/2 left-3 cursor-pointer -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50"
       >
         <ChevronLeft size={20} />
       </button>
@@ -92,7 +92,7 @@ export default function BannerCarousel() {
       {/* O‘ng tugma */}
       <button
         onClick={nextSlide}
-        className="absolute top-1/2 right-3 -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50"
+        className="absolute top-1/2 right-3 cursor-pointer -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50"
       >
         <ChevronRight size={20} />
       </button>

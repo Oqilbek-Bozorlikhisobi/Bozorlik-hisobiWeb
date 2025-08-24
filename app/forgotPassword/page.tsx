@@ -216,7 +216,7 @@ export default function ForgotPasswordForm() {
             <Button
               type="submit"
               disabled={isLoading || !phoneNumber || !newPassword}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 rounded-lg"
+              className="w-full bg-green-600 cursor-pointer hover:bg-green-700 text-white font-medium py-2.5 rounded-lg"
             >
               {isLoading ? (
                 <>
@@ -232,7 +232,7 @@ export default function ForgotPasswordForm() {
               type="button"
               variant="outline"
               onClick={() => router.push("/login")}
-              className="w-full border-2 border-gray-400 text-gray-700 hover:bg-gray-50"
+              className="w-full border-2 cursor-pointer border-gray-400 text-gray-700 hover:bg-gray-50"
             >
               Kirish sahifasiga qaytish
             </Button>
@@ -278,7 +278,7 @@ export default function ForgotPasswordForm() {
                 onClick={handleResend}
                 disabled={resendLoading}
                 variant="outline"
-                className="w-full border-blue-500 text-blue-600 hover:bg-blue-50"
+                className="w-full cursor-pointer border-blue-500 text-blue-600 hover:bg-blue-50"
               >
                 {resendLoading ? "Yuborilmoqda..." : "Yangi kod yuborish"}
               </Button>
@@ -288,7 +288,7 @@ export default function ForgotPasswordForm() {
           <Button
             onClick={handleVerify}
             disabled={otpLoading}
-            className="w-full mt-6 bg-green-600 hover:bg-green-700 text-white"
+            className="w-full mt-6 cursor-pointer bg-green-600 hover:bg-green-700 text-white"
           >
             {otpLoading ? (
               <Loader2 className="animate-spin h-4 w-4 mr-2" />

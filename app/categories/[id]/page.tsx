@@ -146,7 +146,7 @@ const CategoryPage = () => {
             Bozorlik ro'yxatingizga qo'shish uchun mahsulotni bosing
           </p>
         </div>
-        <Button variant="outline" onClick={() => router.push("/")}>
+        <Button variant="outline" className="cursor-pointer" onClick={() => router.push("/")}>
           Turkumlarga qaytish
         </Button>
       </div>
@@ -253,7 +253,7 @@ const CategoryPage = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleAddToBasket} disabled={extraLoading}>
+            <Button onClick={handleAddToBasket} className="cursor-pointer" disabled={extraLoading}>
               Savatga qo'shish
             </Button>
           </DialogFooter>

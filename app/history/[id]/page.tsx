@@ -281,11 +281,10 @@ const Page = () => {
                   marginBottom: "0.5rem", // mb-2 = 8px
                 }}
               />
-
               {/* Bozorlik nomi */}
               <p
                 style={{
-                  textAlign: "center", // text-center
+                  textAlign: "center", 
                   fontWeight: 600, // font-semibold
                   marginBottom: "0.5rem", // mb-2 = 8px
                 }}
@@ -339,7 +338,7 @@ const Page = () => {
                             📦
                           </span>
                         </div>
-                        
+
                       ) : (
                         <img
                           src={list?.product?.images || "/placeholder.svg"}

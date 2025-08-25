@@ -154,6 +154,86 @@
     "send": "Yuborish",
     "cancel": "Bekor qilish",
     "alertMessage": "Yuborildi:"
+  },
+
+
+
+  "error.general": "Xatolik yuz berdi",
+  "toast.userAdded": "Yangi foydalanuvchi qo'shildi",
+  "toast.productAdded": "Mahsulot qo'shildi",
+  "toast.productDeleted": "Mahsulot o'chirildi",
+  "toast.addedToHistory": "Bozorlik istoriyaga qo'shildi",
+  "market.finishShopping": "Bozorlikni yakunlash",
+  "market.remainingProducts": "{{count}} ta mahsulot qoldi",
+  "extraProduct.title": "Qo'shimcha mahsulot qo'shish",
+  "extraProduct.description": "Ro'yxatda yo'q mahsulot nomi va miqdorini kiriting",
+  "extraProduct.nameLabel": "Mahsulot nomi",
+  "extraProduct.namePlaceholder": "masalan, Tuz, Shakar, Sabun...",
+  "extraProduct.quantityLabel": "Miqdor",
+  "extraProduct.quantityPlaceholder": "masalan, 2.5",
+  "extraProduct.unitLabel": "Birlikni tanlang",
+  "extraProduct.unitPlaceholder": "Birlik tanlang",
+  "extraProduct.cancel": "Bekor qilish",
+  "extraProduct.add": "Qo'shish",
+  "purchase.markAsBought": "Sotib olindi deb belgilash",
+  "purchase.enterPrice": "Sotib olingan narxni kiriting",
+  "purchase.priceLabel": "To'langan narxi (so'm)",
+  "purchase.pricePlaceholder": "masalan, 15000",
+  "purchase.confirm": "Sotib olindi",
+  "shareList.title": "Ro'yxatni ulashish",
+  "shareList.description": "Ro'yxatni yubormoqchi bo'lgan odamning telefon raqamini kiriting",
+  "shareList.phoneLabel": "Telefon raqami",
+  "shareList.phonePlaceholder": "+998 90 123 45 67",
+  "shareList.button": "Ulashish",
+  "endMarket.title": "Bozorlikni yakunlash",
+  "endMarket.description": "Bozor nomini yozing va bozorlikni yakunlang",
+  "endMarket.marketNameLabel": "Bozor nomi",
+  "endMarket.marketNamePlaceholder": "masalan, Chorsu",
+  "endMarket.finishButton": "Yakunlash",
+  "toast.productAdded1": "Mahsulot qo'shildi",
+  "error.general1": "Xatolik yuz berdi",
+  "search.placeholder": "Mahsulotlar izlash",
+  "category.addToListHint": "Bozorlik ro'yxatingizga qo'shish uchun mahsulotni bosing",
+  "category.backButton": "Turkumlarga qaytish",
+
+  "basket.addDialogTitle": "{{productName}} ni savatga qo'shish",
+  "basket.addDialogDescription": "Sotib olmoqchi bo'lgan miqdorni kiriting",
+  "basket.quantityLabel": "Miqdor ({{unit}})",
+  "basket.quantityPlaceholder": "masalan, 2.5",
+  "basket.unitLabel": "Birlikni tanlang",
+  "basket.unitPlaceholder": "Birlik tanlang",
+  "basket.marketLabel": "Bozorlikni tanlang",
+  "basket.marketPlaceholder": "Bozorlik tanlang",
+  "basket.addButton": "Savatga qo'shish",
+  "auth": {
+  "enterCode": "Telefon nomeringizga kelgan kodni kiriting",
+    "passwordChanged": "Parol muvaffaqiyatli o'zgartirildi",
+    "invalidCode": "Kod noto‘g‘ri",
+    "newCodeSent": "Yangi kod yuborildi ✅",
+    "default": "Xatolik yuz berdi",
+     "invalidCode1": "4 xonali kodni kiriting"
+},
+"resetPassword": {
+  "title": "Parolni tiklash",
+  "description": "Yangi parol o'rnating",
+  "phoneLabel": "Telefon raqami",
+  "phonePlaceholder": "+998 90 123 45 67",
+  "newPasswordLabel": "Yangi parol",
+  "newPasswordPlaceholder": "Yangi parol kiriting",
+  "submitButton": "Parolni yangilash",
+  "submitting": "Yuborilmoqda...",
+  "backToLogin": "Kirish sahifasiga qaytish",
+
+  "verifyDialog": {
+    "title": "Telefon raqamni tasdiqlash",
+    "description": "SMS orqali yuborilgan 4 xonali kodni kiriting",
+    "timeLeft": "Qolgan vaqt",
+    "resendCode": "Yangi kod yuborish",
+    "resending": "Yuborilmoqda...",
+    "confirmButton": "Tasdiqlash"
   }
+}
+
+
 
   }

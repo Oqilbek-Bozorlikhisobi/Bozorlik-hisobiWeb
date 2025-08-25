@@ -22,13 +22,22 @@ import api from "@/service/api";
 import useApiMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
 import { useFetch } from "@/hooks/useFetch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const page = () => {
   const { id } = useParams();
   const router = useRouter();
-  const { showExtraProductDialog, setShowExtraProductDialog, removeShoppingItem } =
-    useShoppingStore();
+  const {
+    showExtraProductDialog,
+    setShowExtraProductDialog,
+    removeShoppingItem,
+  } = useShoppingStore();
   const [showPriceDialog, setShowPriceDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showEndMarket, setShowEndMarket] = useState(false);
@@ -40,13 +49,13 @@ const page = () => {
   const [list, setList] = useState<any>(null);
   const [productId, setProductId] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [location, setLocation] = useState<string>("")
-  const [unit, setUnit] = useState<string>("")
-  
-    const { data: units } = useFetch<any>({
-      key: ["unit",],
-      url: "/unit",
-    });
+  const [location, setLocation] = useState<string>("");
+  const [unit, setUnit] = useState<string>("");
+
+  const { data: units } = useFetch<any>({
+    key: ["unit"],
+    url: "/unit",
+  });
 
   const addList = (item: any) => {
     setList((prev: any) => ({
@@ -79,7 +88,7 @@ const page = () => {
       const response = await api.get(`market/${id}`);
       setList(response.data.data);
     } catch (error) {
-      console.error("Xatolik yuz berdi:", error);
+      console.error(t("error.general"), error);
     }
   };
 
@@ -121,9 +130,9 @@ const page = () => {
     method: "PATCH",
 
     onSuccess: () => {
-    toast.success("Yangi foydalanuvchi qo'shildi");
-    setSharePhoneNumber("")
-    setShowShareDialog(false)
+      toast.success(t("toast.userAdded"));
+      setSharePhoneNumber("");
+      setShowShareDialog(false);
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -132,11 +141,11 @@ const page = () => {
 
   const sendShareList = () => {
     const data = {
-        phoneNumber: sharePhoneNumber.replace(/\s/g, ""),
-        marketId: id
-    }
-    sendList(data)
-  }
+      phoneNumber: sharePhoneNumber.replace(/\s/g, ""),
+      marketId: id,
+    };
+    sendList(data);
+  };
 
   const getPurchasedCount = () => {
     if (!list) return 0;
@@ -153,7 +162,7 @@ const page = () => {
     method: "POST",
     onSuccess: (data) => {
       addList(data?.data);
-      toast.success("Mahsulot qo'shildi");
+      toast.success(t("toast.productAdded"));
       setShowExtraProductDialog(false);
       setExtraProductName("");
       setExtraProductQuantity("");
@@ -168,7 +177,7 @@ const page = () => {
     method: "DELETE",
     onSuccess: () => {
       removeList(productId);
-      toast.success("Mahsulot o'chirildi");
+      toast.success(t("toast.productDeleted"));
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -182,7 +191,7 @@ const page = () => {
       setBuyingTrue(selectedProduct?.id, price);
       setShowPriceDialog(false);
       setPrice("");
-      toast.success("Mahsulot sotib olindi");
+      toast.success(t("toast.productPurchased"));
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -193,15 +202,15 @@ const page = () => {
     setProductId(id);
   };
 
-  const handleShowEndMarket = () =>{
-    setShowEndMarket(true)
-  }
+  const handleShowEndMarket = () => {
+    setShowEndMarket(true);
+  };
   const handleAddExtraProduct = () => {
     const data = {
       marketId: id,
       quantity: extraProductQuantity,
       productName: extraProductName,
-      unidId: unit
+      unidId: unit,
     };
 
     addProductExtra(data);
@@ -216,10 +225,10 @@ const page = () => {
     url: `history`,
     method: "POST",
     onSuccess: () => {
-        setShowEndMarket(false)
-        removeShoppingItem(id)
-        router.push("/basket")
-      toast.success("Bozorlik istoriyaga qo'shildi");
+      setShowEndMarket(false);
+      removeShoppingItem(id);
+      router.push("/basket");
+      toast.success(t("toast.addedToHistory"));
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -231,16 +240,14 @@ const page = () => {
     onSuccess: () => {
       setLocation("");
       const data = {
-        marketId: id
-      }
-      endMarket(data)
+        marketId: id,
+      };
+      endMarket(data);
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
     },
   });
-
-  
 
   const handleSaveLocation = () => {
     const data = {
@@ -250,7 +257,7 @@ const page = () => {
   };
 
   const handlePhoneNumberChange = (phone: string) => {
-    const formatted = formatPhoneNumber(phone)
+    const formatted = formatPhoneNumber(phone);
     setSharePhoneNumber(formatted);
   };
 
@@ -263,7 +270,11 @@ const page = () => {
           </h2>
           <p className="text-gray-600">{t("basket1.subtitle")}</p>
         </div>
-        <Button variant="outline" className="cursor-pointer" onClick={() => router.push("/")}>
+        <Button
+          variant="outline"
+          className="cursor-pointer"
+          onClick={() => router.push("/")}
+        >
           {t("basket1.addMore")}
         </Button>
       </div>
@@ -276,7 +287,10 @@ const page = () => {
               {t("basket_empty")}
             </h3>
             <p className="text-gray-600 mb-4">{t("basket_empty_desc")}</p>
-            <Button className="bg-[#09bcbf] cursor-pointer" onClick={() => router.push("/")}>
+            <Button
+              className="bg-[#09bcbf] cursor-pointer"
+              onClick={() => router.push("/")}
+            >
               {t("view_products")}
             </Button>
           </CardContent>
@@ -318,7 +332,7 @@ const page = () => {
                             : item?.product?.titleEn
                           : item?.productName}
                       </h3>
-                      
+
                       <p className="text-sm text-gray-600">
                         {item.product
                           ? `${item?.quantity} ${item?.unit?.name}`
@@ -420,24 +434,25 @@ const page = () => {
         <Card className="mt-4">
           <CardContent className="p-4 text-center">
             <Button
-                onClick={() => {
-                    if ((list?.marketLists?.length - getPurchasedCount()) === 0) {
-                      // Bozorlikni yakunlash funksiyasini shu yerga yozasiz
-                      handleShowEndMarket()
-                    }
-                  }}
+              onClick={() => {
+                if (list?.marketLists?.length - getPurchasedCount() === 0) {
+                  handleShowEndMarket();
+                }
+              }}
               className={`w-full py-3 text-lg ${
-                (list?.marketLists?.length - getPurchasedCount()) == 0
+                list?.marketLists?.length - getPurchasedCount() == 0
                   ? "bg-green-600 hover:bg-green-700 cursor-pointer"
                   : "bg-gray-300 cursor-not-allowed"
               }`}
               size="lg"
             >
-              Bozorlikni yakunlash    
+              {t("market.finishShopping")}
             </Button>
-              <p className="text-sm text-gray-500 mt-2">
-                {list?.marketLists?.length - getPurchasedCount()} ta mahsulot qoldi
-              </p>
+            <p className="text-sm text-gray-500 mt-2">
+              {t("market.remainingProducts", {
+                count: list?.marketLists?.length - getPurchasedCount(),
+              })}
+            </p>
           </CardContent>
         </Card>
       )}
@@ -447,23 +462,27 @@ const page = () => {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Qo'shimcha mahsulot qo'shish</DialogTitle>
+            <DialogTitle>{t("extraProduct.title")}</DialogTitle>
             <DialogDescription>
-              Ro'yxatda yo'q mahsulot nomi va miqdorini kiriting
+              {t("extraProduct.description")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="extraProductName">Mahsulot nomi</Label>
+              <Label htmlFor="extraProductName">
+                {t("extraProduct.nameLabel")}
+              </Label>
               <Input
                 id="extraProductName"
                 value={extraProductName}
                 onChange={(e) => setExtraProductName(e.target.value)}
-                placeholder="masalan, Tuz, Shakar, Sabun..."
+                placeholder={t("extraProduct.namePlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="extraProductQuantity">Miqdor</Label>
+              <Label htmlFor="extraProductQuantity">
+                {t("extraProduct.quantityLabel")}
+              </Label>
               <Input
                 id="extraProductQuantity"
                 type="number"
@@ -471,18 +490,20 @@ const page = () => {
                 min="0.1"
                 value={extraProductQuantity}
                 onChange={(e) => setExtraProductQuantity(e.target.value)}
-                placeholder="masalan, 2.5"
+                placeholder={t("extraProduct.quantityPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="unitId">Birlikni tanlang</Label>
+              <Label htmlFor="unitId">{t("extraProduct.unitLabel")}</Label>
               <Select
                 value={unit}
                 onValueChange={(value) => setUnit(value)}
                 required
               >
                 <SelectTrigger id="unitId" className="w-full">
-                  <SelectValue placeholder="Birlik tanlang" />
+                  <SelectValue
+                    placeholder={t("extraProduct.unitPlaceholder")}
+                  />
                 </SelectTrigger>
                 <SelectContent className="w-full">
                   {units?.items?.map((item: any) => (
@@ -500,14 +521,16 @@ const page = () => {
               className="cursor-pointer"
               onClick={() => setShowExtraProductDialog(false)}
             >
-              Bekor qilish
+              {t("extraProduct.cancel")}
             </Button>
             <Button
               onClick={handleAddExtraProduct}
               className="cursor-pointer"
-              disabled={extraLoading && !extraProductName && !extraProductQuantity}
+              disabled={
+                extraLoading && !extraProductName && !extraProductQuantity
+              }
             >
-              Qo'shish
+              {t("extraProduct.add")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -515,8 +538,8 @@ const page = () => {
       <Dialog open={showPriceDialog} onOpenChange={setShowPriceDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Sotib olindi deb belgilash</DialogTitle>
-            <DialogDescription>Sotib olingan narxni kiriting</DialogDescription>
+            <DialogTitle>{t("purchase.markAsBought")}</DialogTitle>
+            <DialogDescription>{t("purchase.enterPrice")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-6">
             <div className="flex items-center space-x-4">
@@ -545,7 +568,7 @@ const page = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="price">To'langan narxi (so'm)</Label>
+              <Label htmlFor="price">{t("purchase.priceLabel")}</Label>
               <Input
                 id="price"
                 type="number"
@@ -553,13 +576,17 @@ const page = () => {
                 min="0"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                placeholder="masalan, 15000"
+                placeholder={t("purchase.pricePlaceholder")}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleSavePrice} className="cursor-pointer" disabled={!price}>
-              Sotib olindi
+            <Button
+              onClick={handleSavePrice}
+              className="cursor-pointer"
+              disabled={!price}
+            >
+              {t("purchase.confirm")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -567,57 +594,30 @@ const page = () => {
       <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Ro'yxatni ulashish</DialogTitle>
-            <DialogDescription>
-              Ro'yxatni yubormoqchi bo'lgan odamning telefon raqamini kiriting
-            </DialogDescription>
+            <DialogTitle>{t("shareList.title")}</DialogTitle>
+            <DialogDescription>{t("shareList.description")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="sharePhone">Telefon raqami</Label>
+              <Label htmlFor="sharePhone">{t("shareList.phoneLabel")}</Label>
               <Input
                 id="sharePhone"
                 type="tel"
                 value={sharePhoneNumber}
                 onChange={(e) => handlePhoneNumberChange(e.target.value)}
-                placeholder="+998 90 123 45 67"
+                placeholder={t("shareList.phonePlaceholder")}
                 className="mt-1"
               />
             </div>
-            {/* {[].length > 0 && (
-              <div className="space-y-2">
-                <Label>Topilgan foydalanuvchilar:</Label>
-                <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {[].map((user: any) => (
-                    <div
-                      key={user?.id}
-                      onClick={() => handleSendToUser(user)}
-                      className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{user.name}</p>
-                        <p className="text-xs text-gray-500">{user.phone}</p>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        Yuborish
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {sharePhoneNumber.length >= 8 && [].length === 0 && (
-              <div className="text-center py-4 text-gray-500">
-                <p>Bu raqam bilan ro'yxatdan o'tgan foydalanuvchi topilmadi</p>
-              </div>
-            )} */}
           </div>
           <DialogFooter>
-            <Button variant="outline" className="cursor-pointer" disabled={sendListLoading} onClick={() => sendShareList()}>
-              Ulashish
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              disabled={sendListLoading}
+              onClick={() => sendShareList()}
+            >
+              {t("shareList.button")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -625,24 +625,28 @@ const page = () => {
       <Dialog open={showEndMarket} onOpenChange={setShowEndMarket}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Bozorlikni yakunlash</DialogTitle>
-            <DialogDescription>Bozor nomini yozing va bozorlikni yakunlang</DialogDescription>
+            <DialogTitle>{t("endMarket.title")}</DialogTitle>
+            <DialogDescription>{t("endMarket.description")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="location">Bozor nomi</Label>
+              <Label htmlFor="location">{t("endMarket.marketNameLabel")}</Label>
               <Input
                 id="location"
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="masalan, Chorsu"
+                placeholder={t("endMarket.marketNamePlaceholder")}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleSaveLocation} className="cursor-pointer" disabled={!location && locationLoading && endLoading }>
-              Yakunlash
+            <Button
+              onClick={handleSaveLocation}
+              className="cursor-pointer"
+              disabled={!location && locationLoading && endLoading}
+            >
+              {t("endMarket.finishButton")}
             </Button>
           </DialogFooter>
         </DialogContent>

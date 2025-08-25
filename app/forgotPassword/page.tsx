@@ -17,6 +17,8 @@ import { Loader2, Phone, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useApiMutation from "@/hooks/useMutation";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
+
 import {
   DialogContent,
   DialogDescription,
@@ -36,12 +38,12 @@ export default function ForgotPasswordForm() {
   const router = useRouter();
   const [code, setCode] = useState(["", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
+  const { t, i18n } = useTranslation("common");
   const { mutate, isLoading } = useApiMutation({
     url: "/auth/forgot/password",
     method: "POST",
     onSuccess: (data) => {
-      toast.info("Telfon nomeringizga kelgan kodni kiriting");
+      toast.info(t("auth.enterCode"))
       setVerify(true);
       setDataResponse(data);
       //   router.push("/login")
@@ -55,11 +57,11 @@ export default function ForgotPasswordForm() {
     url: "/auth/forget/password/verify-otp",
     method: "PATCH",
     onSuccess: (data) => {
-      toast.success("Parol muvaffaqiyatli o'zgartirildi");
+      toast.success(t("auth.passwordChanged"))
       router.push("/login");
     },
     onError: (error: any) => {
-      toast.error(error.message || "Kod noto‘g‘ri");
+      toast.error(error.message || t("auth.invalidCode"));
     },
   });
 
@@ -81,19 +83,19 @@ export default function ForgotPasswordForm() {
     url: "/auth/sendotp/again",
     method: "POST",
     onSuccess: () => {
-      toast.success("Yangi kod yuborildi ✅");
+      toast.success(t("auth.newCodeSent"));
       setTimeLeft(120); // vaqtni qaytadan 2 minutga o‘rnatamiz
       setCanResend(false);
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || "Xatolik yuz berdi");
+      toast.error(error.response?.data?.message || t("error.default"));
     },
   });
 
   const handleVerify = async () => {
     const enteredCode = code.join("");
     if (enteredCode.length !== 4) {
-      toast.error("4 xonali kodni kiriting");
+      toast.error(t("error.invalidCode1"));
       return;
     }
     const data = {
@@ -165,10 +167,10 @@ export default function ForgotPasswordForm() {
             <Lock className="h-8 w-8 text-blue-600" />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">
-            Parolni tiklash
+          {t("resetPassword.title")}
           </CardTitle>
           <CardDescription className="text-gray-600">
-            Yangi parol o'rnating
+          {t("resetPassword.description")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -182,7 +184,7 @@ export default function ForgotPasswordForm() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Telefon raqami</Label>
+            <Label htmlFor="phoneNumber">{t("resetPassword.phoneLabel")}</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
@@ -190,7 +192,7 @@ export default function ForgotPasswordForm() {
                   type="tel"
                   value={phoneNumber}
                   onChange={handlePhoneChange}
-                  placeholder="+998 90 123 45 67"
+                  placeholder={t("resetPassword.phonePlaceholder")}
                   className="pl-10"
                   required
                 />
@@ -198,7 +200,7 @@ export default function ForgotPasswordForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="newPassword">Yangi parol</Label>
+              <Label htmlFor="newPassword">{t("resetPassword.newPasswordLabel")}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
@@ -206,7 +208,7 @@ export default function ForgotPasswordForm() {
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Yangi parol kiriting"
+                  placeholder={t("resetPassword.newPasswordPlaceholder")}
                   className="pl-10"
                   required
                 />
@@ -221,10 +223,10 @@ export default function ForgotPasswordForm() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
-                  Yuborilmoqda...
+                  {t("resetPassword.submitting") }
                 </>
               ) : (
-                "Parolni yangilash"
+                t("resetPassword.submitButton")
               )}
             </Button>
 
@@ -234,7 +236,7 @@ export default function ForgotPasswordForm() {
               onClick={() => router.push("/login")}
               className="w-full border-2 cursor-pointer border-gray-400 text-gray-700 hover:bg-gray-50"
             >
-              Kirish sahifasiga qaytish
+             {t("resetPassword.backToLogin")}
             </Button>
           </form>
         </CardContent>
@@ -243,10 +245,10 @@ export default function ForgotPasswordForm() {
         <DialogContent className="fixed top-1/2 left-1/2 w-[90%] max-w-sm -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl p-6 shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-gray-800">
-              Telefon raqamni tasdiqlash
+            {t("resetPassword.verifyDialog.title")}
             </DialogTitle>
             <DialogDescription className="text-sm text-gray-500">
-              SMS orqali yuborilgan 4 xonali kodni kiriting
+            {t("resetPassword.verifyDialog.description")}
             </DialogDescription>
           </DialogHeader>
 
@@ -266,13 +268,10 @@ export default function ForgotPasswordForm() {
           </div>
           <div className="mt-4 text-center">
             {!canResend ? (
-              <p className="text-sm text-gray-500">
-                Qolgan vaqt:{" "}
-                <span className="font-semibold text-gray-800">
-                  {Math.floor(timeLeft / 60)}:
-                  {(timeLeft % 60).toString().padStart(2, "0")}
-                </span>
-              </p>
+             <p>
+             {t("resetPassword.verifyDialog.timeLeft")}: {Math.floor(timeLeft / 60)}:
+             {(timeLeft % 60).toString().padStart(2, "0")}
+           </p>
             ) : (
               <Button
                 onClick={handleResend}
@@ -280,7 +279,9 @@ export default function ForgotPasswordForm() {
                 variant="outline"
                 className="w-full cursor-pointer border-blue-500 text-blue-600 hover:bg-blue-50"
               >
-                {resendLoading ? "Yuborilmoqda..." : "Yangi kod yuborish"}
+                {resendLoading
+    ? t("resetPassword.verifyDialog.resending")
+    : t("resetPassword.verifyDialog.resendCode")}
               </Button>
             )}
           </div>
@@ -293,7 +294,7 @@ export default function ForgotPasswordForm() {
             {otpLoading ? (
               <Loader2 className="animate-spin h-4 w-4 mr-2" />
             ) : (
-              "Tasdiqlash"
+              t("resetPassword.verifyDialog.confirmButton")
             )}
           </Button>
         </DialogContent>

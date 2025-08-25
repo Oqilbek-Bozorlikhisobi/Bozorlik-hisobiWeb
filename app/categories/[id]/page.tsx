@@ -49,11 +49,11 @@ const CategoryPage = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<any>(null);
   const { shoppingList } = useShoppingStore();
-  const { i18n } = useTranslation();
-  const [unit, setUnit] = useState<string>("")
+  const { t, i18n } = useTranslation("common");
+  const [unit, setUnit] = useState<string>("");
 
   const { data: units } = useFetch<any>({
-    key: ["unit",],
+    key: ["unit"],
     url: "/unit",
   });
   const getData = async () => {
@@ -61,7 +61,7 @@ const CategoryPage = () => {
       const response = await api.get(`category/${id}`);
       setCategory(response.data.data);
     } catch (error) {
-      console.error("Xatolik yuz berdi:", error);
+      console.error(t("error.general1"), error);
     }
   };
 
@@ -90,12 +90,12 @@ const CategoryPage = () => {
     url: "market-list",
     method: "POST",
     onSuccess: () => {
-      toast.success("Mahsulot qo'shildi");
+      toast.success(t("toast.productAdded1"));
       setShowQuantityDialog(false);
       setSelectedProduct(null);
       setQuantity("");
       setMarketId("");
-      setUnit("")
+      setUnit("");
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
@@ -107,7 +107,7 @@ const CategoryPage = () => {
       marketId,
       productId: selectedProduct?.id,
       quantity,
-      unitId: unit
+      unitId: unit,
     };
     addProductExtra(data);
   };
@@ -134,7 +134,7 @@ const CategoryPage = () => {
           <input
             type="text"
             className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Mahsulotlar izlash"
+            placeholder={t("search.placeholder")}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
@@ -148,12 +148,14 @@ const CategoryPage = () => {
               ? category?.titleRu
               : category?.titleEn}
           </h2>
-          <p className="text-gray-600">
-            Bozorlik ro'yxatingizga qo'shish uchun mahsulotni bosing
-          </p>
+          <p className="text-gray-600">{t("category.addToListHint")}</p>
         </div>
-        <Button variant="outline" className="cursor-pointer" onClick={() => router.push("/")}>
-          Turkumlarga qaytish
+        <Button
+          variant="outline"
+          className="cursor-pointer"
+          onClick={() => router.push("/")}
+        >
+          {t("category.backButton")}
         </Button>
       </div>
 
@@ -198,7 +200,7 @@ const CategoryPage = () => {
               ni savatga qo'shish
             </DialogTitle>
             <DialogDescription>
-              Sotib olmoqchi bo'lgan miqdorni kiriting
+              {t("basket.addDialogDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6">
@@ -226,7 +228,9 @@ const CategoryPage = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="quantity">Miqdor ({selectedProduct?.unit})</Label>
+              <Label htmlFor="quantity">
+                {t("basket.quantityLabel", { unit: selectedProduct?.unit })}
+              </Label>
               <Input
                 id="quantity"
                 type="number"
@@ -235,18 +239,18 @@ const CategoryPage = () => {
                 min="0.1"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
-                placeholder="masalan, 2.5"
+                placeholder={t("basket.quantityPlaceholder")}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="unitId">Birlikni tanlang</Label>
+              <Label htmlFor="unitId">{t("basket.unitLabel")}</Label>
               <Select
                 value={unit}
                 onValueChange={(value) => setUnit(value)}
                 required
               >
                 <SelectTrigger id="unitId" className="w-full">
-                  <SelectValue placeholder="Birlik tanlang" />
+                  <SelectValue placeholder={t("basket.unitPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="w-full">
                   {units?.items?.map((item: any) => (
@@ -258,14 +262,14 @@ const CategoryPage = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="marketId">Bozorlikni tanlang</Label>
+              <Label htmlFor="marketId">{t("basket.marketLabel")}</Label>
               <Select
                 value={marketId}
                 onValueChange={(value) => setMarketId(value)}
                 required
               >
                 <SelectTrigger id="marketId" className="w-full">
-                  <SelectValue placeholder="Bozorlik tanlang" />
+                  <SelectValue placeholder={t("basket.marketPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="w-full">
                   {shoppingList?.map((item: any) => (
@@ -278,8 +282,12 @@ const CategoryPage = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleAddToBasket} className="cursor-pointer" disabled={extraLoading}>
-              Savatga qo'shish
+            <Button
+              onClick={handleAddToBasket}
+              className="cursor-pointer"
+              disabled={extraLoading}
+            >
+              {t("basket.addButton")}
             </Button>
           </DialogFooter>
         </DialogContent>

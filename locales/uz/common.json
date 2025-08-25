@@ -202,6 +202,7 @@
   "basket.marketLabel": "Bozorlikni tanlang",
   "basket.marketPlaceholder": "Bozorlik tanlang",
   "basket.addButton": "Savatga qo'shish",
+  "basket.delete.message": "Bozorlik savati o'chirildi",
   "auth": {
     "enterCode": "Telefon nomeringizga kelgan kodni kiriting",
     "passwordChanged": "Parol muvaffaqiyatli o'zgartirildi",

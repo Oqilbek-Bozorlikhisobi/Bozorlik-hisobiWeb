@@ -207,6 +207,7 @@
   "basket.marketLabel": "Выберите список покупок",
   "basket.marketPlaceholder": "Выберите список покупок",
   "basket.addButton": "Добавить в корзину",
+  "basket.delete.message": "Корзина покупок удалена",
 
   "auth": {
     "enterCode": "Введите код, отправленный на ваш номер телефона",

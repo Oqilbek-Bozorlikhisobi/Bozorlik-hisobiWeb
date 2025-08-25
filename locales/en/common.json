@@ -202,6 +202,7 @@
   "basket.marketLabel": "Select shopping list",
   "basket.marketPlaceholder": "Select shopping list",
   "basket.addButton": "Add to basket",
+  "basket.delete.message": "Shopping cart has been deleted",
 
   "auth": {
     "enterCode": "Enter the code sent to your phone number",

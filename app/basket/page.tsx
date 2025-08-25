@@ -26,8 +26,7 @@ const Page = () => {
     method: "DELETE",
     onSuccess: () => {
       removeShoppingItem(marketId)
-      // router.push(`/basket`);
-      toast.success("Bozorlik savati o'chirildi")
+      toast.success(t("basket.delete.message"))
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);

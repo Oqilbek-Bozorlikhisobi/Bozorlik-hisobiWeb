@@ -113,7 +113,7 @@ export default function LoginForm() {
             ))}
           </select>
 
-          <div className="mx-auto mb-4 w-23 h-23 bg-green-100 rounded-full flex items-center justify-center">
+          <div className="mx-auto mb-4 w-23 h-23  rounded-full flex items-center justify-center">
             <Image src={Logo} alt="Logo" className="w-23 h-23 " />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">

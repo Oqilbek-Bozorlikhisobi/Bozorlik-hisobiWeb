@@ -2,25 +2,41 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useShoppingStore } from "@/store/shoppingStore";
 import { useTranslation } from "react-i18next";
 import { ShoppingBasket, Trash2 } from "lucide-react"; // iconlar
+import useApiMutation from "@/hooks/useMutation";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const router = useRouter();
-  const { shoppingList, setShoppingId } = useShoppingStore();
+  const { shoppingList, setShoppingId, removeShoppingItem } = useShoppingStore();
   const { t } = useTranslation("common");
+  const [marketId, setMarketId] = useState<string>()
 
   const handleBasketClick = (id: string) => {
     setShoppingId(id);
     router.push(`/basket/${id}`);
   };
 
+  const { mutate, isLoading} = useApiMutation({
+    url: "market",
+    method: "DELETE",
+    onSuccess: () => {
+      removeShoppingItem(marketId)
+      // router.push(`/basket`);
+      toast.success("Bozorlik savati o'chirildi")
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+
   const handleDelete = (id: string) => {
-    // ❗ Bu yerga o‘chirish funksiyasini yozasiz
-    console.log("Ro`yhat o`chirildi:", id);
+    setMarketId(id)
+    mutate({ id: id })
   };
 
   return (
@@ -51,6 +67,7 @@ const Page = () => {
           >
             {/* O‘chirish icon tugma */}
             <button
+            disabled={isLoading}
               onClick={() => handleDelete(market?.id)}
               className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
             >

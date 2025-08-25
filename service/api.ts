@@ -3,6 +3,7 @@ import axios, {
     InternalAxiosRequestConfig
   } from "axios";
 import { useStore } from "../store/userStore";
+import { deleteCookie } from "cookies-next";
 
 const REACT_APP_BASE_URL = "https://backend.marketveb.uz";
 
@@ -45,7 +46,7 @@ api.interceptors.response.use(
         originalRequest._retry = true;
         try {
           const refreshResponse = await axios.post(`${REACT_APP_BASE_URL}/auth/refresh/user`, {
-            refresh_token: refreshToken,
+            refreshToken: refreshToken,
           });
           
           const newAccessToken = refreshResponse?.data?.access_token;
@@ -63,6 +64,7 @@ api.interceptors.response.use(
           }
         } catch (refreshError) {
           console.error("Error refreshing token:", refreshError);
+          deleteCookie("token");  
           clearUser();
         }
       } else {

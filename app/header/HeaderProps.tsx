@@ -29,7 +29,7 @@ export default function Header() {
   const { t, i18n } = useTranslation("common")
 
   const currentLang = i18n.language || "uz"
-  const { clearUser, user } = useStore();
+  const { user } = useStore();
   const { shoppingList, setShoppingListAll } =
       useShoppingStore();
 const getMarkets = async () => {

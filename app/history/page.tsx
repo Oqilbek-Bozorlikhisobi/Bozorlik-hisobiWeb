@@ -21,7 +21,7 @@ const Page = () => {
       
       setShoppingHistory(response.data.data);
     } catch (error) {
-      console.error("Xatolik yuz berdi:", error);
+      console.error(t("error_general"), error);
     }
   };
 

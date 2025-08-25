@@ -153,6 +153,97 @@
     "cancel": "Cancel",
     "alertMessage": "Sent:"
 
-  }
+  },
+
+  "error.general": "An error occurred",
+  "toast.userAdded": "New user added",
+  "toast.productAdded": "Product added",
+  "toast.productDeleted": "Product deleted",
+  "toast.addedToHistory": "Shopping added to history",
+  "market.finishShopping": "Finish shopping",
+  "market.remainingProducts": "{{count}} products left",
+  "extraProduct.title": "Add extra product",
+  "extraProduct.description": "Enter the name and quantity of a product not in the list",
+  "extraProduct.nameLabel": "Product name",
+  "extraProduct.namePlaceholder": "e.g., Salt, Sugar, Soap...",
+  "extraProduct.quantityLabel": "Quantity",
+  "extraProduct.quantityPlaceholder": "e.g., 2.5",
+  "extraProduct.unitLabel": "Select unit",
+  "extraProduct.unitPlaceholder": "Select unit",
+  "extraProduct.cancel": "Cancel",
+  "extraProduct.add": "Add",
+  "purchase.markAsBought": "Mark as bought",
+  "purchase.enterPrice": "Enter purchase price",
+  "purchase.priceLabel": "Paid amount (UZS)",
+  "purchase.pricePlaceholder": "e.g., 15000",
+  "purchase.confirm": "Bought",
+  "shareList.title": "Share list",
+  "shareList.description": "Enter the phone number of the person you want to send the list to",
+  "shareList.phoneLabel": "Phone number",
+  "shareList.phonePlaceholder": "+998 90 123 45 67",
+  "shareList.button": "Share",
+  "endMarket.title": "Finish shopping",
+  "endMarket.description": "Enter the market name and finish shopping",
+  "endMarket.marketNameLabel": "Market name",
+  "endMarket.marketNamePlaceholder": "e.g., Chorsu",
+  "endMarket.finishButton": "Finish",
+  "toast.productAdded1": "Product added",
+  "error.general1": "An error occurred",
+  "search.placeholder": "Search products",
+  "category.addToListHint": "Click a product to add it to your shopping list",
+  "category.backButton": "Back to categories",
+
+  "basket.addDialogTitle": "Add {{productName}} to basket",
+  "basket.addDialogDescription": "Enter the amount you want to buy",
+  "basket.quantityLabel": "Quantity ({{unit}})",
+  "basket.quantityPlaceholder": "e.g., 2.5",
+  "basket.unitLabel": "Select unit",
+  "basket.unitPlaceholder": "Select unit",
+  "basket.marketLabel": "Select shopping list",
+  "basket.marketPlaceholder": "Select shopping list",
+  "basket.addButton": "Add to basket",
+
+  "auth": {
+    "enterCode": "Enter the code sent to your phone number",
+    "passwordChanged": "Password successfully changed",
+    "invalidCode": "Invalid code",
+    "newCodeSent": "New code sent ✅",
+    "default": "An error occurred",
+    "invalidCode1": "Enter a 4-digit code"
+  },
+
+  "resetPassword": {
+    "title": "Reset password",
+    "description": "Set a new password",
+    "phoneLabel": "Phone number",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "Enter new password",
+    "submitButton": "Update password",
+    "submitting": "Submitting...",
+    "backToLogin": "Back to login page",
+
+    "verifyDialog": {
+      "title": "Verify phone number",
+      "description": "Enter the 4-digit code sent via SMS",
+      "timeLeft": "Time left",
+      "resendCode": "Resend code",
+      "resending": "Sending...",
+      "confirmButton": "Confirm"
+    }
+  },
+
+  "error_fetch_markets": "Error fetching markets",
+  "error_generate_file": "Error generating image/PDF",
+  "error_general": "An error occurred",
+  "success_added_to_market": "Added to shopping list",
+  "button_download_check_pdf": "Download check PDF",
+  "product_total_quantity": "Total products: {{count}} pcs",
+  "total_label": "Total:",
+  "total_price": "{{price}} UZS",
+  "button_download": "Download",
+  "success_phone_changed": "Your phone number has been changed",
+  "success_feedback_sent": "Your feedback and suggestions have been sent!",
+  "button_delete": "Delete"
 
 }

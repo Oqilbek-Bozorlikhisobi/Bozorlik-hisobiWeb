@@ -83,7 +83,7 @@ const Page = () => {
       pdf.save("market-check.pdf");
     } catch (err) {
       console.error(err);
-      toast.error("Rasm/PDF yaratishda xatolik yuz berdi");
+      toast.error(t("error_generate_file"));
     }
   };
 
@@ -96,7 +96,7 @@ const Page = () => {
       const response = await api.get(`history/${id}`);
       setShoppingHistory(response.data.data);
     } catch (error) {
-      console.error("Xatolik yuz berdi:", error);
+      console.error(t("error_general"), error);
     }
   };
 
@@ -106,7 +106,7 @@ const Page = () => {
 
     onSuccess: (data) => {
       setShoppingList(data?.data);
-      toast.success("Bozorlikka qo'shildi");
+      toast.success(t("success_added_to_market"));
       router.push("/basket");
     },
     onError: (error: any) => {
@@ -162,10 +162,14 @@ const Page = () => {
               onClick={handleShowCheck}
               className="bg-[#16A34A] w-full sm:w-auto cursor-pointer flex items-center gap-2"
             >
-              Check PDF yuklab olish
+              {t("button_download_check_pdf")}
             </Button>
 
-            <Button variant="outline" className="w-full sm:w-auto cursor-pointer" onClick={() => router.push("/")}>
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto cursor-pointer"
+              onClick={() => router.push("/")}
+            >
               {t("new_shopping")}
             </Button>
           </div>
@@ -179,7 +183,10 @@ const Page = () => {
                 {t("no_history")}
               </h3>
               <p className="text-gray-600 mb-4">{t("finish_first_shopping")}</p>
-              <Button className="bg-[#09bcbf] cursor-pointer" onClick={() => router.push("/")}>
+              <Button
+                className="bg-[#09bcbf] cursor-pointer"
+                onClick={() => router.push("/")}
+              >
                 {t("start_shopping")}
               </Button>
             </CardContent>
@@ -227,8 +234,8 @@ const Page = () => {
                         </p>
                         <p className="text-xs text-gray-600">
                           {`${list.quantity} ${list.unit?.name} - ${
-                                list?.price * list?.quantity
-                              } so'm`}
+                            list?.price * list?.quantity
+                          } so'm`}
                         </p>
                       </div>
                     </div>
@@ -284,7 +291,7 @@ const Page = () => {
               {/* Bozorlik nomi */}
               <p
                 style={{
-                  textAlign: "center", 
+                  textAlign: "center",
                   fontWeight: 600, // font-semibold
                   marginBottom: "0.5rem", // mb-2 = 8px
                 }}
@@ -338,7 +345,6 @@ const Page = () => {
                             📦
                           </span>
                         </div>
-
                       ) : (
                         <img
                           src={list?.product?.images || "/placeholder.svg"}
@@ -404,7 +410,9 @@ const Page = () => {
                   fontWeight: "bold", // font-bold = 700
                 }}
               >
-                <span>Mahsulotlar soni: {totalQuantity} dona</span>
+                <span>
+                  {t("product_total_quantity", { count: totalQuantity })}
+                </span>
               </div>
               <div
                 style={{
@@ -413,15 +421,17 @@ const Page = () => {
                   fontWeight: "bold", // font-bold = 700
                 }}
               >
-                <span>Jami:</span>
-                <span>{totalPrice} so‘m</span>
+                <span>{t("total_label")}</span>
+                <span>{t("total_price", { price: totalPrice })}</span>
               </div>
             </div>
 
             {/* Download button */}
           </div>
           <DialogFooter>
-            <Button className="w-full cursor-pointer" onClick={handleDownload}>Yuklash</Button>
+            <Button className="w-full cursor-pointer" onClick={handleDownload}>
+              {t("button_download")}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

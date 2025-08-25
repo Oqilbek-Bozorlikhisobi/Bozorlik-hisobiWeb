@@ -1,51 +1,51 @@
 {
-    "welcome": "Profil",
-    "basket": "Savat",
-    "history": "Tarix",
-    "title": "Bozorlik ro‘yxati",
-    "createList": "Ro‘yxat yaratish",
-    "purchased": "{{purchased}} dan {{total}} ta mahsulot sotib olindi",
-    "emptyList": "Bozorlik ro‘yxatini yarating",
-    "searchCategories": "Turkumlar izlash",
-     "chooseCategory": "Turkum tanlang",
-    "chooseCategoryDesc": "Ro'yxatingizga mahsulot qo'shish uchun turkumni tanlang",
-     "others": "Boshqalar",
-     "dialogTitle": "Olmoqchi bo'lgan maxsulotingni kiriting",
-    "productName": "Mahsulot nomi",
-    "productNamePlaceholder": "Masalan: Olma",
-    "productType": "Mahsulot turi",
-    "productTypePlaceholder": "Masalan: Meva",
-    "quantity": "Miqdor",
-    "quantityPlaceholder": "Masalan: 2 kg",
-    "addToBasket": "Savatga qo‘shish",
-    "createShoppingListTitle": "Bozorlik ro'yxatingizni yarating",
-    "createShoppingListDesc": "Boshlash uchun bozorlik ro'yxatingizga nom bering",
-    "shoppingListNameLabel": "Bozorlik ro'yxati nomi",
-    "shoppingListNamePlaceholder": "masalan, Haftalik oziq-ovqat, Ziyofat uchun bozorlik...",
-    "createListBtn": "Ro'yxat yaratish",
-    "extraProductTitle": "Qo'shimcha mahsulot qo'shish",
-    "extraProductDesc": "Ro'yxatda yo'q mahsulot nomi va miqdorini kiriting",
-    "productName1": "Mahsulot nomi",
-    "productNamePlaceholder1": "masalan, Tuz, Shakar, Sabun...",
-    "productType1": "Mahsulot turi/navi (ixtiyoriy)",
-    "productTypePlaceholder1": "masalan, Premium, Katta, Kichik, 1kg...",
-    "quantity1": "Miqdor",
-    "quantityPlaceholder1": "masalan, 2.5",
-    "cancel": "Bekor qilish",
-    "add": "Qo'shish",
-    "basket_empty": "Savat bo‘sh",
-    "basket_empty_desc": "Hali hech narsa qo‘shmagansiz, mahsulot tanlang",
-    "view_products": "Mahsulotlarni ko‘rish",
-     "paid": "To‘langan",
+  "welcome": "Profil",
+  "basket": "Savat",
+  "history": "Tarix",
+  "title": "Bozorlik ro‘yxati",
+  "createList": "Ro‘yxat yaratish",
+  "purchased": "{{purchased}} dan {{total}} ta mahsulot sotib olindi",
+  "emptyList": "Bozorlik ro‘yxatini yarating",
+  "searchCategories": "Turkumlar izlash",
+  "chooseCategory": "Turkum tanlang",
+  "chooseCategoryDesc": "Ro'yxatingizga mahsulot qo'shish uchun turkumni tanlang",
+  "others": "Boshqalar",
+  "dialogTitle": "Olmoqchi bo'lgan maxsulotingni kiriting",
+  "productName": "Mahsulot nomi",
+  "productNamePlaceholder": "Masalan: Olma",
+  "productType": "Mahsulot turi",
+  "productTypePlaceholder": "Masalan: Meva",
+  "quantity": "Miqdor",
+  "quantityPlaceholder": "Masalan: 2 kg",
+  "addToBasket": "Savatga qo‘shish",
+  "createShoppingListTitle": "Bozorlik ro'yxatingizni yarating",
+  "createShoppingListDesc": "Boshlash uchun bozorlik ro'yxatingizga nom bering",
+  "shoppingListNameLabel": "Bozorlik ro'yxati nomi",
+  "shoppingListNamePlaceholder": "masalan, Haftalik oziq-ovqat, Ziyofat uchun bozorlik...",
+  "createListBtn": "Ro'yxat yaratish",
+  "extraProductTitle": "Qo'shimcha mahsulot qo'shish",
+  "extraProductDesc": "Ro'yxatda yo'q mahsulot nomi va miqdorini kiriting",
+  "productName1": "Mahsulot nomi",
+  "productNamePlaceholder1": "masalan, Tuz, Shakar, Sabun...",
+  "productType1": "Mahsulot turi/navi (ixtiyoriy)",
+  "productTypePlaceholder1": "masalan, Premium, Katta, Kichik, 1kg...",
+  "quantity1": "Miqdor",
+  "quantityPlaceholder1": "masalan, 2.5",
+  "cancel": "Bekor qilish",
+  "add": "Qo'shish",
+  "basket_empty": "Savat bo‘sh",
+  "basket_empty_desc": "Hali hech narsa qo‘shmagansiz, mahsulot tanlang",
+  "view_products": "Mahsulotlarni ko‘rish",
+  "paid": "To‘langan",
   "currency": "so‘m",
-    "basket1": {
-      "title": "Bozorlik savati",
-      "subtitle": "Bozorlik jarayoni va xarajatlaringizni kuzatib boring",
-      "addMore": "Ko'proq mahsulot qo'shish"
-    },
-    "received": "Olingan",
+  "basket1": {
+    "title": "Bozorlik savati",
+    "subtitle": "Bozorlik jarayoni va xarajatlaringizni kuzatib boring",
+    "addMore": "Ko'proq mahsulot qo'shish"
+  },
+  "received": "Olingan",
   "buy": "Sotib olish",
-"add_product": "Mahsulot qo‘shish",
+  "add_product": "Mahsulot qo‘shish",
   "share_list": "Ro‘yxatni ulashish",
   "purchase_summary": "Xarid xulosasi",
   "purchased_from_total": "{{total}} ta mahsulotdan {{purchased}} tasi olindi",
@@ -116,7 +116,6 @@
     "errorCodeLength1": "4 xonali kodni kiriting"
   },
 
-  
   "login": {
     "title": "Kirish",
     "welcome": "Bozorlik platformasiga xush kelibsiz",
@@ -155,8 +154,6 @@
     "cancel": "Bekor qilish",
     "alertMessage": "Yuborildi:"
   },
-
-
 
   "error.general": "Xatolik yuz berdi",
   "toast.userAdded": "Yangi foydalanuvchi qo'shildi",
@@ -206,34 +203,46 @@
   "basket.marketPlaceholder": "Bozorlik tanlang",
   "basket.addButton": "Savatga qo'shish",
   "auth": {
-  "enterCode": "Telefon nomeringizga kelgan kodni kiriting",
+    "enterCode": "Telefon nomeringizga kelgan kodni kiriting",
     "passwordChanged": "Parol muvaffaqiyatli o'zgartirildi",
     "invalidCode": "Kod noto‘g‘ri",
     "newCodeSent": "Yangi kod yuborildi ✅",
     "default": "Xatolik yuz berdi",
-     "invalidCode1": "4 xonali kodni kiriting"
-},
-"resetPassword": {
-  "title": "Parolni tiklash",
-  "description": "Yangi parol o'rnating",
-  "phoneLabel": "Telefon raqami",
-  "phonePlaceholder": "+998 90 123 45 67",
-  "newPasswordLabel": "Yangi parol",
-  "newPasswordPlaceholder": "Yangi parol kiriting",
-  "submitButton": "Parolni yangilash",
-  "submitting": "Yuborilmoqda...",
-  "backToLogin": "Kirish sahifasiga qaytish",
+    "invalidCode1": "4 xonali kodni kiriting"
+  },
+  "resetPassword": {
+    "title": "Parolni tiklash",
+    "description": "Yangi parol o'rnating",
+    "phoneLabel": "Telefon raqami",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "newPasswordLabel": "Yangi parol",
+    "newPasswordPlaceholder": "Yangi parol kiriting",
+    "submitButton": "Parolni yangilash",
+    "submitting": "Yuborilmoqda...",
+    "backToLogin": "Kirish sahifasiga qaytish",
 
-  "verifyDialog": {
-    "title": "Telefon raqamni tasdiqlash",
-    "description": "SMS orqali yuborilgan 4 xonali kodni kiriting",
-    "timeLeft": "Qolgan vaqt",
-    "resendCode": "Yangi kod yuborish",
-    "resending": "Yuborilmoqda...",
-    "confirmButton": "Tasdiqlash"
-  }
+    "verifyDialog": {
+      "title": "Telefon raqamni tasdiqlash",
+      "description": "SMS orqali yuborilgan 4 xonali kodni kiriting",
+      "timeLeft": "Qolgan vaqt",
+      "resendCode": "Yangi kod yuborish",
+      "resending": "Yuborilmoqda...",
+      "confirmButton": "Tasdiqlash"
+    }
+  },
+  "error_fetch_markets": "Marketlarni olishda xatolik",
+  "error_generate_file": "Rasm/PDF yaratishda xatolik yuz berdi",
+  "error_general": "Xatolik yuz berdi",
+  "success_added_to_market": "Bozorlikka qo'shildi",
+  "button_download_check_pdf": "Check PDF yuklab olish",
+  "product_total_quantity": "Mahsulotlar soni: {{count}} dona",
+  "total_label": "Jami:",
+  "total_price": "{{price}} so‘m",
+   "button_download": "Yuklash",
+   "success_phone_changed": "Telefon nomeringiz almashtirildi",
+   "success_feedback_sent": "Tablab va takliflaringiz yuborildi!",
+    "button_delete": "O‘chirish"
+
+   
+
 }
-
-
-
-  }

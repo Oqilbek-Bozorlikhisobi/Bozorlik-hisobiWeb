@@ -6,7 +6,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { useShoppingStore } from "@/store/shoppingStore";
 import { useTranslation } from "react-i18next";
-import { ShoppingBasket } from "lucide-react"; // icon
+import { ShoppingBasket, Trash2 } from "lucide-react"; // iconlar
 
 const Page = () => {
   const router = useRouter();
@@ -16,6 +16,11 @@ const Page = () => {
   const handleBasketClick = (id: string) => {
     setShoppingId(id);
     router.push(`/basket/${id}`);
+  };
+
+  const handleDelete = (id: string) => {
+    // ❗ Bu yerga o‘chirish funksiyasini yozasiz
+    console.log("Ro`yhat o`chirildi:", id);
   };
 
   return (
@@ -40,12 +45,22 @@ const Page = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {shoppingList?.map((market: any) => (
           <Card
-            onClick={() => handleBasketClick(market?.id)}
             key={market.id}
-            className="cursor-pointer rounded-2xl bg-gradient-to-br from-teal-50 to-white 
+            className="relative cursor-pointer rounded-2xl bg-gradient-to-br from-teal-50 to-white 
                        shadow-md hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
           >
-            <CardContent className="p-6 flex flex-col items-center text-center">
+            {/* O‘chirish icon tugma */}
+            <button
+              onClick={() => handleDelete(market?.id)}
+              className="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg"
+            >
+              <Trash2 size={18} />
+            </button>
+
+            <CardContent
+              onClick={() => handleBasketClick(market?.id)}
+              className="p-6 flex flex-col items-center text-center"
+            >
               <div
                 className="w-12 h-12 mb-3 flex items-center justify-center 
                               rounded-full bg-teal-100 text-teal-700"
@@ -64,3 +79,5 @@ const Page = () => {
 };
 
 export default Page;
+
+

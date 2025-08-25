@@ -38,7 +38,7 @@ const getMarkets = async () => {
       setShoppingListAll(response?.data?.data)
       return response.data;
     } catch (error: any) {
-      console.error("Marketlarni olishda xatolik:", error);
+      console.error(t("error_fetch_markets"), error);
       throw error;
     }
   };

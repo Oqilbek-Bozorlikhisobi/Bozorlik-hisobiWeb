@@ -54,7 +54,7 @@ export default function ProfilePage() {
     method: "PATCH",
     onSuccess: (data) => {
       setPhone("");
-      toast.success(t("Telfon nomeringiz almashtirildi"));
+      toast.success(t("success_phone_changed"));
       setVerify(false);
       setUserChange(data?.data);
       setCode(["", "", "", ""]);
@@ -108,7 +108,7 @@ export default function ProfilePage() {
     url: "feedback",
     method: "POST",
     onSuccess: () => {
-      toast.success("Tablab va takliflaringiz yuborildi!");
+      toast.success(t("success_feedback_sent"));
       setFeedback("");
     },
     onError: (error: any) => {

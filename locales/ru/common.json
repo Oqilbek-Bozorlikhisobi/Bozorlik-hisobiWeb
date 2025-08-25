@@ -157,5 +157,97 @@
     "alertMessage": "Отправлено:"
 
 
-  }
+  },
+
+
+  "error.general": "Произошла ошибка",
+  "toast.userAdded": "Новый пользователь добавлен",
+  "toast.productAdded": "Товар добавлен",
+  "toast.productDeleted": "Товар удален",
+  "toast.addedToHistory": "Покупка добавлена в историю",
+  "market.finishShopping": "Завершить покупки",
+  "market.remainingProducts": "Осталось {{count}} товаров",
+  "extraProduct.title": "Добавить дополнительный товар",
+  "extraProduct.description": "Введите название и количество товара, которого нет в списке",
+  "extraProduct.nameLabel": "Название товара",
+  "extraProduct.namePlaceholder": "например, Соль, Сахар, Мыло...",
+  "extraProduct.quantityLabel": "Количество",
+  "extraProduct.quantityPlaceholder": "например, 2.5",
+  "extraProduct.unitLabel": "Выберите единицу",
+  "extraProduct.unitPlaceholder": "Выберите единицу",
+  "extraProduct.cancel": "Отмена",
+  "extraProduct.add": "Добавить",
+  "purchase.markAsBought": "Отметить как купленное",
+  "purchase.enterPrice": "Введите цену покупки",
+  "purchase.priceLabel": "Оплаченная сумма (сум)",
+  "purchase.pricePlaceholder": "например, 15000",
+  "purchase.confirm": "Куплено",
+  "shareList.title": "Поделиться списком",
+  "shareList.description": "Введите номер телефона человека, которому хотите отправить список",
+  "shareList.phoneLabel": "Номер телефона",
+  "shareList.phonePlaceholder": "+998 90 123 45 67",
+  "shareList.button": "Поделиться",
+  "endMarket.title": "Завершить покупки",
+  "endMarket.description": "Введите название рынка и завершите покупки",
+  "endMarket.marketNameLabel": "Название рынка",
+  "endMarket.marketNamePlaceholder": "например, Чорсу",
+  "endMarket.finishButton": "Завершить",
+  "toast.productAdded1": "Товар добавлен",
+  "error.general1": "Произошла ошибка",
+  "search.placeholder": "Поиск товаров",
+  "category.addToListHint": "Нажмите на товар, чтобы добавить в список покупок",
+  "category.backButton": "Вернуться к категориям",
+
+  "basket.addDialogTitle": "Добавить {{productName}} в корзину",
+  "basket.addDialogDescription": "Введите количество, которое хотите купить",
+  "basket.quantityLabel": "Количество ({{unit}})",
+  "basket.quantityPlaceholder": "например, 2.5",
+  "basket.unitLabel": "Выберите единицу",
+  "basket.unitPlaceholder": "Выберите единицу",
+  "basket.marketLabel": "Выберите список покупок",
+  "basket.marketPlaceholder": "Выберите список покупок",
+  "basket.addButton": "Добавить в корзину",
+
+  "auth": {
+    "enterCode": "Введите код, отправленный на ваш номер телефона",
+    "passwordChanged": "Пароль успешно изменен",
+    "invalidCode": "Неверный код",
+    "newCodeSent": "Новый код отправлен ✅",
+    "default": "Произошла ошибка",
+    "invalidCode1": "Введите 4-значный код"
+  },
+
+  "resetPassword": {
+    "title": "Восстановление пароля",
+    "description": "Установите новый пароль",
+    "phoneLabel": "Номер телефона",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "newPasswordLabel": "Новый пароль",
+    "newPasswordPlaceholder": "Введите новый пароль",
+    "submitButton": "Обновить пароль",
+    "submitting": "Отправка...",
+    "backToLogin": "Вернуться на страницу входа",
+
+    "verifyDialog": {
+      "title": "Подтверждение номера телефона",
+      "description": "Введите 4-значный код, отправленный по SMS",
+      "timeLeft": "Оставшееся время",
+      "resendCode": "Отправить новый код",
+      "resending": "Отправка...",
+      "confirmButton": "Подтвердить"
+    }
+  },
+
+  "error_fetch_markets": "Ошибка при получении рынков",
+  "error_generate_file": "Ошибка при создании изображения/PDF",
+  "error_general": "Произошла ошибка",
+  "success_added_to_market": "Добавлено в список покупок",
+  "button_download_check_pdf": "Скачать чек PDF",
+  "product_total_quantity": "Количество товаров: {{count}} шт.",
+  "total_label": "Итого:",
+  "total_price": "{{price}} сум",
+  "button_download": "Скачать",
+  "success_phone_changed": "Ваш номер телефона был изменен",
+  "success_feedback_sent": "Ваши отзывы и предложения отправлены!",
+  "button_delete": "Удалить"
 }
